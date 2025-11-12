@@ -1,5 +1,1 @@
-# How to Use Waste AI
-
-```bash
-pip install -r requirements.txt 
-```
+_... for now go to `notes.txt`, would update this after completion..._
