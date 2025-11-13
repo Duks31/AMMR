@@ -44,3 +44,6 @@ Dataset Imbalance:
 First Models try-out:  
 - Used transfer learning with pre-trained ResNet50 and EfficientNet-B0 model.
 
+First Model tryout
+EfficientNet: Training complete. Best val acc: 55.93%
+ResNet50: Training complete. Best val acc: 94.47%
