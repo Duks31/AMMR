@@ -1,3 +1,5 @@
+Training the AI classifier
+
 This is kind of a project note file to keep track of the "steps" taken in the project. (Not a code file)
 
 Online Datasets:
@@ -45,5 +47,6 @@ First Models try-out:
 - Used transfer learning with pre-trained ResNet50 and EfficientNet-B0 model.
 
 First Model tryout
-EfficientNet: Training complete. Best val acc: 55.93%
+EfficientNet: Training complete. Best val acc: 94.47%
 ResNet50: Training complete. Best val acc: 94.47%
+
