@@ -25,7 +25,7 @@ def get_model(model_name: str, num_classes: int, pretrained: bool = True, freeze
                 param.requires_grad = True
 
         in_features = model.fc.in_features  
-        model.fc = nn.Linear(in_features, num_classes)
+        model.fc = nn.Linear(in_features, num_classes)  
 
     elif model_name.lower() == 'efficientnet_b0':
         model = models.efficientnet_b0(weights=models.EfficientNet_B0_Weights.IMAGENET1K_V1 if pretrained else None)
