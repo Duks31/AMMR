@@ -4,8 +4,9 @@ import torchvision.models as models
 import timm
 
 def get_model(model_name: str, num_classes: int, pretrained: bool = True, freeze_backbone = True) -> nn.Module:
-    
+
     """
+    
     Get a pre-trained model and modify the final layer for the specified number of classes.
 
     Args:
