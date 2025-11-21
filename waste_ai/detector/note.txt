@@ -1,1 +1,14 @@
-Training the AI object detector
+Training the AI object detector with YOLO
+
+DATASET
+TACO Dataset: https://tacodataset.org/
+TACO dataset requires citing.
+Downloaded the zip file from: https://zenodo.org/records/3587843
+Dataset doesn't require annotation, it just requires conversion from coco (taco annotation format) to yolo format
+
+Converting the coco annotation to YOLO. 'convert_taco_to_yolo.py'
+- Flatten all images into a single images/ folder (or keep batch folders; YOLO doesn’t mind)
+- Convert annotation.json → YOLO TXT files
+- Split into train/val
+- Create dataset.yaml
+

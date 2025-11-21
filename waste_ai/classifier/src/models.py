@@ -39,7 +39,7 @@ def get_model(model_name: str, num_classes: int, pretrained: bool = True, freeze
 
         linear_layer = model.classifier[1]
         if isinstance(linear_layer, nn.Linear):
-            in_features = model.classifier[1].in_features
+            in_features = linear_layer.in_features
             model.classifier[1] = nn.Linear(in_features, num_classes)
         else:
             raise ValueError("Expected classifier to be nn.Linear")

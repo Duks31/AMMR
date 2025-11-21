@@ -4,10 +4,8 @@ This is kind of a project note file to keep track of the "steps" taken in the pr
 
 Online Datasets:
 - TrashNet: https://github.com/garythung/trashnet
-- TACO Dataset: https://tacodataset.org/
 
 TrashNet dataset requires citing.
-TACO dataset requires citing.
 
 Install
 - Pytorch
