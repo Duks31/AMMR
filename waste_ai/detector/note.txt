@@ -12,3 +12,60 @@ Converting the coco annotation to YOLO. 'convert_taco_to_yolo.py'
 - Split into train/val
 - Create dataset.yaml
 
+... 
+
+12/12/25
+Recyclable class = 1:
+- Can
+- Glass bottle
+- Other plastic bottle
+- Plastic bottle
+- Glass jar
+- Metal can
+- Drink can
+- Cardboard
+- Paper
+- Paper bag
+- Beverage carton
+- Food carton
+- Plastic lid
+- Metal lid
+- Aluminium foil
+
+Non-Recyclable class = 0:
+- Plastic film
+- Plastic bag
+- Crisp packet
+- Tissue
+- Plastic straw
+- Cigarette
+- Battery
+- Wrapping plastic
+- Other paper packaging
+- Other plastic wrapper
+- Plastic utensils
+- Food waste
+- Aerosol
+
+Converting the coco format (taco) to YOLO format convert_taco_to_yolo_binary.py:
+- Reads your annotations.json
+- Maps 28 classes → 2 classes
+- Converts bounding boxes to YOLO format
+- Copies all images from all batch_X folders
+- Creates:
+taco_yolo/
+   images/train
+   images/val
+   labels/train
+   labels/val
+   data.yaml
+
+Trained a dry run Yolo Model, "yolo detect train model=yolov8s.pt data=taco_binary.yaml epochs=5 imgsz=640 batch=8 device=0"
+5 epochs, 0.608 hours, 11,126,358 parameter model
+
+Testing the dry run model
+- yolo detect predict model=runs/detect/train/weights/best.pt source=PATH_TO_A_FEW_IMAGES
+- yolo detect predict model=runs/detect/train/weights/best.pt source=0 show=True
+
+
+Next run the model for 50 epochs.
