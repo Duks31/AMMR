@@ -2,3 +2,4 @@ data/
 runs/
 test_images/
 yolov8s.pt
+runs_kaggle/

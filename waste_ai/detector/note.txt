@@ -64,8 +64,15 @@ Trained a dry run Yolo Model, "yolo detect train model=yolov8s.pt data=taco_bina
 5 epochs, 0.608 hours, 11,126,358 parameter model
 
 Testing the dry run model
-- yolo detect predict model=runs/detect/train/weights/best.pt source=PATH_TO_A_FEW_IMAGES
-- yolo detect predict model=runs/detect/train/weights/best.pt source=0 show=True
+- yolo detect predict model=models/dry_run_5_epochs.pt source=PATH_TO_A_FEW_IMAGES
+- yolo detect predict model=models/dry_run_5_epochs.pt source=0 show=True
 
 
-Next run the model for 50 epochs.
+Next run the model for 50 epochs on kaggle.
+yolo detect train model=yolov8m.pt data=taco_binary_kaggle.yaml epochs=50 imgsz=640 batch=8
+Trained 50 epochs in 0.819hours, 25,840,918 parameter model on GPU P100
+
+Testing
+- yolo detect predict model=models/kaggle_run_50_epochs.pt source=PATH_TO_A_FEW_IMAGES
+Just a minor issue, since the models is trained in kaggle, and I Downloaded it and brought it here, when I run predict with the test code above it saves it in the original runs, not the kaggle runs.
+
