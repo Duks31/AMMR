@@ -70,9 +70,12 @@ Testing the dry run model
 
 Next run the model for 50 epochs on kaggle.
 yolo detect train model=yolov8m.pt data=taco_binary_kaggle.yaml epochs=50 imgsz=640 batch=8
-Trained 50 epochs in 0.819hours, 25,840,918 parameter model on GPU P100
+Trained 50 epochs in 52minutes 14seconds, 25,840,918 parameter model on GPU P100
 
 Testing
 - yolo detect predict model=models/kaggle_run_50_epochs.pt source=PATH_TO_A_FEW_IMAGES
 Just a minor issue, since the models is trained in kaggle, and I Downloaded it and brought it here, when I run predict with the test code above it saves it in the original runs, not the kaggle runs.
 
+Next run the model for 100 epochs on kaggle.
+- try Data Aug, on the fly during Training
+- Try fine tuning
