@@ -1,0 +1,1387 @@
+<?xml version="1.0" ?>
+<robot name="final" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<xacro:include filename="$(find final_description)/urdf/materials.xacro" />
+<xacro:include filename="$(find final_description)/urdf/final.trans" />
+<xacro:include filename="$(find final_description)/urdf/final.gazebo" />
+<link name="base_link">
+  <inertial>
+    <origin xyz="-0.00010789040737851121 -2.387011716501852e-05 0.003254077562984443" rpy="0 0 0"/>
+    <mass value="0.0923352856253466"/>
+    <inertia ixx="0.000295" iyy="0.000295" izz="0.00059" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Base_bottom_1">
+  <inertial>
+    <origin xyz="-0.0007287594569246752 -0.00023276962486802833 0.007529319876131384" rpy="0 0 0"/>
+    <mass value="0.31316469015599396"/>
+    <inertia ixx="0.000464" iyy="0.000452" izz="0.000905" ixy="5e-06" iyz="0.0" ixz="1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.000112 2.5e-05 -0.010138" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Base_bottom_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.000112 2.5e-05 -0.010138" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Base_bottom_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Base_cylinder_1">
+  <inertial>
+    <origin xyz="-1.3465766603011899e-05 -3.016098464437629e-06 0.02093321099830847" rpy="0 0 0"/>
+    <mass value="0.1877283625038977"/>
+    <inertia ixx="0.0005" iyy="0.0005" izz="0.000941" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.000122 2.8e-05 -0.025138" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Base_cylinder_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.000122 2.8e-05 -0.025138" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Base_cylinder_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Base_top_1">
+  <inertial>
+    <origin xyz="-0.000745633070446639 2.3596155231202955e-06 0.004806450018607744" rpy="0 0 0"/>
+    <mass value="0.2042179409587294"/>
+    <inertia ixx="0.000325" iyy="0.000303" izz="0.000625" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.000148 3.4e-05 -0.065138" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Base_top_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.000148 3.4e-05 -0.065138" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Base_top_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Bearing_clamp_1">
+  <inertial>
+    <origin xyz="-1.3366676636427993e-06 -1.656328060335217e-07 0.0017876362387215933" rpy="0 0 0"/>
+    <mass value="0.003107973401790518"/>
+    <inertia ixx="1e-06" iyy="0.0" izz="1e-06" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.000154 3.6e-05 -0.075138" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Bearing_clamp_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.000154 3.6e-05 -0.075138" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Bearing_clamp_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Bearing_ring_1">
+  <inertial>
+    <origin xyz="3.3057221366983086e-07 -2.518657375805299e-07 -0.001195674839012159" rpy="0 0 0"/>
+    <mass value="0.02702780685873039"/>
+    <inertia ixx="6.4e-05" iyy="6.4e-05" izz="0.000128" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.000156 3.6e-05 -0.078638" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Bearing_ring_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.000156 3.6e-05 -0.078638" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Bearing_ring_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Gear_12T_1">
+  <inertial>
+    <origin xyz="4.8998330119377764e-05 -0.009000418156728248 0.0016602830082886877" rpy="0 0 0"/>
+    <mass value="0.0016560412373827706"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.048113 -0.009181 -0.075108" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Gear_12T_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.048113 -0.009181 -0.075108" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Gear_12T_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Gear_27T_1">
+  <inertial>
+    <origin xyz="-0.00010601364303874233 -0.013000877478900216 0.006000702493903193" rpy="0 0 0"/>
+    <mass value="0.008213557037232692"/>
+    <inertia ixx="0.0" iyy="0.0" izz="1e-06" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.040402 -0.012281 -0.075166" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Gear_27T_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.040402 -0.012281 -0.075166" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Gear_27T_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Potentiometer_1">
+  <inertial>
+    <origin xyz="1.1743567394917331e-05 3.2676931635859045e-06 -0.018955332442223957" rpy="0 0 0"/>
+    <mass value="0.010035763547273252"/>
+    <inertia ixx="1e-06" iyy="1e-06" izz="1e-06" ixy="-0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.04815 -0.000182 -0.070107" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Potentiometer_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.04815 -0.000182 -0.070107" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Potentiometer_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Steel_ball_10mm_1">
+  <inertial>
+    <origin xyz="1.0122989557714845e-07 -4.422076359603122e-07 -1.9021058737800356e-07" rpy="0 0 0"/>
+    <mass value="0.0041887902047863905"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="-0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.055442 -0.039976 -0.079735" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Steel_ball_10mm_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.055442 -0.039976 -0.079735" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Steel_ball_10mm_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Steel_ball_10mm_4">
+  <inertial>
+    <origin xyz="2.381829425704418e-08 3.206416161888326e-07 3.5668395181875923e-09" rpy="0 0 0"/>
+    <mass value="0.0041887902047863905"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.021305 -0.065014 -0.079717" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Steel_ball_10mm_4.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.021305 -0.065014 -0.079717" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Steel_ball_10mm_4.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Steel_ball_10mm_3">
+  <inertial>
+    <origin xyz="1.3751947359336159e-07 -1.6765396858298143e-07 -2.2915818026492119e-07" rpy="0 0 0"/>
+    <mass value="0.0041887902047863905"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.02103 -0.065206 -0.07969" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Steel_ball_10mm_3.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.02103 -0.065206 -0.07969" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Steel_ball_10mm_3.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Steel_ball_10mm_2">
+  <inertial>
+    <origin xyz="-7.001027908792867e-08 -5.805623353588585e-08 -4.864102955276506e-07" rpy="0 0 0"/>
+    <mass value="0.0041887902047863905"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.055392 -0.040477 -0.079664" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Steel_ball_10mm_2.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.055392 -0.040477 -0.079664" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Steel_ball_10mm_2.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Steel_ball_10mm_10">
+  <inertial>
+    <origin xyz="-4.0342306843743625e-07 2.450644154480277e-07 2.611883437031448e-07" rpy="0 0 0"/>
+    <mass value="0.0041887902047863905"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="-0.0" iyz="0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.068656 -0.000273 -0.079648" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Steel_ball_10mm_10.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.068656 -0.000273 -0.079648" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Steel_ball_10mm_10.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Steel_ball_10mm_9">
+  <inertial>
+    <origin xyz="1.6645962470918096e-07 -4.998295578919395e-07 3.881377204084657e-07" rpy="0 0 0"/>
+    <mass value="0.0041887902047863905"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="-0.0" iyz="0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.068342 0.000346 -0.079736" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Steel_ball_10mm_9.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.068342 0.000346 -0.079736" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Steel_ball_10mm_9.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Steel_ball_10mm_8">
+  <inertial>
+    <origin xyz="-1.6695316435583196e-07 -1.9670890899492477e-07 1.3573637323849308e-07" rpy="0 0 0"/>
+    <mass value="0.0041887902047863905"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.055078 0.04055 -0.079721" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Steel_ball_10mm_8.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.055078 0.04055 -0.079721" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Steel_ball_10mm_8.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Steel_ball_10mm_5">
+  <inertial>
+    <origin xyz="-3.7448291683242485e-07 -8.711117421844605e-08 -1.2151574207974747e-07" rpy="0 0 0"/>
+    <mass value="0.0041887902047863905"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.020716 0.065279 -0.079695" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Steel_ball_10mm_5.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.020716 0.065279 -0.079695" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Steel_ball_10mm_5.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Steel_ball_10mm_6">
+  <inertial>
+    <origin xyz="-2.6078173749610745e-07 4.2459324066379533e-07 -3.542407619044896e-07" rpy="0 0 0"/>
+    <mass value="0.0041887902047863905"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.021619 0.065088 -0.079668" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Steel_ball_10mm_6.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.021619 0.065088 -0.079668" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Steel_ball_10mm_6.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Steel_ball_10mm_7">
+  <inertial>
+    <origin xyz="-3.381933390209091e-07 1.8744249257601764e-07 -1.6046333489727616e-07" rpy="0 0 0"/>
+    <mass value="0.0041887902047863905"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.055756 0.040049 -0.07965" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Steel_ball_10mm_7.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.055756 0.040049 -0.07965" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Steel_ball_10mm_7.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Bearing_clamp_2">
+  <inertial>
+    <origin xyz="-1.4751095382383247e-06 -3.1737161876507476e-07 0.0017876506239141061" rpy="0 0 0"/>
+    <mass value="0.003107973401790518"/>
+    <inertia ixx="1e-06" iyy="0.0" izz="1e-06" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.000112 2.5e-05 -0.010138" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Bearing_clamp_2.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.000112 2.5e-05 -0.010138" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Bearing_clamp_2.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Rotating_plate_1">
+  <inertial>
+    <origin xyz="-8.87649821037248e-06 -0.0001520553049846383 0.012543245019767932" rpy="0 0 0"/>
+    <mass value="0.32804852666215706"/>
+    <inertia ixx="0.000591" iyy="0.000585" izz="0.001118" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.000157 3.7e-05 -0.079692" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Rotating_plate_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.000157 3.7e-05 -0.079692" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Rotating_plate_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Rotating_plate_clamp_1">
+  <inertial>
+    <origin xyz="8.546854089189546e-07 7.680939084738961e-07 -0.0017784341539349643" rpy="0 0 0"/>
+    <mass value="0.0010291248849583485"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.000114 2.6e-05 -0.013192" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Rotating_plate_clamp_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.000114 2.6e-05 -0.013192" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Rotating_plate_clamp_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Base_servo_mount_1">
+  <inertial>
+    <origin xyz="-0.00017278151432705696 0.013368247999160247 0.042454788445437125" rpy="0 0 0"/>
+    <mass value="0.05643617063632359"/>
+    <inertia ixx="4.7e-05" iyy="2.5e-05" izz="2.4e-05" ixy="-0.0" iyz="0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.039533 0.013487 -0.102165" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Base_servo_mount_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.039533 0.013487 -0.102165" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Base_servo_mount_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Base_servo_mount__1__1">
+  <inertial>
+    <origin xyz="0.07278560482072031 -0.00032887350760187544 -0.0005004339313740558" rpy="0 0 0"/>
+    <mass value="0.05643617063632359"/>
+    <inertia ixx="4.7e-05" iyy="2.5e-05" izz="2.4e-05" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.032 0.000154 -0.145172" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Base_servo_mount__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.032 0.000154 -0.145172" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Base_servo_mount__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Lower_arm_left_1">
+  <inertial>
+    <origin xyz="0.00471600868415991 0.09641976231111475 1.8941585629733693e-05" rpy="0 0 0"/>
+    <mass value="0.2987339896749546"/>
+    <inertia ixx="0.001236" iyy="0.000106" izz="0.001149" ixy="2.1e-05" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.032 0.000154 -0.145172" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Lower_arm_left_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.032 0.000154 -0.145172" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Lower_arm_left_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Lower_arm_right_1">
+  <inertial>
+    <origin xyz="0.04625066172070211 0.09018675646503208 4.436056798973187e-05" rpy="0 0 0"/>
+    <mass value="0.2781324221892311"/>
+    <inertia ixx="0.001108" iyy="0.000104" izz="0.001022" ixy="-2.8e-05" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.018598 -0.000321 -0.145181" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Lower_arm_right_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.018598 -0.000321 -0.145181" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Lower_arm_right_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Lower_arm_bushing__1__1">
+  <inertial>
+    <origin xyz="0.019399805811554975 -8.734991160097572e-05 1.2378772458160325e-05" rpy="0 0 0"/>
+    <mass value="0.004315068026843927"/>
+    <inertia ixx="0.0" iyy="1e-06" izz="1e-06" ixy="0.0" iyz="0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.018055 -0.120319 -0.145201" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Lower_arm_bushing__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.018055 -0.120319 -0.145201" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Lower_arm_bushing__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Lower_arm_bushing_1">
+  <inertial>
+    <origin xyz="0.01940000907665429 -8.778639016510104e-05 1.2039335451685673e-05" rpy="0 0 0"/>
+    <mass value="0.004315068026843927"/>
+    <inertia ixx="0.0" iyy="1e-06" izz="1e-06" ixy="0.0" iyz="0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.018304 -0.06532 -0.145192" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Lower_arm_bushing_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.018304 -0.06532 -0.145192" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Lower_arm_bushing_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Center_arm_1">
+  <inertial>
+    <origin xyz="0.017846355862532037 -0.0007979622214414617 0.05781361773376395" rpy="0 0 0"/>
+    <mass value="0.2964599813425893"/>
+    <inertia ixx="0.000725" iyy="0.000678" izz="9.1e-05" ixy="-0.0" iyz="6e-06" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.017761 -0.185319 -0.145212" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Center_arm_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.017761 -0.185319 -0.145212" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Center_arm_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Center_arm_bearing_guide__1__1">
+  <inertial>
+    <origin xyz="0.0032214197868513615 -1.4493564723216945e-05 2.020747232461817e-06" rpy="0 0 0"/>
+    <mass value="0.003958021366840176"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.010239 -0.185192 -0.14523" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Center_arm_bearing_guide__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.010239 -0.185192 -0.14523" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Center_arm_bearing_guide__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Bearing_holder_1">
+  <inertial>
+    <origin xyz="0.003920340207714212 -1.727331040687896e-05 2.0901473167800333e-06" rpy="0 0 0"/>
+    <mass value="0.0054576424055458195"/>
+    <inertia ixx="1e-06" iyy="0.0" izz="1e-06" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.023639 -0.185131 -0.145239" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Bearing_holder_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.023639 -0.185131 -0.145239" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Bearing_holder_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Center_arm_bearing_guide_1">
+  <inertial>
+    <origin xyz="0.003221746970239964 -1.410388302394705e-05 1.994743235589347e-06" rpy="0 0 0"/>
+    <mass value="0.003958021366840176"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.010163 -0.185172 -0.26273" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Center_arm_bearing_guide_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.010163 -0.185172 -0.26273" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Center_arm_bearing_guide_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Bearing_holder__1__1">
+  <inertial>
+    <origin xyz="-0.003520799874719347 1.577957920545492e-05 -2.7227227725745706e-06" rpy="0 0 0"/>
+    <mass value="0.0054576424055458195"/>
+    <inertia ixx="1e-06" iyy="0.0" izz="1e-06" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.023563 -0.185112 -0.262739" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Bearing_holder__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.023563 -0.185112 -0.262739" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Bearing_holder__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Center_arm_bearing_guide_clamp__1__1">
+  <inertial>
+    <origin xyz="-0.004842840925784388 2.2369624048917958e-05 -3.143475890809988e-06" rpy="0 0 0"/>
+    <mass value="0.00032043263318911203"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.032039 -0.185093 -0.145244" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Center_arm_bearing_guide_clamp__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.032039 -0.185093 -0.145244" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Center_arm_bearing_guide_clamp__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Center_arm_bearing_guide_clamp__2__1">
+  <inertial>
+    <origin xyz="0.004657474774910627 -2.1216748144897712e-05 2.538108757110802e-06" rpy="0 0 0"/>
+    <mass value="0.00032043263318911203"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.023563 -0.185112 -0.262739" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Center_arm_bearing_guide_clamp__2__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.023563 -0.185112 -0.262739" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Center_arm_bearing_guide_clamp__2__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Upper_arm_left__1__1">
+  <inertial>
+    <origin xyz="-0.01255168059779056 -0.030536388349178406 -1.3339359431430164e-05" rpy="0 0 0"/>
+    <mass value="0.1276460273557561"/>
+    <inertia ixx="0.00014" iyy="3.6e-05" izz="0.000112" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.014837 -0.185286 -0.262714" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Upper_arm_left__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.014837 -0.185286 -0.262714" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Upper_arm_left__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Upper_arm_servo_mount__1__1">
+  <inertial>
+    <origin xyz="0.01839624540846017 0.00033878792789303336 0.009142253462891381" rpy="0 0 0"/>
+    <mass value="0.027474065783138678"/>
+    <inertia ixx="1.8e-05" iyy="2.2e-05" izz="5e-06" ixy="0.0" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.017565 -0.112797 -0.2627" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Upper_arm_servo_mount__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.017565 -0.112797 -0.2627" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Upper_arm_servo_mount__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Upper_arm_right__1__1">
+  <inertial>
+    <origin xyz="0.010157968610067715 0.0387554812231075 1.2668097637558162e-05" rpy="0 0 0"/>
+    <mass value="0.10703535064188575"/>
+    <inertia ixx="0.000127" iyy="3.4e-05" izz="0.0001" ixy="-1e-06" iyz="-0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.019235 -0.112631 -0.262724" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Upper_arm_right__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.019235 -0.112631 -0.262724" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Upper_arm_right__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="MG996R_Motor_v1__1__1">
+  <inertial>
+    <origin xyz="-0.011208760280394088 0.004904711484545967 -0.02433161545769813" rpy="0 0 0"/>
+    <mass value="0.03924252838148347"/>
+    <inertia ixx="7e-06" iyy="1e-05" izz="6e-06" ixy="0.0" iyz="0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.047032 0.005088 -0.159411" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/MG996R_Motor_v1__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.047032 0.005088 -0.159411" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/MG996R_Motor_v1__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="MG996R_Motor_v1__2__1">
+  <inertial>
+    <origin xyz="0.011139721037792101 -0.024374845428575792 -0.004846642366439946" rpy="0 0 0"/>
+    <mass value="0.03924252838148347"/>
+    <inertia ixx="7e-06" iyy="6e-06" izz="1e-05" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.039624 -0.199288 -0.267751" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/MG996R_Motor_v1__2__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.039624 -0.199288 -0.267751" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/MG996R_Motor_v1__2__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="MG996R_Motor_v1__3__1">
+  <inertial>
+    <origin xyz="0.004915888223867046 0.011028546075616624 -0.02432052670832957" rpy="0 0 0"/>
+    <mass value="0.03924252838148347"/>
+    <inertia ixx="1e-05" iyy="7e-06" izz="6e-06" ixy="-0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.004153 -0.120231 -0.296695" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/MG996R_Motor_v1__3__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.004153 -0.120231 -0.296695" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/MG996R_Motor_v1__3__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="MG996R_Motor_v1__4__1">
+  <inertial>
+    <origin xyz="0.011239856692419954 -0.004897156465041457 -0.024318933911151197" rpy="0 0 0"/>
+    <mass value="0.03924252838148347"/>
+    <inertia ixx="7e-06" iyy="1e-05" izz="6e-06" ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.048093 -0.004482 -0.159474" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/MG996R_Motor_v1__4__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.048093 -0.004482 -0.159474" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/MG996R_Motor_v1__4__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="MG996R_Motor_v1__5__1">
+  <inertial>
+    <origin xyz="0.01113940011769051 -0.024375520899061115 -0.004847002319886329" rpy="0 0 0"/>
+    <mass value="0.03924252838148347"/>
+    <inertia ixx="7e-06" iyy="6e-06" izz="1e-05" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.0391 -0.199311 -0.150251" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/MG996R_Motor_v1__5__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.0391 -0.199311 -0.150251" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/MG996R_Motor_v1__5__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Cover_plate__1__1">
+  <inertial>
+    <origin xyz="-0.00012317588270959194 -0.0315359898165562 -0.030536196601532867" rpy="0 0 0"/>
+    <mass value="0.02728755334670412"/>
+    <inertia ixx="2.1e-05" iyy="4e-06" izz="2.2e-05" ixy="-0.0" iyz="-3e-06" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.000795 -0.105212 -0.272711" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Cover_plate__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.000795 -0.105212 -0.272711" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Cover_plate__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Servo_mount__1__1">
+  <inertial>
+    <origin xyz="-0.011846931556946967 -0.038769834523171356 0.007902677539445069" rpy="0 0 0"/>
+    <mass value="0.029711805162689307"/>
+    <inertia ixx="2.4e-05" iyy="5e-06" izz="2.8e-05" ixy="-0.0" iyz="0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.012451 -0.10216 -0.267268" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Servo_mount__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.012451 -0.10216 -0.267268" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Servo_mount__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Bearing_guide__1__1">
+  <inertial>
+    <origin xyz="-1.1114999940394052e-05 -2.7805711583159254e-06 0.01724985579789992" rpy="0 0 0"/>
+    <mass value="0.0020147008554729728"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="-0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.000476 -0.030468 -0.242748" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Bearing_guide__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.000476 -0.030468 -0.242748" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Bearing_guide__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Bearing_top-bottom_bushing__2__1">
+  <inertial>
+    <origin xyz="1.3428677686275052e-06 3.014991109759335e-07 -0.0017501454193025179" rpy="0 0 0"/>
+    <mass value="0.0019297026707657304"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.00046 -0.030464 -0.267248" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Bearing_top-bottom_bushing__2__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.00046 -0.030464 -0.267248" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Bearing_top-bottom_bushing__2__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="MG996R_Motor_v1__6__1">
+  <inertial>
+    <origin xyz="0.004733166830205402 -0.024349568416065198 0.011245383509967233" rpy="0 0 0"/>
+    <mass value="0.03924252838148347"/>
+    <inertia ixx="1e-05" iyy="6e-06" izz="7e-06" ixy="-0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.004283 -0.089484 -0.282255" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/MG996R_Motor_v1__6__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.004283 -0.089484 -0.282255" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/MG996R_Motor_v1__6__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Component67_1">
+  <inertial>
+    <origin xyz="6.49522978581745e-05 0.013999964327286861 -0.002497482669781892" rpy="0 0 0"/>
+    <mass value="0.0009840710101889515"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.000601 -0.061589 -0.267253" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Component67_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.000601 -0.061589 -0.267253" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Component67_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Bearing_center_bushing__1__1">
+  <inertial>
+    <origin xyz="-7.894880541623925e-06 -1.9460894683763497e-06 0.012249856904453044" rpy="0 0 0"/>
+    <mass value="0.004135077151640851"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.000476 -0.030468 -0.242748" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Bearing_center_bushing__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.000476 -0.030468 -0.242748" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Bearing_center_bushing__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="Bearing_top-bottom_bushing__1__1">
+  <inertial>
+    <origin xyz="-1.1326288443711495e-06 -1.9367804580602832e-07 0.0017498592282147452" rpy="0 0 0"/>
+    <mass value="0.0019297026707657304"/>
+    <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.000476 -0.030468 -0.242748" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Bearing_top-bottom_bushing__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.000476 -0.030468 -0.242748" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find final_description)/meshes/Bearing_top-bottom_bushing__1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="Rigid 1" type="fixed">
+  <origin xyz="-0.000112 -2.5e-05 0.010138" rpy="0 0 0"/>
+  <parent link="base_link"/>
+  <child link="Base_bottom_1"/>
+</joint>
+
+<joint name="Rigid 2" type="fixed">
+  <origin xyz="-1e-05 -3e-06 0.015" rpy="0 0 0"/>
+  <parent link="Base_bottom_1"/>
+  <child link="Base_cylinder_1"/>
+</joint>
+
+<joint name="Rigid 3" type="fixed">
+  <origin xyz="-2.6e-05 -6e-06 0.04" rpy="0 0 0"/>
+  <parent link="Base_cylinder_1"/>
+  <child link="Base_top_1"/>
+</joint>
+
+<joint name="Rigid 4" type="fixed">
+  <origin xyz="-6e-06 -2e-06 0.01" rpy="0 0 0"/>
+  <parent link="Base_top_1"/>
+  <child link="Bearing_clamp_1"/>
+</joint>
+
+<joint name="Rigid 5" type="fixed">
+  <origin xyz="-2e-06 0.0 0.0035" rpy="0 0 0"/>
+  <parent link="Bearing_clamp_1"/>
+  <child link="Bearing_ring_1"/>
+</joint>
+
+<joint name="Rigid 6" type="fixed">
+  <origin xyz="-0.047965 0.009215 0.00997" rpy="0 0 0"/>
+  <parent link="Base_top_1"/>
+  <child link="Gear_12T_1"/>
+</joint>
+
+<joint name="Rigid 7" type="fixed">
+  <origin xyz="0.04055 0.012315 0.010028" rpy="0 0 0"/>
+  <parent link="Base_top_1"/>
+  <child link="Gear_27T_1"/>
+</joint>
+
+<joint name="Rigid 8" type="fixed">
+  <origin xyz="-3.7e-05 -0.008999 -0.005001" rpy="0 0 0"/>
+  <parent link="Gear_12T_1"/>
+  <child link="Potentiometer_1"/>
+</joint>
+
+<joint name="Rigid 9" type="fixed">
+  <origin xyz="0.055598 0.040012 0.001097" rpy="0 0 0"/>
+  <parent link="Bearing_ring_1"/>
+  <child link="Steel_ball_10mm_1"/>
+</joint>
+
+<joint name="Rigid 10" type="fixed">
+  <origin xyz="0.021461 0.06505 0.001079" rpy="0 0 0"/>
+  <parent link="Bearing_ring_1"/>
+  <child link="Steel_ball_10mm_4"/>
+</joint>
+
+<joint name="Rigid 11" type="fixed">
+  <origin xyz="-0.020874 0.065242 0.001052" rpy="0 0 0"/>
+  <parent link="Bearing_ring_1"/>
+  <child link="Steel_ball_10mm_3"/>
+</joint>
+
+<joint name="Rigid 12" type="fixed">
+  <origin xyz="-0.055236 0.040513 0.001026" rpy="0 0 0"/>
+  <parent link="Bearing_ring_1"/>
+  <child link="Steel_ball_10mm_2"/>
+</joint>
+
+<joint name="Rigid 13" type="fixed">
+  <origin xyz="-0.0685 0.000309 0.00101" rpy="0 0 0"/>
+  <parent link="Bearing_ring_1"/>
+  <child link="Steel_ball_10mm_10"/>
+</joint>
+
+<joint name="Rigid 14" type="fixed">
+  <origin xyz="0.068498 -0.00031 0.001098" rpy="0 0 0"/>
+  <parent link="Bearing_ring_1"/>
+  <child link="Steel_ball_10mm_9"/>
+</joint>
+
+<joint name="Rigid 15" type="fixed">
+  <origin xyz="0.055234 -0.040514 0.001083" rpy="0 0 0"/>
+  <parent link="Bearing_ring_1"/>
+  <child link="Steel_ball_10mm_8"/>
+</joint>
+
+<joint name="Rigid 16" type="fixed">
+  <origin xyz="0.020872 -0.065243 0.001057" rpy="0 0 0"/>
+  <parent link="Bearing_ring_1"/>
+  <child link="Steel_ball_10mm_5"/>
+</joint>
+
+<joint name="Rigid 17" type="fixed">
+  <origin xyz="-0.021463 -0.065052 0.00103" rpy="0 0 0"/>
+  <parent link="Bearing_ring_1"/>
+  <child link="Steel_ball_10mm_6"/>
+</joint>
+
+<joint name="Rigid 18" type="fixed">
+  <origin xyz="-0.0556 -0.040013 0.001012" rpy="0 0 0"/>
+  <parent link="Bearing_ring_1"/>
+  <child link="Steel_ball_10mm_7"/>
+</joint>
+
+<joint name="Rigid 19" type="fixed">
+  <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+  <parent link="Base_bottom_1"/>
+  <child link="Bearing_clamp_2"/>
+</joint>
+
+<joint name="Revolute 20" type="continuous">
+  <origin xyz="-1e-06 -1e-06 0.001054" rpy="0 0 0"/>
+  <parent link="Bearing_ring_1"/>
+  <child link="Rotating_plate_1"/>
+  <axis xyz="-0.000644 -0.000167 1.0"/>
+</joint>
+
+<joint name="Rigid 21" type="fixed">
+  <origin xyz="4.3e-05 1.1e-05 -0.0665" rpy="0 0 0"/>
+  <parent link="Rotating_plate_1"/>
+  <child link="Rotating_plate_clamp_1"/>
+</joint>
+
+<joint name="Rigid 24" type="fixed">
+  <origin xyz="-0.039376 -0.01345 0.022473" rpy="0 0 0"/>
+  <parent link="Rotating_plate_1"/>
+  <child link="Base_servo_mount_1"/>
+</joint>
+
+<joint name="Rigid 25" type="fixed">
+  <origin xyz="0.007533 0.013333 0.043007" rpy="0 0 0"/>
+  <parent link="Base_servo_mount_1"/>
+  <child link="Base_servo_mount__1__1"/>
+</joint>
+
+<joint name="Revolute 26" type="revolute">
+  <origin xyz="0.007533 0.013333 0.043007" rpy="0 0 0"/>
+  <parent link="Base_servo_mount_1"/>
+  <child link="Lower_arm_left_1"/>
+  <axis xyz="0.99999 -0.004524 0.000643"/>
+  <limit upper="3.141593" lower="0.0" effort="100" velocity="100"/>
+</joint>
+
+<joint name="Rigid 27" type="fixed">
+  <origin xyz="0.013402 0.000475 9e-06" rpy="0 0 0"/>
+  <parent link="Lower_arm_left_1"/>
+  <child link="Lower_arm_right_1"/>
+</joint>
+
+<joint name="Rigid 28" type="fixed">
+  <origin xyz="0.013945 0.120473 2.9e-05" rpy="0 0 0"/>
+  <parent link="Lower_arm_left_1"/>
+  <child link="Lower_arm_bushing__1__1"/>
+</joint>
+
+<joint name="Rigid 29" type="fixed">
+  <origin xyz="0.013696 0.065474 2e-05" rpy="0 0 0"/>
+  <parent link="Lower_arm_left_1"/>
+  <child link="Lower_arm_bushing_1"/>
+</joint>
+
+<joint name="Revolute 30" type="revolute">
+  <origin xyz="0.014239 0.185473 4e-05" rpy="0 0 0"/>
+  <parent link="Lower_arm_left_1"/>
+  <child link="Center_arm_1"/>
+  <axis xyz="0.99999 -0.004524 0.000643"/>
+  <limit upper="0.0" lower="-2.617994" effort="100" velocity="100"/>
+</joint>
+
+<joint name="Rigid 31" type="fixed">
+  <origin xyz="0.028 -0.000127 1.8e-05" rpy="0 0 0"/>
+  <parent link="Center_arm_1"/>
+  <child link="Center_arm_bearing_guide__1__1"/>
+</joint>
+
+<joint name="Rigid 32" type="fixed">
+  <origin xyz="0.0134 -6.1e-05 9e-06" rpy="0 0 0"/>
+  <parent link="Center_arm_bearing_guide__1__1"/>
+  <child link="Bearing_holder_1"/>
+</joint>
+
+<joint name="Rigid 33" type="fixed">
+  <origin xyz="0.027924 -0.000147 0.117518" rpy="0 0 0"/>
+  <parent link="Center_arm_1"/>
+  <child link="Center_arm_bearing_guide_1"/>
+</joint>
+
+<joint name="Rigid 34" type="fixed">
+  <origin xyz="0.0134 -6e-05 9e-06" rpy="0 0 0"/>
+  <parent link="Center_arm_bearing_guide_1"/>
+  <child link="Bearing_holder__1__1"/>
+</joint>
+
+<joint name="Rigid 35" type="fixed">
+  <origin xyz="0.0084 -3.8e-05 5e-06" rpy="0 0 0"/>
+  <parent link="Bearing_holder_1"/>
+  <child link="Center_arm_bearing_guide_clamp__1__1"/>
+</joint>
+
+<joint name="Rigid 36" type="fixed">
+  <origin xyz="0.0134 -6e-05 9e-06" rpy="0 0 0"/>
+  <parent link="Center_arm_bearing_guide_1"/>
+  <child link="Center_arm_bearing_guide_clamp__2__1"/>
+</joint>
+
+<joint name="Revolute 37" type="revolute">
+  <origin xyz="0.002924 -3.3e-05 0.117502" rpy="0 0 0"/>
+  <parent link="Center_arm_1"/>
+  <child link="Upper_arm_left__1__1"/>
+  <axis xyz="-0.99999 0.004524 -0.000643"/>
+  <limit upper="1.570796" lower="-0.349066" effort="100" velocity="100"/>
+</joint>
+
+<joint name="Rigid 38" type="fixed">
+  <origin xyz="-0.002728 -0.072489 -1.4e-05" rpy="0 0 0"/>
+  <parent link="Upper_arm_left__1__1"/>
+  <child link="Upper_arm_servo_mount__1__1"/>
+</joint>
+
+<joint name="Rigid 39" type="fixed">
+  <origin xyz="0.0368 -0.000166 2.4e-05" rpy="0 0 0"/>
+  <parent link="Upper_arm_servo_mount__1__1"/>
+  <child link="Upper_arm_right__1__1"/>
+</joint>
+
+<joint name="Rigid 40" type="fixed">
+  <origin xyz="-0.007499 0.008399 0.057246" rpy="0 0 0"/>
+  <parent link="Base_servo_mount_1"/>
+  <child link="MG996R_Motor_v1__1__1"/>
+</joint>
+
+<joint name="Rigid 41" type="fixed">
+  <origin xyz="0.020389 0.086657 0.005027" rpy="0 0 0"/>
+  <parent link="Upper_arm_right__1__1"/>
+  <child link="MG996R_Motor_v1__2__1"/>
+</joint>
+
+<joint name="Rigid 42" type="fixed">
+  <origin xyz="0.013412 0.007434 0.033995" rpy="0 0 0"/>
+  <parent link="Upper_arm_servo_mount__1__1"/>
+  <child link="MG996R_Motor_v1__3__1"/>
+</joint>
+
+<joint name="Rigid 43" type="fixed">
+  <origin xyz="0.080093 0.004636 0.014302" rpy="0 0 0"/>
+  <parent link="Base_servo_mount__1__1"/>
+  <child link="MG996R_Motor_v1__4__1"/>
+</joint>
+
+<joint name="Rigid 44" type="fixed">
+  <origin xyz="0.057698 0.19899 0.00507" rpy="0 0 0"/>
+  <parent link="Lower_arm_right_1"/>
+  <child link="MG996R_Motor_v1__5__1"/>
+</joint>
+
+<joint name="Revolute 45" type="revolute">
+  <origin xyz="0.01836 -0.007585 0.010011" rpy="0 0 0"/>
+  <parent link="Upper_arm_servo_mount__1__1"/>
+  <child link="Cover_plate__1__1"/>
+  <axis xyz="-0.004524 -0.99999 -0.00017"/>
+  <limit upper="0.872665" lower="-0.872665" effort="100" velocity="100"/>
+</joint>
+
+<joint name="Rigid 46" type="fixed">
+  <origin xyz="0.011656 -0.003052 -0.005443" rpy="0 0 0"/>
+  <parent link="Cover_plate__1__1"/>
+  <child link="Servo_mount__1__1"/>
+</joint>
+
+<joint name="Rigid 47" type="fixed">
+  <origin xyz="-0.000319 -0.074744 -0.029963" rpy="0 0 0"/>
+  <parent link="Cover_plate__1__1"/>
+  <child link="Bearing_guide__1__1"/>
+</joint>
+
+<joint name="Rigid 48" type="fixed">
+  <origin xyz="-0.011991 -0.071696 -2e-05" rpy="0 0 0"/>
+  <parent link="Servo_mount__1__1"/>
+  <child link="Bearing_top-bottom_bushing__2__1"/>
+</joint>
+
+<joint name="Rigid 50" type="fixed">
+  <origin xyz="-0.016734 -0.012676 0.014987" rpy="0 0 0"/>
+  <parent link="Servo_mount__1__1"/>
+  <child link="MG996R_Motor_v1__6__1"/>
+</joint>
+
+<joint name="Rigid 57" type="fixed">
+  <origin xyz="-0.01185 -0.040571 -1.5e-05" rpy="0 0 0"/>
+  <parent link="Servo_mount__1__1"/>
+  <child link="Component67_1"/>
+</joint>
+
+<joint name="Rigid 66" type="fixed">
+  <origin xyz="-0.000319 -0.074744 -0.029963" rpy="0 0 0"/>
+  <parent link="Cover_plate__1__1"/>
+  <child link="Bearing_center_bushing__1__1"/>
+</joint>
+
+<joint name="Rigid 67" type="fixed">
+  <origin xyz="-0.000319 -0.074744 -0.029963" rpy="0 0 0"/>
+  <parent link="Cover_plate__1__1"/>
+  <child link="Bearing_top-bottom_bushing__1__1"/>
+</joint>
+
+</robot>
