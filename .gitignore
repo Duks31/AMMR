@@ -1,1 +1,7 @@
-/.vscode
+# Block Visual Studio Code cache folders across the entire workspace
+.vscode/
+
+# Block ROS 2 compiled directories and build outputs
+build/
+install/
+log/
