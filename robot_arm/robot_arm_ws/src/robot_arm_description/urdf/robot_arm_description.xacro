@@ -910,9 +910,9 @@
 
 <link name="Cover_plate__1__1">
   <inertial>
-    <origin xyz="-0.00020521023918273291 -0.03153568539623246 -0.030536072776890272" rpy="0 0 0"/>
+    <origin xyz="-0.00022733948267631917 -0.03154142008480172 0.0038247065205991304" rpy="0 0 0"/>
     <mass value="0.02728755334670412"/>
-    <inertia ixx="2.1e-05" iyy="4e-06" izz="2.2e-05" ixy="-0.0" iyz="-3e-06" ixz="-0.0"/>
+    <inertia ixx="2.1e-05" iyy="4e-06" izz="2.2e-05" ixy="-0.0" iyz="3e-06" ixz="0.0"/>
   </inertial>
   <visual>
     <origin xyz="-0.00107 -0.105209 -0.272711" rpy="0 0 0"/>
@@ -931,19 +931,19 @@
 
 <link name="Servo_mount__1__1">
   <inertial>
-    <origin xyz="-0.011948868269071287 -0.03873937320243062 0.007902784064507618" rpy="0 0 0"/>
+    <origin xyz="0.01139450508624097 -0.038903093526049884 -0.007916676321719829" rpy="0 0 0"/>
     <mass value="0.029711805162689307"/>
-    <inertia ixx="2.4e-05" iyy="5e-06" izz="2.8e-05" ixy="-0.0" iyz="0.0" ixz="-0.0"/>
+    <inertia ixx="2.4e-05" iyy="5e-06" izz="2.8e-05" ixy="-0.0" iyz="-0.0" ixz="-0.0"/>
   </inertial>
   <visual>
-    <origin xyz="-0.012719 -0.102127 -0.267268" rpy="0 0 0"/>
+    <origin xyz="0.010604 -0.102296 -0.251453" rpy="0 0 0"/>
     <geometry>
       <mesh filename="file://$(find robot_arm_description)/meshes/Servo_mount__1__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin xyz="-0.012719 -0.102127 -0.267268" rpy="0 0 0"/>
+    <origin xyz="0.010604 -0.102296 -0.251453" rpy="0 0 0"/>
     <geometry>
       <mesh filename="file://$(find robot_arm_description)/meshes/Servo_mount__1__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
@@ -952,19 +952,19 @@
 
 <link name="Bearing_guide__1__1">
   <inertial>
-    <origin xyz="8.001323709820878e-06 2.017776168330987e-06 -0.012250091980291034" rpy="0 0 0"/>
+    <origin xyz="-7.6016857537221285e-06 -2.4342218608655597e-06 0.012249906094306096" rpy="0 0 0"/>
     <mass value="0.0020147008554729728"/>
     <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="-0.0" iyz="0.0" ixz="0.0"/>
   </inertial>
   <visual>
-    <origin xyz="-0.00054 -0.030462 -0.267248" rpy="0 0 0"/>
+    <origin xyz="-0.00055 -0.030465 -0.251448" rpy="0 0 0"/>
     <geometry>
       <mesh filename="file://$(find robot_arm_description)/meshes/Bearing_guide__1__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin xyz="-0.00054 -0.030462 -0.267248" rpy="0 0 0"/>
+    <origin xyz="-0.00055 -0.030465 -0.251448" rpy="0 0 0"/>
     <geometry>
       <mesh filename="file://$(find robot_arm_description)/meshes/Bearing_guide__1__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
@@ -973,19 +973,19 @@
 
 <link name="Bearing_top-bottom_bushing__2__1">
   <inertial>
-    <origin xyz="1.2390715558414315e-06 2.653648072704906e-07 -0.0017500943040529848" rpy="0 0 0"/>
+    <origin xyz="-8.394335989112076e-07 -6.81810383280218e-07 0.0017499084180680469" rpy="0 0 0"/>
     <mass value="0.0019297026707657304"/>
     <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
   </inertial>
   <visual>
-    <origin xyz="-0.00054 -0.030462 -0.267248" rpy="0 0 0"/>
+    <origin xyz="-0.00055 -0.030465 -0.251448" rpy="0 0 0"/>
     <geometry>
       <mesh filename="file://$(find robot_arm_description)/meshes/Bearing_top-bottom_bushing__2__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin xyz="-0.00054 -0.030462 -0.267248" rpy="0 0 0"/>
+    <origin xyz="-0.00055 -0.030465 -0.251448" rpy="0 0 0"/>
     <geometry>
       <mesh filename="file://$(find robot_arm_description)/meshes/Bearing_top-bottom_bushing__2__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
@@ -994,19 +994,19 @@
 
 <link name="Bearing_center_bushing__1__1">
   <inertial>
-    <origin xyz="-1.099867674699093e-05 -2.9822237703099053e-06 0.017249908019708854" rpy="0 0 0"/>
+    <origin xyz="1.1398314703919528e-05 2.5657781939809887e-06 -0.017250093905693875" rpy="0 0 0"/>
     <mass value="0.004135077151640851"/>
     <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
   </inertial>
   <visual>
-    <origin xyz="-0.000559 -0.030467 -0.237748" rpy="0 0 0"/>
+    <origin xyz="-0.000531 -0.03046 -0.280948" rpy="0 0 0"/>
     <geometry>
       <mesh filename="file://$(find robot_arm_description)/meshes/Bearing_center_bushing__1__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin xyz="-0.000559 -0.030467 -0.237748" rpy="0 0 0"/>
+    <origin xyz="-0.000531 -0.03046 -0.280948" rpy="0 0 0"/>
     <geometry>
       <mesh filename="file://$(find robot_arm_description)/meshes/Bearing_center_bushing__1__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
@@ -1015,61 +1015,40 @@
 
 <link name="Bearing_top-bottom_bushing__1__1">
   <inertial>
-    <origin xyz="-4.2364250498100374e-06 -1.229812347732645e-06 0.006749910343470722" rpy="0 0 0"/>
+    <origin xyz="4.636063006737117e-06 8.133667713794424e-07 -0.006750096229455604" rpy="0 0 0"/>
     <mass value="0.0019297026707657304"/>
     <inertia ixx="0.0" iyy="0.0" izz="0.0" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
   </inertial>
   <visual>
-    <origin xyz="-0.000559 -0.030467 -0.237748" rpy="0 0 0"/>
+    <origin xyz="-0.000531 -0.03046 -0.280948" rpy="0 0 0"/>
     <geometry>
       <mesh filename="file://$(find robot_arm_description)/meshes/Bearing_top-bottom_bushing__1__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin xyz="-0.000559 -0.030467 -0.237748" rpy="0 0 0"/>
+    <origin xyz="-0.000531 -0.03046 -0.280948" rpy="0 0 0"/>
     <geometry>
       <mesh filename="file://$(find robot_arm_description)/meshes/Bearing_top-bottom_bushing__1__1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-  </collision>
-</link>
-
-<link name="MG996R_Motor_v1__5___1__1">
-  <inertial>
-    <origin xyz="0.005015881075158681 0.02428829621225178 0.011254518943037306" rpy="0 0 0"/>
-    <mass value="0.03924252838148347"/>
-    <inertia ixx="1e-05" iyy="6e-06" izz="7e-06" ixy="-0.0" iyz="-0.0" ixz="0.0"/>
-  </inertial>
-  <visual>
-    <origin xyz="0.004394 -0.040995 -0.282246" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find robot_arm_description)/meshes/MG996R_Motor_v1__5___1__1.stl" scale="0.001 0.001 0.001"/>
-    </geometry>
-    <material name="silver"/>
-  </visual>
-  <collision>
-    <origin xyz="0.004394 -0.040995 -0.282246" rpy="0 0 0"/>
-    <geometry>
-      <mesh filename="file://$(find robot_arm_description)/meshes/MG996R_Motor_v1__5___1__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
 <link name="Servo_gear__1__1">
   <inertial>
-    <origin xyz="-9.310301696808165e-06 -2.552679486844678e-06 0.014781746069011698" rpy="0 0 0"/>
+    <origin xyz="9.348183582290489e-06 2.8405260377728503e-06 -0.014782497790955751" rpy="0 0 0"/>
     <mass value="0.012166533166358384"/>
     <inertia ixx="1e-06" iyy="1e-06" izz="1e-06" ixy="0.0" iyz="-0.0" ixz="-0.0"/>
   </inertial>
   <visual>
-    <origin xyz="-0.000877 -0.075465 -0.242756" rpy="0 0 0"/>
+    <origin xyz="-0.000856 -0.075459 -0.275956" rpy="0 0 0"/>
     <geometry>
       <mesh filename="file://$(find robot_arm_description)/meshes/Servo_gear__1__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin xyz="-0.000877 -0.075465 -0.242756" rpy="0 0 0"/>
+    <origin xyz="-0.000856 -0.075459 -0.275956" rpy="0 0 0"/>
     <geometry>
       <mesh filename="file://$(find robot_arm_description)/meshes/Servo_gear__1__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
@@ -1078,19 +1057,19 @@
 
 <link name="Gripper_120T__1__1">
   <inertial>
-    <origin xyz="-0.018238796254500853 -0.010369782392730904 -0.01454205277972348" rpy="0 0 0"/>
+    <origin xyz="0.018088212944934335 -0.010633863240265131 0.01453826477164688" rpy="0 0 0"/>
     <mass value="0.037519098370183246"/>
-    <inertia ixx="4.8e-05" iyy="1.2e-05" izz="5.7e-05" ixy="-5e-06" iyz="-3e-06" ixz="-0.0"/>
+    <inertia ixx="4.8e-05" iyy="1.1e-05" izz="5.7e-05" ixy="5e-06" iyz="3e-06" ixz="-0.0"/>
   </inertial>
   <visual>
-    <origin xyz="-0.000537 -0.030461 -0.272248" rpy="0 0 0"/>
+    <origin xyz="-0.000554 -0.030465 -0.246448" rpy="0 0 0"/>
     <geometry>
       <mesh filename="file://$(find robot_arm_description)/meshes/Gripper_120T__1__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin xyz="-0.000537 -0.030461 -0.272248" rpy="0 0 0"/>
+    <origin xyz="-0.000554 -0.030465 -0.246448" rpy="0 0 0"/>
     <geometry>
       <mesh filename="file://$(find robot_arm_description)/meshes/Gripper_120T__1__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
@@ -1099,25 +1078,45 @@
 
 <link name="Gripper_72T__1__1">
   <inertial>
-    <origin xyz="0.017552775212634916 -0.020606291333668487 -0.019770603486246263" rpy="0 0 0"/>
+    <origin xyz="-0.017845903931154043 -0.020359999978012314 0.019763391982531464" rpy="0 0 0"/>
     <mass value="0.029955795985461164"/>
-    <inertia ixx="2.3e-05" iyy="4e-06" izz="2.6e-05" ixy="2e-06" iyz="2e-06" ixz="-0.0"/>
+    <inertia ixx="2.3e-05" iyy="4e-06" izz="2.6e-05" ixy="-3e-06" iyz="-2e-06" ixz="-0.0"/>
   </inertial>
   <visual>
-    <origin xyz="-0.000537 -0.030461 -0.272248" rpy="0 0 0"/>
+    <origin xyz="-0.000554 -0.030465 -0.246448" rpy="0 0 0"/>
     <geometry>
       <mesh filename="file://$(find robot_arm_description)/meshes/Gripper_72T__1__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
     <material name="silver"/>
   </visual>
   <collision>
-    <origin xyz="-0.000537 -0.030461 -0.272248" rpy="0 0 0"/>
+    <origin xyz="-0.000554 -0.030465 -0.246448" rpy="0 0 0"/>
     <geometry>
       <mesh filename="file://$(find robot_arm_description)/meshes/Gripper_72T__1__1.stl" scale="0.001 0.001 0.001"/>
     </geometry>
   </collision>
 </link>
 
+<link name="MG996R_Motor_v1__4___1__1">
+  <inertial>
+    <origin xyz="-0.004669143405417471 0.024361551980028047 -0.011245760322390386" rpy="0 0 0"/>
+    <mass value="0.03924252838148347"/>
+    <inertia ixx="1e-05" iyy="6e-06" izz="7e-06" ixy="-0.0" iyz="0.0" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.005635 -0.040931 -0.236453" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find robot_arm_description)/meshes/MG996R_Motor_v1__4___1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.005635 -0.040931 -0.236453" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find robot_arm_description)/meshes/MG996R_Motor_v1__4___1__1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
 
 <joint name="Rigid 1" type="fixed">
   <origin xyz="-0.000112 -2.5e-05 0.010138" rpy="0 0 0"/>
@@ -1387,62 +1386,62 @@
 </joint>
 
 <joint name="Rigid 46" type="fixed">
-  <origin xyz="0.011649 -0.003082 -0.005443" rpy="0 0 0"/>
+  <origin xyz="-0.011674 -0.002913 -0.021258" rpy="0 0 0"/>
   <parent link="Cover_plate__1__1"/>
   <child link="Servo_mount__1__1"/>
 </joint>
 
 <joint name="Rigid 49" type="fixed">
-  <origin xyz="-0.012179 -0.071665 -2e-05" rpy="0 0 0"/>
+  <origin xyz="0.011154 -0.071831 -5e-06" rpy="0 0 0"/>
   <parent link="Servo_mount__1__1"/>
   <child link="Bearing_guide__1__1"/>
 </joint>
 
 <joint name="Rigid 50" type="fixed">
-  <origin xyz="-0.012179 -0.071665 -2e-05" rpy="0 0 0"/>
+  <origin xyz="0.011154 -0.071831 -5e-06" rpy="0 0 0"/>
   <parent link="Servo_mount__1__1"/>
   <child link="Bearing_top-bottom_bushing__2__1"/>
 </joint>
 
 <joint name="Rigid 52" type="fixed">
-  <origin xyz="1.9e-05 5e-06 -0.0295" rpy="0 0 0"/>
+  <origin xyz="-1.9e-05 -5e-06 0.0295" rpy="0 0 0"/>
   <parent link="Bearing_guide__1__1"/>
   <child link="Bearing_center_bushing__1__1"/>
 </joint>
 
 <joint name="Rigid 54" type="fixed">
-  <origin xyz="1.9e-05 5e-06 -0.0295" rpy="0 0 0"/>
+  <origin xyz="-1.9e-05 -5e-06 0.0295" rpy="0 0 0"/>
   <parent link="Bearing_guide__1__1"/>
   <child link="Bearing_top-bottom_bushing__1__1"/>
 </joint>
 
-<joint name="Rigid 58" type="fixed">
-  <origin xyz="-0.017113 -0.061132 0.014978" rpy="0 0 0"/>
-  <parent link="Servo_mount__1__1"/>
-  <child link="MG996R_Motor_v1__5___1__1"/>
-</joint>
-
 <joint name="Rigid 59" type="fixed">
-  <origin xyz="-0.000193 -0.029744 -0.029955" rpy="0 0 0"/>
+  <origin xyz="-0.000214 -0.02975 0.003245" rpy="0 0 0"/>
   <parent link="Cover_plate__1__1"/>
   <child link="Servo_gear__1__1"/>
 </joint>
 
 <joint name="Revolute 60" type="revolute">
-  <origin xyz="-3e-06 -1e-06 0.005" rpy="0 0 0"/>
+  <origin xyz="4e-06 0.0 -0.005" rpy="0 0 0"/>
   <parent link="Bearing_guide__1__1"/>
   <child link="Gripper_120T__1__1"/>
-  <axis xyz="-0.000644 -0.000167 1.0"/>
+  <axis xyz="0.000644 0.000167 -1.0"/>
   <limit upper="0.0" lower="-0.785398" effort="100" velocity="100"/>
 </joint>
 
 <joint name="Revolute 61" type="revolute">
-  <origin xyz="-3e-06 -1e-06 0.005" rpy="0 0 0"/>
+  <origin xyz="4e-06 0.0 -0.005" rpy="0 0 0"/>
   <parent link="Bearing_guide__1__1"/>
   <child link="Gripper_72T__1__1"/>
   <axis xyz="-0.000644 -0.000167 1.0"/>
-  <limit upper="0.785398" lower="0.0" effort="100" velocity="100"/>
+  <limit upper="0.0" lower="-0.785398" effort="100" velocity="100"/>
   <mimic joint="Revolute 60" multiplier="-1"/>
+</joint>
+
+<joint name="Rigid 62" type="fixed">
+  <origin xyz="0.016239 -0.061365 -0.015" rpy="0 0 0"/>
+  <parent link="Servo_mount__1__1"/>
+  <child link="MG996R_Motor_v1__4___1__1"/>
 </joint>
 
 </robot>
