@@ -1,4 +1,7 @@
-2/23/2026
+2/23/2026 (Kenne)
 -created robot_arm_description package
 -added launch files
 -added gripper
+
+2/24/2026 (Chidubem)
+-deleted final_description (unwanted file)
