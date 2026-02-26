@@ -6,20 +6,22 @@
 <gazebo>
     <xacro:if value="$(arg is_ignition)">
       <plugin filename="ign_ros2_control-system" name="ign_ros2_control::IgnitionROS2ControlPlugin">
-        <parameters></parameters>
+        <parameters>$(find robot_arm_controller)/config/robot_arm_controllers.yaml</parameters>
       </plugin>
     </xacro:if>
 
     <xacro:unless value="$(arg is_ignition)">
       <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
-        <parameters></parameters>
+        <parameters>$(find robot_arm_controller)/config/robot_arm_controllers.yaml</parameters>
       </plugin>
     </xacro:unless>
 </gazebo>
 
 <gazebo reference="base_link">
   <material>${body_color}</material>
-  <mu1>0.2</mu1> <mu2>0.2</mu2> <self_collide>true</self_collide>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>true</self_collide>
   <gravity>true</gravity>
 </gazebo>
 
@@ -51,13 +53,6 @@
   <self_collide>true</self_collide>
 </gazebo>
 
-<gazebo reference="Bearing_clamp_2">
-  <material>${body_color}</material>
-  <mu1>0.2</mu1>
-  <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
-</gazebo>
-
 <gazebo reference="Bearing_ring_1">
   <material>${body_color}</material>
   <mu1>0.2</mu1>
@@ -65,14 +60,21 @@
   <self_collide>true</self_collide>
 </gazebo>
 
-<gazebo reference="Rotating_plate_1">
+<gazebo reference="Gear_12T_1">
   <material>${body_color}</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
   <self_collide>true</self_collide>
 </gazebo>
 
-<gazebo reference="Rotating_plate_clamp_1">
+<gazebo reference="Gear_27T_1">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="Potentiometer_1">
   <material>${body_color}</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
@@ -86,7 +88,7 @@
   <self_collide>true</self_collide>
 </gazebo>
 
-<gazebo reference="Steel_ball_10mm_2">
+<gazebo reference="Steel_ball_10mm_4">
   <material>${body_color}</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
@@ -100,7 +102,28 @@
   <self_collide>true</self_collide>
 </gazebo>
 
-<gazebo reference="Steel_ball_10mm_4">
+<gazebo reference="Steel_ball_10mm_2">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="Steel_ball_10mm_10">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="Steel_ball_10mm_9">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="Steel_ball_10mm_8">
   <material>${body_color}</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
@@ -128,42 +151,21 @@
   <self_collide>true</self_collide>
 </gazebo>
 
-<gazebo reference="Steel_ball_10mm_8">
+<gazebo reference="Bearing_clamp_2">
   <material>${body_color}</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
   <self_collide>true</self_collide>
 </gazebo>
 
-<gazebo reference="Steel_ball_10mm_9">
+<gazebo reference="Rotating_plate_1">
   <material>${body_color}</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
   <self_collide>true</self_collide>
 </gazebo>
 
-<gazebo reference="Steel_ball_10mm_10">
-  <material>${body_color}</material>
-  <mu1>0.2</mu1>
-  <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
-</gazebo>
-
-<gazebo reference="Gear_12T_1">
-  <material>${body_color}</material>
-  <mu1>0.2</mu1>
-  <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
-</gazebo>
-
-<gazebo reference="Gear_27T_1">
-  <material>${body_color}</material>
-  <mu1>0.2</mu1>
-  <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
-</gazebo>
-
-<gazebo reference="Potentiometer_1">
+<gazebo reference="Rotating_plate_clamp_1">
   <material>${body_color}</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
@@ -226,14 +228,14 @@
   <self_collide>true</self_collide>
 </gazebo>
 
-<gazebo reference="Center_arm_bearing_guide_1">
+<gazebo reference="Bearing_holder_1">
   <material>${body_color}</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
   <self_collide>true</self_collide>
 </gazebo>
 
-<gazebo reference="Bearing_holder_1">
+<gazebo reference="Center_arm_bearing_guide_1">
   <material>${body_color}</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
@@ -261,21 +263,7 @@
   <self_collide>true</self_collide>
 </gazebo>
 
-<gazebo reference="Bearing_center_bushing__1__1">
-  <material>${body_color}</material>
-  <mu1>0.2</mu1>
-  <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
-</gazebo>
-
 <gazebo reference="Upper_arm_left__1__1">
-  <material>${body_color}</material>
-  <mu1>0.2</mu1>
-  <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
-</gazebo>
-
-<gazebo reference="Upper_arm_right__1__1">
   <material>${body_color}</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
@@ -289,42 +277,7 @@
   <self_collide>true</self_collide>
 </gazebo>
 
-<gazebo reference="Cover_plate__1__1">
-  <material>${body_color}</material>
-  <mu1>0.2</mu1>
-  <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
-</gazebo>
-
-<gazebo reference="Servo_mount__1__1">
-  <material>${body_color}</material>
-  <mu1>0.2</mu1>
-  <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
-</gazebo>
-
-<gazebo reference="Bearing_guide__1__1">
-  <material>${body_color}</material>
-  <mu1>0.2</mu1>
-  <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
-</gazebo>
-
-<gazebo reference="Bearing_top-bottom_bushing__1__1">
-  <material>${body_color}</material>
-  <mu1>0.2</mu1>
-  <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
-</gazebo>
-
-<gazebo reference="Bearing_top-bottom_bushing__2__1">
-  <material>${body_color}</material>
-  <mu1>0.2</mu1>
-  <mu2>0.2</mu2>
-  <self_collide>true</self_collide>
-</gazebo>
-
-<gazebo reference="Component67_1">
+<gazebo reference="Upper_arm_right__1__1">
   <material>${body_color}</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
@@ -366,7 +319,77 @@
   <self_collide>true</self_collide>
 </gazebo>
 
-<gazebo reference="MG996R_Motor_v1__6__1">
+<gazebo reference="Cover_plate__1__1">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="Servo_mount__1__1">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="Bearing_guide__1__1">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="Bearing_top-bottom_bushing__2__1">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="Bearing_center_bushing__1__1">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="Bearing_top-bottom_bushing__1__1">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="MG996R_Motor_v1__5___1__1">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="Servo_gear__1__1">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="Gripper_120T__1__1">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="Gripper_72T__1__1">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>true</self_collide>
+</gazebo>
+
+<gazebo reference="MG996R_Motor_v1__4___1__1">
   <material>${body_color}</material>
   <mu1>0.2</mu1>
   <mu2>0.2</mu2>
