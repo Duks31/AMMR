@@ -1,6 +1,9 @@
 controller_manager:
   ros__parameters:
-    update_rate: 10 # Hz
+    update_rate: 1000 # Hz
+
+    joint_state_broadcaster:
+      type: joint_state_broadcaster/JointStateBroadcaster
 
     arm_controller:
       type: joint_trajectory_controller/JointTrajectoryController
@@ -8,31 +11,31 @@ controller_manager:
     gripper_controller:
       type: joint_trajectory_controller/JointTrajectoryController
 
-    # gripper_controller:
-    #   type: forward_command_controller/ForwardCommandController
-
-    joint_state_broadcaster:
-      type: joint_state_broadcaster/JointStateBroadcaster
-
 arm_controller:
   ros__parameters:
     joints:
-      - Revolute 20 # Base Joint (Controls the Yaw/Pan rotation of the entire arm)
-      - Revolute 26 # Shoulder Joint (Controls the Pitch/Tilt of the lower arm)
-      - Revolute 30 # Elbow Joint (Controls the Pitch/Tilt of the center arm)
-      - Revolute 37 # Wrist Pitch Joint (Controls the up/down Tilt of the upper arm/wrist)
-      - Revolute 45 # Wrist Roll Joint (Controls the continuous rotation of the gripper assembly)
+      - Revolute_20 # Base Joint (Controls the Yaw/Pan rotation of the entire arm)
+      - Revolute_26 # Shoulder Joint (Controls the Pitch/Tilt of the lower arm)
+      - Revolute_30 # Elbow Joint (Controls the Pitch/Tilt of the center arm)
+      - Revolute_37 # Wrist Pitch Joint (Controls the up/down Tilt of the upper arm/wrist)
+      - Revolute_45 # Wrist Roll Joint (Controls the continuous rotation of the gripper assembly)
     command_interfaces:
       - position
+      - velocity 
     state_interfaces:
       - position
-    open_loop_control: true
-    allow_integration_in_goal_trajectories: true
+      - velocity
+    
+    action_monitor_rate: 20.0
+    allow_partial_joints_goal: true
+    open_loop_control: false
+    interpolate_from_desired_state: true
+    allow_integration_in_goal_trajectories: false
 
 gripper_controller:
   ros__parameters:
     joints:
-      - Revolute 60 # Main Gripper Joint (Controls the opening/closing of the primary finger mechanism)
+      - Revolute_60 # Main Gripper Joint (Controls the opening/closing of the primary finger mechanism)
     command_interfaces:
       - position
     state_interfaces:
