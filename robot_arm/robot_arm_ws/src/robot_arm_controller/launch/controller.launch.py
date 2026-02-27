@@ -1,6 +1,6 @@
 import os
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, TimerAction
+from launch.actions import DeclareLaunchArgument
 from launch.conditions import UnlessCondition
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
@@ -11,12 +11,12 @@ from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
 
-    is_sim = LaunchConfiguration("is_sim")
-    
     is_sim_arg = DeclareLaunchArgument(
         "is_sim",
         default_value="True"
     )
+
+    is_sim = LaunchConfiguration("is_sim")
 
     robot_description = ParameterValue(
         Command(
@@ -27,7 +27,6 @@ def generate_launch_description():
                     "urdf",
                     "robot_arm_description.xacro",
                 ),
-                " is_sim:=False"
             ]
         ),
         value_type=str,
@@ -36,9 +35,8 @@ def generate_launch_description():
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
-        parameters=[{"robot_description": robot_description,
-                     "use_sim_time": False}],
         condition=UnlessCondition(is_sim),
+        parameters=[{"robot_description": robot_description}],
     )
 
     controller_manager = Node(
@@ -46,7 +44,7 @@ def generate_launch_description():
         executable="ros2_control_node",
         parameters=[
             {"robot_description": robot_description,
-             "use_sim_time": False},
+             "use_sim_time": is_sim},
             os.path.join(
                 get_package_share_directory("robot_arm_controller"),
                 "config",
@@ -56,53 +54,26 @@ def generate_launch_description():
         condition=UnlessCondition(is_sim),
     )
 
-    # VM-optimized delays - longer waits for slow virtualized environment
-    joint_state_broadcaster_spawner = TimerAction(
-        period=10.0,  # Wait 10 seconds
-        actions=[
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=[
-                    "joint_state_broadcaster",
-                    "--controller-manager",
-                    "/controller_manager",
-                ],
-                output="screen",
-            )
-        ]
+    joint_state_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=[
+            "joint_state_broadcaster",
+            "--controller-manager",
+            "/controller_manager",
+        ],
     )
 
-    arm_controller_spawner = TimerAction(
-        period=15.0,  # Wait 15 seconds
-        actions=[
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=[
-                    "arm_controller",
-                    "--controller-manager",
-                    "/controller_manager",
-                ],
-                output="screen",
-            )
-        ]
+    arm_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["arm_controller", "--controller-manager", "/controller_manager"],
     )
 
-    gripper_controller_spawner = TimerAction(
-        period=20.0,  # Wait 20 seconds
-        actions=[
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=[
-                    "gripper_controller",
-                    "--controller-manager",
-                    "/controller_manager",
-                ],
-                output="screen",
-            )
-        ]
+    gripper_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["gripper_controller", "--controller-manager", "/controller_manager"],
     )
 
     return LaunchDescription(
