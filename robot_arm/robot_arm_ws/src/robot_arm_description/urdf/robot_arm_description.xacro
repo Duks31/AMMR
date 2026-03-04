@@ -239,8 +239,7 @@
         <collision>
             <origin xyz="-0.055442 -0.039976 -0.079735" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find robot_arm_description)/meshes/Steel_ball_10mm_1.stl"
-                    scale="0.001 0.001 0.001" />
+                <sphere radius="0.005" />
             </geometry>
         </collision>
     </link>
@@ -263,8 +262,7 @@
         <collision>
             <origin xyz="-0.021305 -0.065014 -0.079717" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find robot_arm_description)/meshes/Steel_ball_10mm_4.stl"
-                    scale="0.001 0.001 0.001" />
+                <sphere radius="0.005" />
             </geometry>
         </collision>
     </link>
@@ -287,8 +285,7 @@
         <collision>
             <origin xyz="0.02103 -0.065206 -0.07969" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find robot_arm_description)/meshes/Steel_ball_10mm_3.stl"
-                    scale="0.001 0.001 0.001" />
+                <sphere radius="0.005" />
             </geometry>
         </collision>
     </link>
@@ -311,8 +308,7 @@
         <collision>
             <origin xyz="0.055392 -0.040477 -0.079664" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find robot_arm_description)/meshes/Steel_ball_10mm_2.stl"
-                    scale="0.001 0.001 0.001" />
+                <sphere radius="0.005" />
             </geometry>
         </collision>
     </link>
@@ -335,8 +331,7 @@
         <collision>
             <origin xyz="0.068656 -0.000273 -0.079648" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find robot_arm_description)/meshes/Steel_ball_10mm_10.stl"
-                    scale="0.001 0.001 0.001" />
+                <sphere radius="0.005" />
             </geometry>
         </collision>
     </link>
@@ -359,8 +354,7 @@
         <collision>
             <origin xyz="-0.068342 0.000346 -0.079736" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find robot_arm_description)/meshes/Steel_ball_10mm_9.stl"
-                    scale="0.001 0.001 0.001" />
+                <sphere radius="0.005" />
             </geometry>
         </collision>
     </link>
@@ -383,8 +377,7 @@
         <collision>
             <origin xyz="-0.055078 0.04055 -0.079721" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find robot_arm_description)/meshes/Steel_ball_10mm_8.stl"
-                    scale="0.001 0.001 0.001" />
+                <sphere radius="0.005" />
             </geometry>
         </collision>
     </link>
@@ -407,8 +400,7 @@
         <collision>
             <origin xyz="-0.020716 0.065279 -0.079695" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find robot_arm_description)/meshes/Steel_ball_10mm_5.stl"
-                    scale="0.001 0.001 0.001" />
+                <sphere radius="0.005" />
             </geometry>
         </collision>
     </link>
@@ -431,8 +423,7 @@
         <collision>
             <origin xyz="0.021619 0.065088 -0.079668" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find robot_arm_description)/meshes/Steel_ball_10mm_6.stl"
-                    scale="0.001 0.001 0.001" />
+                <sphere radius="0.005" />
             </geometry>
         </collision>
     </link>
@@ -455,8 +446,7 @@
         <collision>
             <origin xyz="0.055756 0.040049 -0.07965" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find robot_arm_description)/meshes/Steel_ball_10mm_7.stl"
-                    scale="0.001 0.001 0.001" />
+                <sphere radius="0.005" />
             </geometry>
         </collision>
     </link>
@@ -1432,6 +1422,7 @@
         <parent link="Bearing_ring_1" />
         <child link="Rotating_plate_1" />
         <axis xyz="-0.000644 -0.000167 1.0" />
+        <limit effort="100" velocity="100" />
     </joint>
 
     <joint name="Rigid 21" type="fixed">
@@ -1630,7 +1621,7 @@
         <child link="Gripper_72T__1__1" />
         <axis xyz="-0.000644 -0.000167 1.0" />
         <limit upper="0.0" lower="-0.785398" effort="100" velocity="100" />
-        <mimic joint="Revolute_60" multiplier="-1" />
+        <mimic joint="Revolute_60" multiplier="1.0" /> 
     </joint>
 
     <joint name="Rigid 62" type="fixed">
