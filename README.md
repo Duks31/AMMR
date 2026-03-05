@@ -12,10 +12,10 @@ git clone https://github.com/yourrepo/AMMR.git
 
 ### 2. Build dev environment
 cd AMMR/docker
-docker compose -f docker-compose.dev.yml build
+docker compose -f docker-compose.dev.yaml build
 
 ### 3. Start containers
-docker compose -f docker-compose.dev.yml up -d
+docker compose -f docker-compose.dev.yaml up -d
 
 ### 4. Enter a container
-docker compose -f docker-compose.dev.yml exec {container name} bash
+docker compose -f docker-compose.dev.yml exec {service name} bash
