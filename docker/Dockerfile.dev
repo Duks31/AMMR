@@ -1,0 +1,103 @@
+FROM ros:humble-ros-base
+
+# Avoid interactive prompts during apt installs
+ENV DEBIAN_FRONTEND=noninteractive
+ENV ROS_DISTRO=humble
+
+# ─── Add Gazebo Fortress repo (needed for Humble) ──────────────────
+RUN apt-get update && apt-get install -y curl gnupg lsb-release && \
+    curl -sSL https://packages.osrfoundation.org/gazebo.gpg \
+    -o /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg && \
+    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/pkgs-osrf-archive-keyring.gpg] \
+    http://packages.osrfoundation.org/gazebo/ubuntu-stable jammy main" \
+    > /etc/apt/sources.list.d/gazebo-stable.list
+
+# ─── System dependencies ───────────────────────────────────────────
+RUN apt-get update && apt-get install -y \
+    python3-pip \
+    python3-colcon-common-extensions \
+    python3-rosdep \
+    python3-argcomplete \
+    git wget curl \
+    # # Nav2 + SLAM
+    # ros-humble-navigation2 \
+    # ros-humble-nav2-bringup \
+    # ros-humble-slam-toolbox \
+    # # MoveIt2
+    # ros-humble-moveit \
+    # ros-humble-moveit-ros-planning-interface \
+    # ros2_control
+    ros-humble-ros2-control \
+    ros-humble-ros2-controllers \
+    # # micro-ROS
+    # ros-humble-micro-ros-agent \
+    # # OAK-D
+    # ros-humble-depthai-ros \
+    # Robot description
+    ros-humble-xacro \
+    ros-humble-joint-state-publisher \
+    ros-humble-joint-state-publisher-gui \
+    ros-humble-robot-state-publisher \
+    # Gazebo Fortress + ROS2 bridge
+    ros-humble-ros-gz \
+    ros-humble-ign-ros2-control \
+    ignition-fortress \
+    # Visualization
+    ros-humble-rviz2 \
+    ros-humble-rqt \
+    ros-humble-rqt-common-plugins \
+    # Debug tools
+    ros-humble-teleop-twist-keyboard \
+    ros-humble-topic-tools \
+    && rm -rf /var/lib/apt/lists/*
+
+# ─── Python dependencies ───────────────────────────────────────────
+# PyTorch with CUDA for RTX 40 series (CUDA 11.8 works on RTX 40xx)
+RUN pip3 install \
+    torch torchvision \
+    --index-url https://download.pytorch.org/whl/cu118
+
+# Everything else from PyPI
+RUN pip3 install \
+    depthai \
+    blobconverter \
+    ultralytics \
+    numpy \
+    opencv-python-headless \
+    Pillow
+
+# ─── WSLg display support ──────────────────────────────────────────
+ENV DISPLAY=:0
+ENV WAYLAND_DISPLAY=wayland-0
+ENV XDG_RUNTIME_DIR=/tmp/runtime-root
+ENV LIBGL_ALWAYS_SOFTWARE=0
+
+# ─── Workspace setup ───────────────────────────────────────────────
+WORKDIR /amr_ws
+
+COPY amr_ws/src/ src/
+COPY amr_ws/config/ config/
+COPY amr_ws/models/ models/
+
+# rosdep - full install, no skipping (Gazebo is available here)
+RUN rosdep init || true && \
+    rosdep update && \
+    rosdep install --from-paths src \
+    --ignore-src -r -y
+
+# Build workspace
+RUN . /opt/ros/humble/setup.sh && \
+    colcon build \
+    --symlink-install \
+    --cmake-args -DCMAKE_BUILD_TYPE=Release
+
+# Environment
+RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
+    echo "source /amr_ws/install/setup.bash" >> ~/.bashrc && \
+    echo "export ROS_DOMAIN_ID=0" >> ~/.bashrc && \
+    echo "export RMW_IMPLEMENTATION=rmw_fastrtps_cpp" >> ~/.bashrc
+
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["bash"]

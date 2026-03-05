@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>amr_navigation</name>
+  <version>0.0.1</version>
+  <description>AMR amr_navigation package</description>
+  <maintainer email="you@email.com">Your Name</maintainer>
+  <license>MIT</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+</package>

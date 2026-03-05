@@ -1,0 +1,12 @@
+# Ignore build artifacts
+amr_ws/build/
+amr_ws/install/
+amr_ws/log/
+
+# Ignore training code
+waste_ai/
+
+# Ignore git and docs
+.git/
+*.md
+LICENSE
