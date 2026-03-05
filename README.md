@@ -18,4 +18,4 @@ docker compose -f docker-compose.dev.yaml build
 docker compose -f docker-compose.dev.yaml up -d
 
 ### 4. Enter a container
-docker compose -f docker-compose.dev.yml exec {service name} bash
+docker compose -f docker-compose.dev.yaml exec {service name} bash
