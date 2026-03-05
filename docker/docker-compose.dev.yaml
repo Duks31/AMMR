@@ -1,71 +1,10 @@
 services:
 
-  # ── Navigation: SLAM + Nav2 + Gazebo sim ────────────────────────
-  amr_navigation:
+   # ── Manipulation: MoveIt2 + Arm ──────────────────────────────────
+  amr_manipulation:
     build:
       context: ..
       dockerfile: docker/Dockerfile.dev
-    image: amr_ros2:dev
-    container_name: amr_navigation_dev
-    network_mode: host
-    stdin_open: true
-    tty: true           
-    privileged: true
-    volumes:
-      - ../amr_ws/src:/amr_ws/src
-      - ../amr_ws/config:/amr_ws/config
-      # WSLg display sockets
-      - /tmp/.X11-unix:/tmp/.X11-unix
-      - /mnt/wslg:/mnt/wslg
-    environment:
-      - ROS_DOMAIN_ID=0
-      - DISPLAY=$DISPLAY
-      - WAYLAND_DISPLAY=$WAYLAND_DISPLAY
-      - XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR
-      - PULSE_SERVER=$PULSE_SERVER
-    # GPU access for CUDA PyTorch
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-    tmpfs:
-      - /tmp:size=500m
-    command: bash   # start shell, launch manually during dev
-    
-  # ── Perception: OAK-D + YOLO + Classifier ───────────────────────
-  amr_perception:
-    image: amr_ros2:dev
-    container_name: amr_perception_dev
-    network_mode: host
-    stdin_open: true
-    tty: true           
-    privileged: true
-    volumes:
-      - ../amr_ws/src:/amr_ws/src
-      - ../amr_ws/models:/amr_ws/models
-      - /tmp/.X11-unix:/tmp/.X11-unix
-      - /mnt/wslg:/mnt/wslg
-    devices:
-      - /dev/bus/usb:/dev/bus/usb     # OAK-D (after usbipd attach)
-    environment:
-      - ROS_DOMAIN_ID=0
-      - DISPLAY=$DISPLAY
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-    tmpfs:
-      - /tmp:size=200m
-    command: bash
-
-  # ── Manipulation: MoveIt2 + Arm ──────────────────────────────────
-  amr_manipulation:
     image: amr_ros2:dev
     container_name: amr_manipulation_dev
     network_mode: host
@@ -82,6 +21,76 @@ services:
     environment:
       - ROS_DOMAIN_ID=0
       - DISPLAY=$DISPLAY
+      - WAYLAND_DISPLAY=$WAYLAND_DISPLAY
+      - XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR
+    deploy:                               # ← add
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
     tmpfs:
       - /tmp:size=200m
     command: bash
+
+  # # ── Navigation: SLAM + Nav2 + Gazebo sim ────────────────────────
+  # amr_navigation:
+  #   image: amr_ros2:dev
+  #   container_name: amr_navigation_dev
+  #   network_mode: host
+  #   stdin_open: true
+  #   tty: true           
+  #   privileged: true
+  #   volumes:
+  #     - ../amr_ws/src:/amr_ws/src
+  #     - ../amr_ws/config:/amr_ws/config
+  #     # WSLg display sockets
+  #     - /tmp/.X11-unix:/tmp/.X11-unix
+  #     - /mnt/wslg:/mnt/wslg
+  #   environment:
+  #     - ROS_DOMAIN_ID=0
+  #     - DISPLAY=$DISPLAY
+  #     - WAYLAND_DISPLAY=$WAYLAND_DISPLAY
+  #     - XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR
+  #     - PULSE_SERVER=$PULSE_SERVER
+  #   # GPU access for CUDA PyTorch
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: 1
+  #             capabilities: [gpu]
+  #   tmpfs:
+  #     - /tmp:size=500m
+  #   command: bash   # start shell, launch manually during dev
+    
+  # # ── Perception: OAK-D + YOLO + Classifier ───────────────────────
+  # amr_perception:
+  #   image: amr_ros2:dev
+  #   container_name: amr_perception_dev
+  #   network_mode: host
+  #   stdin_open: true
+  #   tty: true           
+  #   privileged: true
+  #   volumes:
+  #     - ../amr_ws/src:/amr_ws/src
+  #     - ../amr_ws/models:/amr_ws/models
+  #     - /tmp/.X11-unix:/tmp/.X11-unix
+  #     - /mnt/wslg:/mnt/wslg
+  #   devices:
+  #     - /dev/bus/usb:/dev/bus/usb     # OAK-D (after usbipd attach)
+  #   environment:
+  #     - ROS_DOMAIN_ID=0
+  #     - DISPLAY=$DISPLAY
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             count: 1
+  #             capabilities: [gpu]
+  #   tmpfs:
+  #     - /tmp:size=200m
+  #   command: bash

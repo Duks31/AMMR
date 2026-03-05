@@ -23,10 +23,12 @@ RUN apt-get update && apt-get install -y \
     # ros-humble-navigation2 \
     # ros-humble-nav2-bringup \
     # ros-humble-slam-toolbox \
-    # # MoveIt2
-    # ros-humble-moveit \
-    # ros-humble-moveit-ros-planning-interface \
-    # ros2_control
+    # MoveIt2 + warehouse (needed by robot_arm_moveit)
+    ros-humble-moveit \
+    ros-humble-moveit-ros-planning-interface \
+    ros-humble-moveit-setup-assistant \
+    ros-humble-warehouse-ros-mongo \
+    # # ros2_control
     ros-humble-ros2-control \
     ros-humble-ros2-controllers \
     # # micro-ROS
@@ -52,15 +54,15 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # ─── Python dependencies ───────────────────────────────────────────
-# PyTorch with CUDA for RTX 40 series (CUDA 11.8 works on RTX 40xx)
+# PyTorch with CUDA 11.8 (compatible with GTX 10/16 series)
 RUN pip3 install \
     torch torchvision \
     --index-url https://download.pytorch.org/whl/cu118
 
 # Everything else from PyPI
 RUN pip3 install \
-    depthai \
-    blobconverter \
+    # depthai \
+    # blobconverter \
     ultralytics \
     numpy \
     opencv-python-headless \
