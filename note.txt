@@ -1,4 +1,4 @@
-2/23/2026 (Kenne)
+2/23/2026 (Kene)
 -created robot_arm_description package
 -added launch files
 -added gripper
@@ -11,3 +11,6 @@
 
 3/5/2026 (Chidubem)
 - Added docker to the project (README.md for start up process)
+
+3/5/2026 (Kene)
+- Added moveit package.
