@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y \
     ros-humble-moveit \
     ros-humble-moveit-ros-planning-interface \
     ros-humble-moveit-setup-assistant \
-    ros-humble-warehouse-ros-mongo \
+    ros-humble-warehouse-ros \
     # # ros2_control
     ros-humble-ros2-control \
     ros-humble-ros2-controllers \
@@ -85,7 +85,8 @@ COPY amr_ws/models/ models/
 RUN rosdep init || true && \
     rosdep update && \
     rosdep install --from-paths src \
-    --ignore-src -r -y
+    --ignore-src -r -y \
+    --skip-keys="warehouse_ros_mongo"
 
 # Build workspace
 RUN . /opt/ros/humble/setup.sh && \
