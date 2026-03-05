@@ -1422,7 +1422,7 @@
         <parent link="Bearing_ring_1" />
         <child link="Rotating_plate_1" />
         <axis xyz="-0.000644 -0.000167 1.0" />
-        <limit effort="100" velocity="100" />
+        <limit effort="100" velocity="1.5" />
     </joint>
 
     <joint name="Rigid 21" type="fixed">
