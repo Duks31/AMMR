@@ -116,7 +116,14 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="0.000154 3.6e-05 -0.075138" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="file://$(find robot_arm_description)/meshes/Bearing_clamp_1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Bearing_ring_1">
         <inertial>
@@ -133,7 +140,14 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="0.000156 3.6e-05 -0.078638" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="file://$(find robot_arm_description)/meshes/Bearing_ring_1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Gear_12T_1">
         <inertial>
@@ -150,7 +164,14 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="0.048113 -0.009181 -0.075108" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="file://$(find robot_arm_description)/meshes/Gear_12T_1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Gear_27T_1">
         <inertial>
@@ -167,7 +188,14 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="-0.040402 -0.012281 -0.075166" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="file://$(find robot_arm_description)/meshes/Gear_27T_1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Potentiometer_1">
         <inertial>
@@ -184,7 +212,14 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="0.04815 -0.000182 -0.070107" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="file://$(find robot_arm_description)/meshes/Potentiometer_1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Steel_ball_10mm_1">
         <inertial>
@@ -201,7 +236,13 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="-0.055442 -0.039976 -0.079735" rpy="0 0 0" />
+            <geometry>
+                <sphere radius="0.005" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Steel_ball_10mm_4">
         <inertial>
@@ -218,7 +259,13 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="-0.021305 -0.065014 -0.079717" rpy="0 0 0" />
+            <geometry>
+                <sphere radius="0.005" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Steel_ball_10mm_3">
         <inertial>
@@ -235,7 +282,13 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="0.02103 -0.065206 -0.07969" rpy="0 0 0" />
+            <geometry>
+                <sphere radius="0.005" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Steel_ball_10mm_2">
         <inertial>
@@ -252,7 +305,13 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="0.055392 -0.040477 -0.079664" rpy="0 0 0" />
+            <geometry>
+                <sphere radius="0.005" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Steel_ball_10mm_10">
         <inertial>
@@ -269,7 +328,13 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="0.068656 -0.000273 -0.079648" rpy="0 0 0" />
+            <geometry>
+                <sphere radius="0.005" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Steel_ball_10mm_9">
         <inertial>
@@ -286,7 +351,13 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="-0.068342 0.000346 -0.079736" rpy="0 0 0" />
+            <geometry>
+                <sphere radius="0.005" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Steel_ball_10mm_8">
         <inertial>
@@ -303,7 +374,13 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="-0.055078 0.04055 -0.079721" rpy="0 0 0" />
+            <geometry>
+                <sphere radius="0.005" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Steel_ball_10mm_5">
         <inertial>
@@ -320,7 +397,13 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="-0.020716 0.065279 -0.079695" rpy="0 0 0" />
+            <geometry>
+                <sphere radius="0.005" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Steel_ball_10mm_6">
         <inertial>
@@ -337,7 +420,13 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="0.021619 0.065088 -0.079668" rpy="0 0 0" />
+            <geometry>
+                <sphere radius="0.005" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Steel_ball_10mm_7">
         <inertial>
@@ -354,7 +443,13 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="0.055756 0.040049 -0.07965" rpy="0 0 0" />
+            <geometry>
+                <sphere radius="0.005" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Bearing_clamp_2">
         <inertial>
@@ -371,7 +466,14 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="0.000112 2.5e-05 -0.010138" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="file://$(find robot_arm_description)/meshes/Bearing_clamp_2.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Rotating_plate_1">
         <inertial>
@@ -413,7 +515,15 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="0.000114 2.6e-05 -0.013192" rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find robot_arm_description)/meshes/Rotating_plate_clamp_1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Base_servo_mount_1">
         <inertial>
@@ -528,7 +638,15 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="0.01774 -0.120366 -0.145201" rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find robot_arm_description)/meshes/Lower_arm_bushing__1__1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Lower_arm_bushing_1">
         <inertial>
@@ -545,7 +663,14 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="0.018133 -0.065367 -0.145192" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="file://$(find robot_arm_description)/meshes/Lower_arm_bushing_1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Center_arm_1">
         <inertial>
@@ -586,7 +711,15 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="-0.010723 -0.185164 -0.14523" rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find robot_arm_description)/meshes/Center_arm_bearing_guide__1__1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Bearing_holder_1">
         <inertial>
@@ -603,7 +736,14 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="-0.024123 -0.185068 -0.145239" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="file://$(find robot_arm_description)/meshes/Bearing_holder_1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Center_arm_bearing_guide_1">
         <inertial>
@@ -621,7 +761,15 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="-0.010648 -0.185145 -0.26273" rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find robot_arm_description)/meshes/Center_arm_bearing_guide_1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Bearing_holder__1__1">
         <inertial>
@@ -639,7 +787,15 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="-0.024047 -0.185049 -0.262739" rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find robot_arm_description)/meshes/Bearing_holder__1__1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Center_arm_bearing_guide_clamp__1__1">
         <inertial>
@@ -657,7 +813,15 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="-0.032523 -0.185008 -0.145244" rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find robot_arm_description)/meshes/Center_arm_bearing_guide_clamp__1__1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Center_arm_bearing_guide_clamp__2__1">
         <inertial>
@@ -675,7 +839,15 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="-0.024047 -0.185049 -0.262739" rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find robot_arm_description)/meshes/Center_arm_bearing_guide_clamp__2__1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Upper_arm_left__1__1">
         <inertial>
@@ -947,7 +1119,14 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="-0.00055 -0.030465 -0.251448" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="file://$(find robot_arm_description)/meshes/Bearing_guide__1__1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Bearing_top-bottom_bushing__2__1">
         <inertial>
@@ -965,7 +1144,15 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="-0.00055 -0.030465 -0.251448" rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find robot_arm_description)/meshes/Bearing_top-bottom_bushing__2__1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Bearing_center_bushing__1__1">
         <inertial>
@@ -983,7 +1170,15 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="-0.000531 -0.03046 -0.280948" rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find robot_arm_description)/meshes/Bearing_center_bushing__1__1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Bearing_top-bottom_bushing__1__1">
         <inertial>
@@ -1001,7 +1196,15 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="-0.000531 -0.03046 -0.280948" rpy="0 0 0" />
+            <geometry>
+                <mesh
+                    filename="file://$(find robot_arm_description)/meshes/Bearing_top-bottom_bushing__1__1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Servo_gear__1__1">
         <inertial>
@@ -1018,7 +1221,14 @@
             </geometry>
             <material name="silver" />
         </visual>
-        </link>
+        <collision>
+            <origin xyz="-0.000856 -0.075459 -0.275956" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="file://$(find robot_arm_description)/meshes/Servo_gear__1__1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
 
     <link name="Gripper_120T__1__1">
         <inertial>

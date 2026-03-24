@@ -1,3 +1,5 @@
+# MoveIt uses this configuration for controller management
+
 moveit_controller_manager: moveit_simple_controller_manager/MoveItSimpleControllerManager
 
 moveit_simple_controller_manager:
@@ -7,18 +9,17 @@ moveit_simple_controller_manager:
 
   arm_controller:
     type: FollowJointTrajectory
-    action_ns: follow_joint_trajectory
-    default: true
     joints:
       - Revolute_20
       - Revolute_26
       - Revolute_30
       - Revolute_37
       - Revolute_45
-
-  gripper_controller:
-    type: FollowJointTrajectory
     action_ns: follow_joint_trajectory
     default: true
+  gripper_controller:
+    type: FollowJointTrajectory
     joints:
       - Revolute_60
+    action_ns: follow_joint_trajectory
+    default: true

@@ -10,7 +10,7 @@
     <!--CHAINS: When a chain is specified, all the links along the chain (including endpoints) are included in the group. Additionally, all the joints that are parents to included links are also included. This means that joints along the chain and the parent joint of the base link are included in the group-->
     <!--SUBGROUPS: Groups can also be formed by referencing to already defined group names-->
     <group name="arm">
-        <chain base_link="base_link" tip_link="Bearing_guide__1__1"/>
+        <chain base_link="base_link" tip_link="Bearing_guide__1__1" />
     </group>
     <group name="gripper">
         <link name="Gripper_120T__1__1"/>
@@ -32,34 +32,6 @@
     <group_state name="closed" group="gripper">
         <joint name="Revolute_60" value="0"/>
     </group_state>
-    <group_state name="drop_1" group="arm">
-        <joint name="Revolute_20" value="-2.7597"/>
-        <joint name="Revolute_26" value="1.4232"/>
-        <joint name="Revolute_30" value="-0.8967"/>
-        <joint name="Revolute_37" value="0.0434"/>
-        <joint name="Revolute_45" value="0"/>
-    </group_state>
-    <group_state name="drop_2" group="arm">
-        <joint name="Revolute_20" value="-3.1415"/>
-        <joint name="Revolute_26" value="1.4232"/>
-        <joint name="Revolute_30" value="-0.8967"/>
-        <joint name="Revolute_37" value="0.0434"/>
-        <joint name="Revolute_45" value="0"/>
-    </group_state>
-    <group_state name="rest" group="arm">
-        <joint name="Revolute_20" value="0"/>
-        <joint name="Revolute_26" value="0"/>
-        <joint name="Revolute_30" value="0"/>
-        <joint name="Revolute_37" value="-0.349"/>
-        <joint name="Revolute_45" value="0"/>
-    </group_state>
-    <group_state name="pre_pick" group="arm">
-      <joint name="Revolute_20" value="0.00" />
-      <joint name="Revolute_26" value="2.089" />
-      <joint name="Revolute_30" value="-0.509" />
-      <joint name="Revolute_37" value="0.512" />
-      <joint name="Revolute_45" value="0.00" />
-  </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
     <end_effector name="gripper_ee" parent_link="Bearing_guide__1__1" group="gripper" parent_group="arm"/>
     <!--VIRTUAL JOINT: Purpose: this element defines a virtual joint between a robot link and an external frame of reference (considered fixed with respect to the robot)-->
@@ -95,16 +67,16 @@
     <disable_collisions link1="Base_bottom_1" link2="Potentiometer_1" reason="Never"/>
     <disable_collisions link1="Base_bottom_1" link2="Rotating_plate_1" reason="Never"/>
     <disable_collisions link1="Base_bottom_1" link2="Rotating_plate_clamp_1" reason="Never"/>
-    <disable_collisions link1="Base_bottom_1" link2="Steel_ball_10mm_1" reason="User"/>
-    <disable_collisions link1="Base_bottom_1" link2="Steel_ball_10mm_10" reason="User"/>
-    <disable_collisions link1="Base_bottom_1" link2="Steel_ball_10mm_2" reason="User"/>
-    <disable_collisions link1="Base_bottom_1" link2="Steel_ball_10mm_3" reason="User"/>
-    <disable_collisions link1="Base_bottom_1" link2="Steel_ball_10mm_4" reason="User"/>
-    <disable_collisions link1="Base_bottom_1" link2="Steel_ball_10mm_5" reason="User"/>
-    <disable_collisions link1="Base_bottom_1" link2="Steel_ball_10mm_6" reason="User"/>
-    <disable_collisions link1="Base_bottom_1" link2="Steel_ball_10mm_7" reason="User"/>
-    <disable_collisions link1="Base_bottom_1" link2="Steel_ball_10mm_8" reason="User"/>
-    <disable_collisions link1="Base_bottom_1" link2="Steel_ball_10mm_9" reason="User"/>
+    <disable_collisions link1="Base_bottom_1" link2="Steel_ball_10mm_1" reason="Never"/>
+    <disable_collisions link1="Base_bottom_1" link2="Steel_ball_10mm_10" reason="Never"/>
+    <disable_collisions link1="Base_bottom_1" link2="Steel_ball_10mm_2" reason="Never"/>
+    <disable_collisions link1="Base_bottom_1" link2="Steel_ball_10mm_3" reason="Never"/>
+    <disable_collisions link1="Base_bottom_1" link2="Steel_ball_10mm_4" reason="Never"/>
+    <disable_collisions link1="Base_bottom_1" link2="Steel_ball_10mm_5" reason="Never"/>
+    <disable_collisions link1="Base_bottom_1" link2="Steel_ball_10mm_6" reason="Never"/>
+    <disable_collisions link1="Base_bottom_1" link2="Steel_ball_10mm_7" reason="Never"/>
+    <disable_collisions link1="Base_bottom_1" link2="Steel_ball_10mm_8" reason="Never"/>
+    <disable_collisions link1="Base_bottom_1" link2="Steel_ball_10mm_9" reason="Never"/>
     <disable_collisions link1="Base_bottom_1" link2="Upper_arm_left__1__1" reason="Never"/>
     <disable_collisions link1="Base_bottom_1" link2="Upper_arm_right__1__1" reason="Never"/>
     <disable_collisions link1="Base_bottom_1" link2="Upper_arm_servo_mount__1__1" reason="Never"/>
@@ -136,16 +108,16 @@
     <disable_collisions link1="Base_cylinder_1" link2="Potentiometer_1" reason="Never"/>
     <disable_collisions link1="Base_cylinder_1" link2="Rotating_plate_1" reason="Never"/>
     <disable_collisions link1="Base_cylinder_1" link2="Rotating_plate_clamp_1" reason="Never"/>
-    <disable_collisions link1="Base_cylinder_1" link2="Steel_ball_10mm_1" reason="User"/>
-    <disable_collisions link1="Base_cylinder_1" link2="Steel_ball_10mm_10" reason="User"/>
-    <disable_collisions link1="Base_cylinder_1" link2="Steel_ball_10mm_2" reason="User"/>
-    <disable_collisions link1="Base_cylinder_1" link2="Steel_ball_10mm_3" reason="User"/>
-    <disable_collisions link1="Base_cylinder_1" link2="Steel_ball_10mm_4" reason="User"/>
-    <disable_collisions link1="Base_cylinder_1" link2="Steel_ball_10mm_5" reason="User"/>
-    <disable_collisions link1="Base_cylinder_1" link2="Steel_ball_10mm_6" reason="User"/>
-    <disable_collisions link1="Base_cylinder_1" link2="Steel_ball_10mm_7" reason="User"/>
-    <disable_collisions link1="Base_cylinder_1" link2="Steel_ball_10mm_8" reason="User"/>
-    <disable_collisions link1="Base_cylinder_1" link2="Steel_ball_10mm_9" reason="User"/>
+    <disable_collisions link1="Base_cylinder_1" link2="Steel_ball_10mm_1" reason="Never"/>
+    <disable_collisions link1="Base_cylinder_1" link2="Steel_ball_10mm_10" reason="Never"/>
+    <disable_collisions link1="Base_cylinder_1" link2="Steel_ball_10mm_2" reason="Never"/>
+    <disable_collisions link1="Base_cylinder_1" link2="Steel_ball_10mm_3" reason="Never"/>
+    <disable_collisions link1="Base_cylinder_1" link2="Steel_ball_10mm_4" reason="Never"/>
+    <disable_collisions link1="Base_cylinder_1" link2="Steel_ball_10mm_5" reason="Never"/>
+    <disable_collisions link1="Base_cylinder_1" link2="Steel_ball_10mm_6" reason="Never"/>
+    <disable_collisions link1="Base_cylinder_1" link2="Steel_ball_10mm_7" reason="Never"/>
+    <disable_collisions link1="Base_cylinder_1" link2="Steel_ball_10mm_8" reason="Never"/>
+    <disable_collisions link1="Base_cylinder_1" link2="Steel_ball_10mm_9" reason="Never"/>
     <disable_collisions link1="Base_cylinder_1" link2="Upper_arm_left__1__1" reason="Never"/>
     <disable_collisions link1="Base_cylinder_1" link2="Upper_arm_right__1__1" reason="Never"/>
     <disable_collisions link1="Base_cylinder_1" link2="Upper_arm_servo_mount__1__1" reason="Never"/>
@@ -655,19 +627,19 @@
     <disable_collisions link1="Center_arm_1" link2="Rotating_plate_clamp_1" reason="Never"/>
     <disable_collisions link1="Center_arm_1" link2="Servo_gear__1__1" reason="Never"/>
     <disable_collisions link1="Center_arm_1" link2="Servo_mount__1__1" reason="Never"/>
-    <disable_collisions link1="Center_arm_1" link2="Steel_ball_10mm_1" reason="User"/>
-    <disable_collisions link1="Center_arm_1" link2="Steel_ball_10mm_10" reason="User"/>
-    <disable_collisions link1="Center_arm_1" link2="Steel_ball_10mm_2" reason="User"/>
-    <disable_collisions link1="Center_arm_1" link2="Steel_ball_10mm_3" reason="User"/>
-    <disable_collisions link1="Center_arm_1" link2="Steel_ball_10mm_4" reason="User"/>
-    <disable_collisions link1="Center_arm_1" link2="Steel_ball_10mm_5" reason="User"/>
-    <disable_collisions link1="Center_arm_1" link2="Steel_ball_10mm_6" reason="User"/>
-    <disable_collisions link1="Center_arm_1" link2="Steel_ball_10mm_7" reason="User"/>
-    <disable_collisions link1="Center_arm_1" link2="Steel_ball_10mm_8" reason="User"/>
-    <disable_collisions link1="Center_arm_1" link2="Steel_ball_10mm_9" reason="User"/>
-    <disable_collisions link1="Center_arm_1" link2="Upper_arm_left__1__1" reason="User"/>
-    <disable_collisions link1="Center_arm_1" link2="Upper_arm_right__1__1" reason="User"/>
-    <disable_collisions link1="Center_arm_1" link2="Upper_arm_servo_mount__1__1" reason="User"/>
+    <disable_collisions link1="Center_arm_1" link2="Steel_ball_10mm_1" reason="Never"/>
+    <disable_collisions link1="Center_arm_1" link2="Steel_ball_10mm_10" reason="Never"/>
+    <disable_collisions link1="Center_arm_1" link2="Steel_ball_10mm_2" reason="Never"/>
+    <disable_collisions link1="Center_arm_1" link2="Steel_ball_10mm_3" reason="Never"/>
+    <disable_collisions link1="Center_arm_1" link2="Steel_ball_10mm_4" reason="Never"/>
+    <disable_collisions link1="Center_arm_1" link2="Steel_ball_10mm_5" reason="Never"/>
+    <disable_collisions link1="Center_arm_1" link2="Steel_ball_10mm_6" reason="Never"/>
+    <disable_collisions link1="Center_arm_1" link2="Steel_ball_10mm_7" reason="Never"/>
+    <disable_collisions link1="Center_arm_1" link2="Steel_ball_10mm_8" reason="Never"/>
+    <disable_collisions link1="Center_arm_1" link2="Steel_ball_10mm_9" reason="Never"/>
+    <disable_collisions link1="Center_arm_1" link2="Upper_arm_left__1__1" reason="Adjacent"/>
+    <disable_collisions link1="Center_arm_1" link2="Upper_arm_right__1__1" reason="Never"/>
+    <disable_collisions link1="Center_arm_1" link2="Upper_arm_servo_mount__1__1" reason="Never"/>
     <disable_collisions link1="Center_arm_1" link2="base_link" reason="Never"/>
     <disable_collisions link1="Center_arm_bearing_guide_1" link2="Center_arm_bearing_guide__1__1" reason="Never"/>
     <disable_collisions link1="Center_arm_bearing_guide_1" link2="Center_arm_bearing_guide_clamp__1__1" reason="Never"/>
@@ -895,7 +867,7 @@
     <disable_collisions link1="Gear_27T_1" link2="Upper_arm_right__1__1" reason="Never"/>
     <disable_collisions link1="Gear_27T_1" link2="Upper_arm_servo_mount__1__1" reason="Never"/>
     <disable_collisions link1="Gear_27T_1" link2="base_link" reason="Never"/>
-    <disable_collisions link1="Gripper_120T__1__1" link2="Gripper_72T__1__1" reason="User"/>
+    <disable_collisions link1="Gripper_120T__1__1" link2="Gripper_72T__1__1" reason="Default"/>
     <disable_collisions link1="Gripper_120T__1__1" link2="Lower_arm_bushing_1" reason="Never"/>
     <disable_collisions link1="Gripper_120T__1__1" link2="Lower_arm_bushing__1__1" reason="Never"/>
     <disable_collisions link1="Gripper_120T__1__1" link2="Lower_arm_left_1" reason="Never"/>
@@ -1077,7 +1049,7 @@
     <disable_collisions link1="MG996R_Motor_v1__2__1" link2="Steel_ball_10mm_8" reason="Never"/>
     <disable_collisions link1="MG996R_Motor_v1__2__1" link2="Steel_ball_10mm_9" reason="Never"/>
     <disable_collisions link1="MG996R_Motor_v1__2__1" link2="Upper_arm_left__1__1" reason="Never"/>
-    <disable_collisions link1="MG996R_Motor_v1__2__1" link2="Upper_arm_right__1__1" reason="User"/>
+    <disable_collisions link1="MG996R_Motor_v1__2__1" link2="Upper_arm_right__1__1" reason="Adjacent"/>
     <disable_collisions link1="MG996R_Motor_v1__2__1" link2="Upper_arm_servo_mount__1__1" reason="Never"/>
     <disable_collisions link1="MG996R_Motor_v1__2__1" link2="base_link" reason="Never"/>
     <disable_collisions link1="MG996R_Motor_v1__3__1" link2="MG996R_Motor_v1__4__1" reason="Never"/>
@@ -1100,7 +1072,7 @@
     <disable_collisions link1="MG996R_Motor_v1__3__1" link2="Steel_ball_10mm_9" reason="Never"/>
     <disable_collisions link1="MG996R_Motor_v1__3__1" link2="Upper_arm_left__1__1" reason="Never"/>
     <disable_collisions link1="MG996R_Motor_v1__3__1" link2="Upper_arm_right__1__1" reason="Never"/>
-    <disable_collisions link1="MG996R_Motor_v1__3__1" link2="Upper_arm_servo_mount__1__1" reason="User"/>
+    <disable_collisions link1="MG996R_Motor_v1__3__1" link2="Upper_arm_servo_mount__1__1" reason="Adjacent"/>
     <disable_collisions link1="MG996R_Motor_v1__3__1" link2="base_link" reason="Never"/>
     <disable_collisions link1="MG996R_Motor_v1__4__1" link2="MG996R_Motor_v1__4___1__1" reason="Never"/>
     <disable_collisions link1="MG996R_Motor_v1__4__1" link2="MG996R_Motor_v1__5__1" reason="Never"/>
@@ -1176,16 +1148,16 @@
     <disable_collisions link1="Potentiometer_1" link2="base_link" reason="Never"/>
     <disable_collisions link1="Rotating_plate_1" link2="Rotating_plate_clamp_1" reason="Adjacent"/>
     <disable_collisions link1="Rotating_plate_1" link2="Servo_gear__1__1" reason="Never"/>
-    <disable_collisions link1="Rotating_plate_1" link2="Steel_ball_10mm_1" reason="User"/>
-    <disable_collisions link1="Rotating_plate_1" link2="Steel_ball_10mm_10" reason="User"/>
-    <disable_collisions link1="Rotating_plate_1" link2="Steel_ball_10mm_2" reason="User"/>
-    <disable_collisions link1="Rotating_plate_1" link2="Steel_ball_10mm_3" reason="User"/>
-    <disable_collisions link1="Rotating_plate_1" link2="Steel_ball_10mm_4" reason="User"/>
-    <disable_collisions link1="Rotating_plate_1" link2="Steel_ball_10mm_5" reason="User"/>
-    <disable_collisions link1="Rotating_plate_1" link2="Steel_ball_10mm_6" reason="User"/>
-    <disable_collisions link1="Rotating_plate_1" link2="Steel_ball_10mm_7" reason="User"/>
-    <disable_collisions link1="Rotating_plate_1" link2="Steel_ball_10mm_8" reason="User"/>
-    <disable_collisions link1="Rotating_plate_1" link2="Steel_ball_10mm_9" reason="User"/>
+    <disable_collisions link1="Rotating_plate_1" link2="Steel_ball_10mm_1" reason="Default"/>
+    <disable_collisions link1="Rotating_plate_1" link2="Steel_ball_10mm_10" reason="Default"/>
+    <disable_collisions link1="Rotating_plate_1" link2="Steel_ball_10mm_2" reason="Default"/>
+    <disable_collisions link1="Rotating_plate_1" link2="Steel_ball_10mm_3" reason="Default"/>
+    <disable_collisions link1="Rotating_plate_1" link2="Steel_ball_10mm_4" reason="Default"/>
+    <disable_collisions link1="Rotating_plate_1" link2="Steel_ball_10mm_5" reason="Default"/>
+    <disable_collisions link1="Rotating_plate_1" link2="Steel_ball_10mm_6" reason="Default"/>
+    <disable_collisions link1="Rotating_plate_1" link2="Steel_ball_10mm_7" reason="Default"/>
+    <disable_collisions link1="Rotating_plate_1" link2="Steel_ball_10mm_8" reason="Default"/>
+    <disable_collisions link1="Rotating_plate_1" link2="Steel_ball_10mm_9" reason="Default"/>
     <disable_collisions link1="Rotating_plate_1" link2="Upper_arm_left__1__1" reason="Never"/>
     <disable_collisions link1="Rotating_plate_1" link2="Upper_arm_right__1__1" reason="Never"/>
     <disable_collisions link1="Rotating_plate_1" link2="Upper_arm_servo_mount__1__1" reason="Never"/>
@@ -1237,7 +1209,7 @@
     <disable_collisions link1="Steel_ball_10mm_1" link2="Upper_arm_left__1__1" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_1" link2="Upper_arm_right__1__1" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_1" link2="Upper_arm_servo_mount__1__1" reason="Never"/>
-    <disable_collisions link1="Steel_ball_10mm_1" link2="base_link" reason="User"/>
+    <disable_collisions link1="Steel_ball_10mm_1" link2="base_link" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_10" link2="Steel_ball_10mm_2" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_10" link2="Steel_ball_10mm_3" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_10" link2="Steel_ball_10mm_4" reason="Never"/>
@@ -1249,7 +1221,7 @@
     <disable_collisions link1="Steel_ball_10mm_10" link2="Upper_arm_left__1__1" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_10" link2="Upper_arm_right__1__1" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_10" link2="Upper_arm_servo_mount__1__1" reason="Never"/>
-    <disable_collisions link1="Steel_ball_10mm_10" link2="base_link" reason="User"/>
+    <disable_collisions link1="Steel_ball_10mm_10" link2="base_link" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_2" link2="Steel_ball_10mm_3" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_2" link2="Steel_ball_10mm_4" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_2" link2="Steel_ball_10mm_5" reason="Never"/>
@@ -1260,7 +1232,7 @@
     <disable_collisions link1="Steel_ball_10mm_2" link2="Upper_arm_left__1__1" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_2" link2="Upper_arm_right__1__1" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_2" link2="Upper_arm_servo_mount__1__1" reason="Never"/>
-    <disable_collisions link1="Steel_ball_10mm_2" link2="base_link" reason="User"/>
+    <disable_collisions link1="Steel_ball_10mm_2" link2="base_link" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_3" link2="Steel_ball_10mm_4" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_3" link2="Steel_ball_10mm_5" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_3" link2="Steel_ball_10mm_6" reason="Never"/>
@@ -1270,7 +1242,7 @@
     <disable_collisions link1="Steel_ball_10mm_3" link2="Upper_arm_left__1__1" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_3" link2="Upper_arm_right__1__1" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_3" link2="Upper_arm_servo_mount__1__1" reason="Never"/>
-    <disable_collisions link1="Steel_ball_10mm_3" link2="base_link" reason="User"/>
+    <disable_collisions link1="Steel_ball_10mm_3" link2="base_link" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_4" link2="Steel_ball_10mm_5" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_4" link2="Steel_ball_10mm_6" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_4" link2="Steel_ball_10mm_7" reason="Never"/>
@@ -1279,7 +1251,7 @@
     <disable_collisions link1="Steel_ball_10mm_4" link2="Upper_arm_left__1__1" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_4" link2="Upper_arm_right__1__1" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_4" link2="Upper_arm_servo_mount__1__1" reason="Never"/>
-    <disable_collisions link1="Steel_ball_10mm_4" link2="base_link" reason="User"/>
+    <disable_collisions link1="Steel_ball_10mm_4" link2="base_link" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_5" link2="Steel_ball_10mm_6" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_5" link2="Steel_ball_10mm_7" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_5" link2="Steel_ball_10mm_8" reason="Never"/>
@@ -1287,33 +1259,33 @@
     <disable_collisions link1="Steel_ball_10mm_5" link2="Upper_arm_left__1__1" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_5" link2="Upper_arm_right__1__1" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_5" link2="Upper_arm_servo_mount__1__1" reason="Never"/>
-    <disable_collisions link1="Steel_ball_10mm_5" link2="base_link" reason="User"/>
+    <disable_collisions link1="Steel_ball_10mm_5" link2="base_link" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_6" link2="Steel_ball_10mm_7" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_6" link2="Steel_ball_10mm_8" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_6" link2="Steel_ball_10mm_9" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_6" link2="Upper_arm_left__1__1" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_6" link2="Upper_arm_right__1__1" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_6" link2="Upper_arm_servo_mount__1__1" reason="Never"/>
-    <disable_collisions link1="Steel_ball_10mm_6" link2="base_link" reason="User"/>
+    <disable_collisions link1="Steel_ball_10mm_6" link2="base_link" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_7" link2="Steel_ball_10mm_8" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_7" link2="Steel_ball_10mm_9" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_7" link2="Upper_arm_left__1__1" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_7" link2="Upper_arm_right__1__1" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_7" link2="Upper_arm_servo_mount__1__1" reason="Never"/>
-    <disable_collisions link1="Steel_ball_10mm_7" link2="base_link" reason="User"/>
+    <disable_collisions link1="Steel_ball_10mm_7" link2="base_link" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_8" link2="Steel_ball_10mm_9" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_8" link2="Upper_arm_left__1__1" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_8" link2="Upper_arm_right__1__1" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_8" link2="Upper_arm_servo_mount__1__1" reason="Never"/>
-    <disable_collisions link1="Steel_ball_10mm_8" link2="base_link" reason="User"/>
+    <disable_collisions link1="Steel_ball_10mm_8" link2="base_link" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_9" link2="Upper_arm_left__1__1" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_9" link2="Upper_arm_right__1__1" reason="Never"/>
     <disable_collisions link1="Steel_ball_10mm_9" link2="Upper_arm_servo_mount__1__1" reason="Never"/>
-    <disable_collisions link1="Steel_ball_10mm_9" link2="base_link" reason="User"/>
-    <disable_collisions link1="Upper_arm_left__1__1" link2="Upper_arm_right__1__1" reason="User"/>
-    <disable_collisions link1="Upper_arm_left__1__1" link2="Upper_arm_servo_mount__1__1" reason="User"/>
+    <disable_collisions link1="Steel_ball_10mm_9" link2="base_link" reason="Never"/>
+    <disable_collisions link1="Upper_arm_left__1__1" link2="Upper_arm_right__1__1" reason="Never"/>
+    <disable_collisions link1="Upper_arm_left__1__1" link2="Upper_arm_servo_mount__1__1" reason="Adjacent"/>
     <disable_collisions link1="Upper_arm_left__1__1" link2="base_link" reason="Never"/>
-    <disable_collisions link1="Upper_arm_right__1__1" link2="Upper_arm_servo_mount__1__1" reason="User"/>
+    <disable_collisions link1="Upper_arm_right__1__1" link2="Upper_arm_servo_mount__1__1" reason="Adjacent"/>
     <disable_collisions link1="Upper_arm_right__1__1" link2="base_link" reason="Never"/>
     <disable_collisions link1="Upper_arm_servo_mount__1__1" link2="base_link" reason="Never"/>
 </robot>
