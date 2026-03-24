@@ -18,6 +18,7 @@ from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
     base_description = get_package_share_directory("base_description")
+    ros_gz_sim = get_package_share_directory("ros_gz_sim")
 
     model_arg = DeclareLaunchArgument(
         name="model",
@@ -48,31 +49,28 @@ def generate_launch_description():
 
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            [
-                os.path.join(get_package_share_directory("ros_gz_sim"), "launch"),
-                "/gz_sim.launch.py",
-            ]
+            os.path.join(ros_gz_sim, "launch", "gz_sim.launch.py")
         ),
-        launch_arguments=[("gz_args", "-v 0 -r empty.sdf")],
+        launch_arguments=[("gz_args", "-v 4 -r empty.sdf")],
     )
 
     gz_spawn_entity = Node(
-                package="ros_gz_sim",
-                executable="create",
-                output="screen",
-                arguments=[
-                    "-topic",
-                    "robot_description",
-                    "-name",
-                    "base",
-                    "-x",
-                    "0.0",
-                    "-y",
-                    "0.0",
-                    "-z",
-                    "0.15",
-                ],
-            )
+        package="ros_gz_sim",
+        executable="create",
+        output="screen",
+        arguments=[
+            "-topic",
+            "robot_description",
+            "-name",
+            "base",
+            "-x",
+            "0.0",
+            "-y",
+            "0.0",
+            "-z",
+            "0.15",
+        ],
+    )
 
     return LaunchDescription(
         [
