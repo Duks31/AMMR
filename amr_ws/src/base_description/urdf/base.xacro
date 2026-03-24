@@ -1,0 +1,185 @@
+<?xml version="1.0"?>
+<robot name="base" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find base_description)/urdf/materials.xacro" />
+    <xacro:include filename="$(find base_description)/urdf/base.trans" />
+    <xacro:include filename="$(find base_description)/urdf/base.gazebo" />
+    <link name="base_link">
+        <inertial>
+            <origin xyz="0.17998711589477545 0.33565887853822735 0.16958490409411872" rpy="0 0 0" />
+            <mass value="31.97041974806804" />
+            <inertia ixx="1.498873" iyy="0.987054" izz="1.382345" ixy="0.0" iyz="-0.323526"
+                ixz="1e-06" />
+        </inertial>
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://base_description/meshes/base_link.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="military_green" />
+        </visual>
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://base_description/meshes/base_link.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="left_front_wheel_1">
+        <inertial>
+            <origin xyz="0.06491952306333931 2.713483924221549e-07 -9.871360775876026e-07"
+                rpy="0 0 0" />
+            <mass value="1.7279014792962415" />
+            <inertia ixx="0.007189" iyy="0.0043" izz="0.004301" ixy="-0.0" iyz="-0.0" ixz="0.0" />
+        </inertial>
+        <visual>
+            <origin xyz="-0.352484 -0.1 -0.0974" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://base_description/meshes/left_front_wheel_1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="black" />
+        </visual>
+        <collision>
+            <origin xyz="-0.352484 -0.1 -0.0974" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://base_description/meshes/left_front_wheel_1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="left_back_wheel_1">
+        <inertial>
+            <origin xyz="0.06491952306333681 2.71348395752824e-07 -9.871360792390593e-07"
+                rpy="0 0 0" />
+            <mass value="1.7279014792962415" />
+            <inertia ixx="0.007189" iyy="0.0043" izz="0.004301" ixy="-0.0" iyz="-0.0" ixz="0.0" />
+        </inertial>
+        <visual>
+            <origin xyz="-0.352484 -0.5 -0.0974" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://base_description/meshes/left_back_wheel_1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="black" />
+        </visual>
+        <collision>
+            <origin xyz="-0.352484 -0.5 -0.0974" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://base_description/meshes/left_back_wheel_1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="right_back_wheel_1">
+        <inertial>
+            <origin xyz="-0.06491962434763357 -2.713483950866902e-07 -9.871360813346053e-07"
+                rpy="0 0 0" />
+            <mass value="1.7279014792962415" />
+            <inertia ixx="0.007189" iyy="0.0043" izz="0.004301" ixy="-0.0" iyz="0.0" ixz="-0.0" />
+        </inertial>
+        <visual>
+            <origin xyz="-0.007484 -0.5 -0.0974" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://base_description/meshes/right_back_wheel_1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="black" />
+        </visual>
+        <collision>
+            <origin xyz="-0.007484 -0.5 -0.0974" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://base_description/meshes/right_back_wheel_1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="right_front_wheel_1">
+        <inertial>
+            <origin xyz="-0.06491962434762961 -2.7134839841735925e-07 -9.871360796692707e-07"
+                rpy="0 0 0" />
+            <mass value="1.7279014792962415" />
+            <inertia ixx="0.007189" iyy="0.0043" izz="0.004301" ixy="-0.0" iyz="0.0" ixz="-0.0" />
+        </inertial>
+        <visual>
+            <origin xyz="-0.007484 -0.1 -0.0974" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://base_description/meshes/right_front_wheel_1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="black" />
+        </visual>
+        <collision>
+            <origin xyz="-0.007484 -0.1 -0.0974" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://base_description/meshes/right_front_wheel_1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <link name="oakd_lite_1">
+        <inertial>
+            <origin xyz="0.00020828715115112084 -0.005627286906514484 -0.014899601468930213"
+                rpy="0 0 0" />
+            <mass value="0.14692131388829874" />
+            <inertia ixx="1.5e-05" iyy="0.000116" izz="0.00011" ixy="-0.0" iyz="-0.0" ixz="0.0" />
+        </inertial>
+        <visual>
+            <origin xyz="-0.179984 -0.500104 -0.671703" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://base_description/meshes/oakd_lite_1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+            <material name="dark_grey" />
+        </visual>
+        <collision>
+            <origin xyz="-0.179984 -0.500104 -0.671703" rpy="0 0 0" />
+            <geometry>
+                <mesh filename="package://base_description/meshes/oakd_lite_1.stl"
+                    scale="0.001 0.001 0.001" />
+            </geometry>
+        </collision>
+    </link>
+
+    <joint name="left_front_wheel_joint" type="continuous">
+        <origin xyz="0.352484 0.1 0.0974" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="left_front_wheel_1" />
+        <axis xyz="1.0 0.0 -0.0" />
+    </joint>
+
+    <joint name="left_back_wheel_joint" type="continuous">
+        <origin xyz="0.352484 0.5 0.0974" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="left_back_wheel_1" />
+        <axis xyz="1.0 0.0 -0.0" />
+    </joint>
+
+    <joint name="right_back_wheel_joint" type="continuous">
+        <origin xyz="0.007484 0.5 0.0974" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="right_back_wheel_1" />
+        <axis xyz="1.0 0.0 -0.0" />
+    </joint>
+
+    <joint name="right_front_wheel_joint" type="continuous">
+        <origin xyz="0.007484 0.1 0.0974" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="right_front_wheel_1" />
+        <axis xyz="1.0 0.0 -0.0" />
+    </joint>
+
+    <joint name="oakd_lite_joint" type="fixed">
+        <origin xyz="0.179984 0.500104 0.671703" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="oakd_lite_1" />
+    </joint>
+
+</robot>

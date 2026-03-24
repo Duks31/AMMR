@@ -33,7 +33,7 @@ RUN apt-get update && apt-get install -y \
 
 # ─── Python dependencies ───────────────────────────────────────────
 # CPU only PyTorch (Pi has no GPU)
-RUN pip3 install \
+RUN pip3 install --no-cache-dir --default-timeout=1000\
     torch torchvision \
     --index-url https://download.pytorch.org/whl/cpu
 

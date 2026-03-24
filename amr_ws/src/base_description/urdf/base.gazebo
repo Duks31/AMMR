@@ -1,0 +1,149 @@
+<?xml version="1.0"?>
+<robot name="base" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:property name="base_controller_config"
+        value="$(find base_controller)/config/base_controller.yaml" />
+
+    <!-- ===== ros2_control hardware interface (Ignition Fortress) ===== -->
+    <ros2_control name="IgnitionSystem" type="system">
+        <hardware>
+            <plugin>ign_ros2_control/IgnitionSystem</plugin>
+        </hardware>
+
+        <joint name="left_front_wheel_joint">
+            <command_interface name="velocity">
+                <param name="min">-10</param>
+                <param name="max">10</param>
+            </command_interface>
+            <state_interface name="position" />
+            <state_interface name="velocity" />
+        </joint>
+
+        <joint name="left_back_wheel_joint">
+            <command_interface name="velocity">
+                <param name="min">-10</param>
+                <param name="max">10</param>
+            </command_interface>
+            <state_interface name="position" />
+            <state_interface name="velocity" />
+        </joint>
+
+        <joint name="right_front_wheel_joint">
+            <command_interface name="velocity">
+                <param name="min">-10</param>
+                <param name="max">10</param>
+            </command_interface>
+            <state_interface name="position" />
+            <state_interface name="velocity" />
+        </joint>
+
+        <joint name="right_back_wheel_joint">
+            <command_interface name="velocity">
+                <param name="min">-10</param>
+                <param name="max">10</param>
+            </command_interface>
+            <state_interface name="position" />
+            <state_interface name="velocity" />
+        </joint>
+    </ros2_control>
+
+    <!-- ===== Ignition ros2_control plugin ===== -->
+    <gazebo>
+        <plugin filename="gz_ros2_control-system"
+            name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+            <parameters>${base_controller_config}</parameters>
+            <!-- These two lines help in most cases -->
+            <robot_param>robot_description</robot_param>
+            <robot_param_node>robot_state_publisher</robot_param_node>
+        </plugin>
+    </gazebo>
+
+    <!-- ===== base_link - military green ===== -->
+    <gazebo reference="base_link">
+        <visual>
+            <material>
+                <ambient>0.20 0.25 0.15 1</ambient>
+                <diffuse>0.29 0.36 0.22 1</diffuse>
+                <specular>0.05 0.05 0.05 1</specular>
+                <emissive>0 0 0 0</emissive>
+            </material>
+        </visual>
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <self_collide>true</self_collide>
+        <gravity>true</gravity>
+    </gazebo>
+
+    <!-- ===== Wheels - dark rubber black ===== -->
+    <gazebo reference="left_front_wheel_1">
+        <visual>
+            <material>
+                <ambient>0.05 0.05 0.05 1</ambient>
+                <diffuse>0.1 0.1 0.1 1</diffuse>
+                <specular>0.1 0.1 0.1 1</specular>
+                <emissive>0 0 0 0</emissive>
+            </material>
+        </visual>
+        <mu1>0.8</mu1>
+        <mu2>0.8</mu2>
+        <self_collide>true</self_collide>
+    </gazebo>
+
+    <gazebo reference="left_back_wheel_1">
+        <visual>
+            <material>
+                <ambient>0.05 0.05 0.05 1</ambient>
+                <diffuse>0.1 0.1 0.1 1</diffuse>
+                <specular>0.1 0.1 0.1 1</specular>
+                <emissive>0 0 0 0</emissive>
+            </material>
+        </visual>
+        <mu1>0.8</mu1>
+        <mu2>0.8</mu2>
+        <self_collide>true</self_collide>
+    </gazebo>
+
+    <gazebo reference="right_front_wheel_1">
+        <visual>
+            <material>
+                <ambient>0.05 0.05 0.05 1</ambient>
+                <diffuse>0.1 0.1 0.1 1</diffuse>
+                <specular>0.1 0.1 0.1 1</specular>
+                <emissive>0 0 0 0</emissive>
+            </material>
+        </visual>
+        <mu1>0.8</mu1>
+        <mu2>0.8</mu2>
+        <self_collide>true</self_collide>
+    </gazebo>
+
+    <gazebo reference="right_back_wheel_1">
+        <visual>
+            <material>
+                <ambient>0.05 0.05 0.05 1</ambient>
+                <diffuse>0.1 0.1 0.1 1</diffuse>
+                <specular>0.1 0.1 0.1 1</specular>
+                <emissive>0 0 0 0</emissive>
+            </material>
+        </visual>
+        <mu1>0.8</mu1>
+        <mu2>0.8</mu2>
+        <self_collide>true</self_collide>
+    </gazebo>
+
+    <!-- ===== OAK-D Lite - dark grey ===== -->
+    <gazebo reference="oakd_lite_1">
+        <visual>
+            <material>
+                <ambient>0.1 0.1 0.1 1</ambient>
+                <diffuse>0.15 0.15 0.15 1</diffuse>
+                <specular>0.3 0.3 0.3 1</specular>
+                <emissive>0 0 0 0</emissive>
+            </material>
+        </visual>
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <self_collide>true</self_collide>
+    </gazebo>
+
+</robot>

@@ -14,3 +14,7 @@
 
 3/5/2026 (Kene)
 - Added moveit package.
+
+3/24/2026 (Chidubem)
+- Added base description
+- Added base controller
