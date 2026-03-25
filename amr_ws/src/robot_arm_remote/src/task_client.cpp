@@ -27,7 +27,6 @@ int main(int argc, char ** argv)
 
   // --- THE PLAYLIST ---
   std::vector<TaskCommand> sequence = {
-    {0, 0.0, 0.0, 0.0},      // Step 0: Home State
     {5, 0.0, 0.0, 0.0},      // Step 1: Pre-pick stance
     {3, 0.2, 0.0, 0.05},     // Step 2: Dynamic Pick 
     {4, 0.0, 0.0, 0.0},      // Step 3: Rest state 
