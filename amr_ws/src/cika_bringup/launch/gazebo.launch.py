@@ -142,17 +142,18 @@ def generate_launch_description():
 
     skid_steer_controller_spawner = TimerAction(
         period=5.0,
-        actions=[
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=[
-                    "skid_steer_controller",    
-                    "--controller-manager", "/controller_manager",
-                    "--controller-manager-timeout", "30",   
-                ],
-            )
-        ],
+        actions=[Node(
+            package="controller_manager",
+            executable="spawner",
+            arguments=[
+                "skid_steer_controller",
+                "--controller-manager", "/controller_manager",
+                "--controller-manager-timeout", "30",
+            ],
+            remappings=[
+                ("/cmd_vel", "/skid_steer_controller/cmd_vel_unstamped"),
+            ],
+        )],
     )
 
     return LaunchDescription(
