@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<robot name="base" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <gazebo>
+        <plugin filename="gz_ros2_control-system"
+            name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+        </plugin>
+    </gazebo>
+
+    <!-- Dark Ash -->
+    <gazebo reference="base_link">
+        <visual>
+            <material>
+                <ambient>0.15 0.15 0.15 1</ambient>
+                <diffuse>0.2 0.2 0.2 1</diffuse>
+                <specular>0.1 0.1 0.1 1</specular>
+            </material>
+        </visual>
+        <mu1>0.2</mu1>
+        <mu2>0.2</mu2>
+        <self_collide>true</self_collide>
+        <gravity>true</gravity>
+    </gazebo>
+
+    <!-- total black -->
+    <xacro:macro name="wheel_gazebo" params="reference">
+        <gazebo reference="${reference}">
+            <visual>
+                <material>
+                    <ambient>0.02 0.02 0.02 1</ambient>
+                    <diffuse>0.05 0.05 0.05 1</diffuse>
+                    <specular>0.0 0.0 0.0 1</specular>
+                </material>
+            </visual>
+            <mu1>1.5</mu1>
+            <mu2>1.5</mu2>
+            <self_collide>true</self_collide>
+        </gazebo>
+    </xacro:macro>
+
+    <xacro:wheel_gazebo reference="left_front_wheel_1"/>
+    <xacro:wheel_gazebo reference="left_back_wheel_1"/>
+    <xacro:wheel_gazebo reference="right_front_wheel_1"/>
+    <xacro:wheel_gazebo reference="right_back_wheel_1"/>
+
+    <!-- light grey -->
+    <gazebo reference="OAKDcamera_1">
+        <visual>
+            <material>
+                <ambient>0.6 0.6 0.6 1</ambient>
+                <diffuse>0.8 0.8 0.8 1</diffuse>
+                <specular>0.4 0.4 0.4 1</specular>
+            </material>
+        </visual>
+        <self_collide>true</self_collide>
+    </gazebo>
+
+    <!-- black -->
+    <gazebo reference="lidar_1">
+        <visual>
+            <material>
+                <ambient>0.05 0.05 0.05 1</ambient>
+                <diffuse>0.1 0.1 0.1 1</diffuse>
+            </material>
+        </visual>
+    </gazebo>
+
+    <!-- Black and Ash pattern -->
+    <xacro:macro name="arm_link_gazebo" params="reference color">
+        <gazebo reference="${reference}">
+            <visual>
+                <material>
+                    <xacro:if value="${color == 'ash'}">
+                        <ambient>0.3 0.3 0.3 1</ambient>
+                        <diffuse>0.45 0.45 0.45 1</diffuse>
+                    </xacro:if>
+                    <xacro:if value="${color == 'black'}">
+                        <ambient>0.05 0.05 0.05 1</ambient>
+                        <diffuse>0.1 0.1 0.1 1</diffuse>
+                    </xacro:if>
+                </material>
+            </visual>
+            <mu1>0.2</mu1>
+            <mu2>0.2</mu2>
+            <self_collide>true</self_collide>
+        </gazebo>
+    </xacro:macro>
+
+    <xacro:arm_link_gazebo reference="arm_bottom_1" color="black"/>
+    <xacro:arm_link_gazebo reference="turntable_1" color="ash"/>
+    <xacro:arm_link_gazebo reference="lower_arm_1" color="black"/>
+    <xacro:arm_link_gazebo reference="center_arm_1" color="ash"/>
+    <xacro:arm_link_gazebo reference="upper_arm_1" color="black"/>
+    <xacro:arm_link_gazebo reference="gripper_mount_1" color="ash"/>
+
+    <!-- black and ash pattern -->
+    <xacro:macro name="gripper_gazebo" params="reference">
+        <gazebo reference="${reference}">
+            <visual>
+                <material>
+                    <ambient>0.05 0.05 0.05 1</ambient>
+                    <diffuse>0.1 0.1 0.1 1</diffuse>
+                </material>
+            </visual>
+            <mu1>1.0</mu1>
+            <mu2>1.0</mu2>
+            <self_collide>true</self_collide>
+        </gazebo>
+    </xacro:macro>
+
+    <xacro:gripper_gazebo reference="left_gripper_1"/>
+    <xacro:gripper_gazebo reference="right_gripper_1"/>
+
+</robot>
