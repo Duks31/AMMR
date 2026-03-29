@@ -1,0 +1,125 @@
+<?xml version="1.0" ?>
+<robot name="cika" xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+<transmission name="left_front_wheel_1_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="left_front_wheel_1_joint">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="left_front_wheel_1_joint_actr">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<transmission name="left_back_wheel_1_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="left_back_wheel_1_joint">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="left_back_wheel_1_joint_actr">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<transmission name="right_fron_wheel_1_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="right_fron_wheel_1_joint">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="right_fron_wheel_1_joint_actr">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<transmission name="right_back_wheel_1_joint_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="right_back_wheel_1_joint">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="right_back_wheel_1_joint_actr">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<transmission name="turntable_1_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="turntable_1">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="turntable_1_actr">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<transmission name="lower_arm_1_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="lower_arm_1">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="lower_arm_1_actr">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<transmission name="center_arm_1_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="center_arm_1">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="center_arm_1_actr">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<transmission name="upper_arm_1_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="upper_arm_1">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="upper_arm_1_actr">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<transmission name="gripper_mount_1_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="gripper_mount_1">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="gripper_mount_1_actr">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<transmission name="left_gripper_1_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="left_gripper_1">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="left_gripper_1_actr">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+<transmission name="right_gripper_1_tran">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="right_gripper_1">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="right_gripper_1_actr">
+    <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+
+</robot>

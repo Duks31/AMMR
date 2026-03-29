@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<robot name="base" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <material name="military_green">
+        <color rgba="0.29 0.36 0.22 1.0" />
+    </material>
+
+    <material name="black">
+        <color rgba="0.12 0.12 0.12 1.0" />
+    </material>
+
+    <material name="dark_grey">
+        <color rgba="0.25 0.25 0.25 1.0" />
+    </material>
+
+    <material name="silver">
+        <color rgba="0.75 0.75 0.75 1.0" />
+    </material>
+
+    <material name="light_grey">
+        <color rgba="0.8 0.8 0.8 1.0" />
+    </material>
+
+    <material name="ash">
+        <color rgba="0.45 0.45 0.45 1.0" />
+    </material>
+
+</robot>    

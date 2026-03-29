@@ -19,9 +19,13 @@
 - Added base description
 - Added base controller
 
-
 3/25/2026 (Kene)
 - Added Task Server/Client.
 - Added msgs action package for server-client communication.
 - Removed collision files for internal components of robot arm.
 - Reconfigured moveit package to include more poses.
+
+
+3/29/2026(Chidubem)
+- Added cika description
+
