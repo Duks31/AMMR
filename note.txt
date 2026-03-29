@@ -21,3 +21,4 @@
 
 3/29/2026(Chidubem)
 - Added cika description
+- removed base_description and amr_bringup
