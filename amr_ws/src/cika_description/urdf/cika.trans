@@ -1,122 +1,122 @@
 <?xml version="1.0" ?>
 <robot name="cika" xmlns:xacro="http://www.ros.org/wiki/xacro" >
 
-<transmission name="Revolute 1_tran">
+<transmission name="left_front_wheel_1_joint_tran">
   <type>transmission_interface/SimpleTransmission</type>
-  <joint name="Revolute 1">
+  <joint name="left_front_wheel_1_joint">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
   </joint>
-  <actuator name="Revolute 1_actr">
+  <actuator name="left_front_wheel_1_joint_actr">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
 </transmission>
 
-<transmission name="Revolute 2_tran">
+<transmission name="left_back_wheel_1_joint_tran">
   <type>transmission_interface/SimpleTransmission</type>
-  <joint name="Revolute 2">
+  <joint name="left_back_wheel_1_joint">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
   </joint>
-  <actuator name="Revolute 2_actr">
+  <actuator name="left_back_wheel_1_joint_actr">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
 </transmission>
 
-<transmission name="Revolute 3_tran">
+<transmission name="right_fron_wheel_1_joint_tran">
   <type>transmission_interface/SimpleTransmission</type>
-  <joint name="Revolute 3">
+  <joint name="right_fron_wheel_1_joint">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
   </joint>
-  <actuator name="Revolute 3_actr">
+  <actuator name="right_fron_wheel_1_joint_actr">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
 </transmission>
 
-<transmission name="Revolute 4_tran">
+<transmission name="right_back_wheel_1_joint_tran">
   <type>transmission_interface/SimpleTransmission</type>
-  <joint name="Revolute 4">
+  <joint name="right_back_wheel_1_joint">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
   </joint>
-  <actuator name="Revolute 4_actr">
+  <actuator name="right_back_wheel_1_joint_actr">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
 </transmission>
 
-<transmission name="Revolute 9_tran">
+<transmission name="turntable_1_tran">
   <type>transmission_interface/SimpleTransmission</type>
-  <joint name="Revolute 9">
+  <joint name="turntable_1">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
   </joint>
-  <actuator name="Revolute 9_actr">
+  <actuator name="turntable_1_actr">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
 </transmission>
 
-<transmission name="Revolute 10_tran">
+<transmission name="lower_arm_1_tran">
   <type>transmission_interface/SimpleTransmission</type>
-  <joint name="Revolute 10">
+  <joint name="lower_arm_1">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
   </joint>
-  <actuator name="Revolute 10_actr">
+  <actuator name="lower_arm_1_actr">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
 </transmission>
 
-<transmission name="Revolute 11_tran">
+<transmission name="center_arm_1_tran">
   <type>transmission_interface/SimpleTransmission</type>
-  <joint name="Revolute 11">
+  <joint name="center_arm_1">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
   </joint>
-  <actuator name="Revolute 11_actr">
+  <actuator name="center_arm_1_actr">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
 </transmission>
 
-<transmission name="Revolute 12_tran">
+<transmission name="upper_arm_1_tran">
   <type>transmission_interface/SimpleTransmission</type>
-  <joint name="Revolute 12">
+  <joint name="upper_arm_1">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
   </joint>
-  <actuator name="Revolute 12_actr">
+  <actuator name="upper_arm_1_actr">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
 </transmission>
 
-<transmission name="Revolute 13_tran">
+<transmission name="gripper_mount_1_tran">
   <type>transmission_interface/SimpleTransmission</type>
-  <joint name="Revolute 13">
+  <joint name="gripper_mount_1">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
   </joint>
-  <actuator name="Revolute 13_actr">
+  <actuator name="gripper_mount_1_actr">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
 </transmission>
 
-<transmission name="Revolute 14_tran">
+<transmission name="left_gripper_1_tran">
   <type>transmission_interface/SimpleTransmission</type>
-  <joint name="Revolute 14">
+  <joint name="left_gripper_1">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
   </joint>
-  <actuator name="Revolute 14_actr">
+  <actuator name="left_gripper_1_actr">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>
 </transmission>
 
-<transmission name="Revolute 15_tran">
+<transmission name="right_gripper_1_tran">
   <type>transmission_interface/SimpleTransmission</type>
-  <joint name="Revolute 15">
+  <joint name="right_gripper_1">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
   </joint>
-  <actuator name="Revolute 15_actr">
+  <actuator name="right_gripper_1_actr">
     <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
     <mechanicalReduction>1</mechanicalReduction>
   </actuator>

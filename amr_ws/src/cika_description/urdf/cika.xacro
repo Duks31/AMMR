@@ -366,60 +366,65 @@
         </collision>
     </link>
 
-    <joint name="Revolute 1" type="continuous">
+    <!-- WHEELS -->
+    <joint name="left_front_wheel_1_joint" type="continuous">
         <origin xyz="-0.100089 0.332003 0.0962" rpy="0 0 0" />
         <parent link="base_link" />
         <child link="left_front_wheel_1" />
         <axis xyz="0.0 1.0 0.0" />
     </joint>
 
-    <joint name="Revolute 2" type="continuous">
+    <joint name="left_back_wheel_1_joint" type="continuous">
         <origin xyz="-0.47736 0.332003 0.0962" rpy="0 0 0" />
         <parent link="base_link" />
         <child link="left_back_wheel_1" />
         <axis xyz="0.0 1.0 0.0" />
     </joint>
 
-    <joint name="Revolute 3" type="continuous">
+    <joint name="right_front_wheel_1_joint" type="continuous">
         <origin xyz="-0.099911 -0.031017 0.0962" rpy="0 0 0" />
         <parent link="base_link" />
         <child link="right_front_wheel_1" />
         <axis xyz="-0.0 1.0 0.0" />
     </joint>
 
-    <joint name="Revolute 4" type="continuous">
+    <joint name="right_back_wheel_1_joint" type="continuous">
         <origin xyz="-0.47736 -0.030997 0.0962" rpy="0 0 0" />
         <parent link="base_link" />
         <child link="right_back_wheel_1" />
         <axis xyz="0.0 1.0 0.0" />
     </joint>
 
-    <joint name="Rigid 5" type="fixed">
+    <!-- FIXED -->
+    <joint name="lidar_1_joint" type="fixed">
         <origin xyz="-0.038004 0.265503 0.193866" rpy="0 0 0" />
         <parent link="base_link" />
         <child link="lidar_1" />
     </joint>
 
-    <joint name="Rigid 7" type="fixed">
+    <joint name="OAKDCamera_1_joint" type="fixed">
         <origin xyz="-0.517714 0.150503 0.657116" rpy="0 0 0" />
         <parent link="base_link" />
         <child link="OAKDcamera_1" />
     </joint>
 
-    <joint name="Rigid 8" type="fixed">
+    <joint name="arm_bottom_1_joint" type="fixed">
         <origin xyz="-0.069976 0.15041 0.149616" rpy="0 0 0" />
         <parent link="base_link" />
         <child link="arm_bottom_1" />
     </joint>
 
-    <joint name="Revolute 9" type="continuous">
+    <!-- ARM -->
+    <joint name="turntable_1_joint" type="continuous">
         <origin xyz="-0.055 0.0 0.079555" rpy="0 0 0" />
         <parent link="arm_bottom_1" />
         <child link="turntable_1" />
-        <axis xyz="0.0 -0.0 1.0" />
+        <axis xyz="0.0 -0.0 1.0" /> 
+        <!-- Uncomment and change type to "revolute" if cable routing restricts rotation -->
+        <!-- <limit lower="-3.14159" upper="3.14159" effort="100" velocity="100" /> -->
     </joint>
 
-    <joint name="Revolute 10" type="revolute">
+    <joint name="lower_arm_1_joint" type="revolute">
         <origin xyz="0.00025 -0.0318 0.0655" rpy="0 0 0" />
         <parent link="turntable_1" />
         <child link="lower_arm_1" />
@@ -427,7 +432,7 @@
         <limit upper="3.420845" lower="0.0" effort="100" velocity="100" />
     </joint>
 
-    <joint name="Revolute 11" type="revolute">
+    <joint name="center_arm_1_joint" type="revolute">
         <origin xyz="-0.183288 0.0555 -0.025108" rpy="0 0 0" />
         <parent link="lower_arm_1" />
         <child link="center_arm_1" />
@@ -435,7 +440,7 @@
         <limit upper="2.617994" lower="-0.349066" effort="100" velocity="100" />
     </joint>
 
-    <joint name="Revolute 12" type="revolute">
+    <joint name="upper_arm_1_joint" type="revolute">
         <origin xyz="-0.045533 0.0065 0.108319" rpy="0 0 0" />
         <parent link="center_arm_1" />
         <child link="upper_arm_1" />
@@ -443,7 +448,7 @@
         <limit upper="0.349066" lower="-2.094395" effort="100" velocity="100" />
     </joint>
 
-    <joint name="Revolute 13" type="revolute">
+    <joint name="gripper_mount_1_joint" type="revolute">
         <origin xyz="0.081028 -0.02995 -0.004201" rpy="0 0 0" />
         <parent link="upper_arm_1" />
         <child link="gripper_mount_1" />
@@ -451,7 +456,8 @@
         <limit upper="0.785398" lower="-0.785398" effort="100" velocity="100" />
     </joint>
 
-    <joint name="Revolute 14" type="revolute">
+    <!-- GRIPPER -->
+    <joint name="left_gripper_1_joint" type="revolute">
         <origin xyz="0.072478 0.0 -0.022021" rpy="0 0 0" />
         <parent link="gripper_mount_1" />
         <child link="left_gripper_1" />
@@ -459,12 +465,76 @@
         <limit upper="0.0" lower="-0.785398" effort="100" velocity="100" />
     </joint>
 
-    <joint name="Revolute 15" type="revolute">
+    <joint name="right_gripper_1_joint" type="revolute">
         <origin xyz="0.072478 0.0 -0.022021" rpy="0 0 0" />
         <parent link="gripper_mount_1" />
         <child link="right_gripper_1" />
         <axis xyz="-0.290702 0.0 -0.956814" />
         <limit upper="0.785398" lower="0.0" effort="100" velocity="100" />
     </joint>
+
+    <ros2_control name="GazeboSystem" type="system">
+        <hardware>
+            <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+        </hardware>
+
+        <joint name="left_front_wheel_1_joint">
+            <command_interface name="velocity" />
+            <state_interface name="position" />
+            <state_interface name="velocity" />
+        </joint>
+        <joint name="left_back_wheel_1_joint">
+            <command_interface name="velocity" />
+            <state_interface name="position" />
+            <state_interface name="velocity" />
+        </joint>
+        <joint name="right_front_wheel_1_joint">
+            <command_interface name="velocity" />
+            <state_interface name="position" />
+            <state_interface name="velocity" />
+        </joint>
+        <joint name="right_back_wheel_1_joint">
+            <command_interface name="velocity" />
+            <state_interface name="position" />
+            <state_interface name="velocity" />
+        </joint>
+
+        <joint name="turntable_1_joint">
+            <command_interface name="position" />
+            <state_interface name="position" />
+            <state_interface name="velocity" />
+        </joint>
+        <joint name="lower_arm_1_joint">
+            <command_interface name="position" />
+            <state_interface name="position" />
+            <state_interface name="velocity" />
+        </joint>
+        <joint name="center_arm_1_joint">
+            <command_interface name="position" />
+            <state_interface name="position" />
+            <state_interface name="velocity" />
+        </joint>
+        <joint name="upper_arm_1_joint">
+            <command_interface name="position" />
+            <state_interface name="position" />
+            <state_interface name="velocity" />
+        </joint>
+        <joint name="gripper_mount_1_joint">
+            <command_interface name="position" />
+            <state_interface name="position" />
+            <state_interface name="velocity" />
+        </joint>
+
+        <joint name="left_gripper_1_joint">
+            <command_interface name="position" />
+            <state_interface name="position" />
+            <state_interface name="velocity" />
+        </joint>
+        <joint name="right_gripper_1_joint">
+            <command_interface name="position" />
+            <state_interface name="position" />
+            <state_interface name="velocity" />
+        </joint>
+    </ros2_control>
 
 </robot>
