@@ -36,7 +36,7 @@ def generate_launch_description():
         ],
         parameters=[{"use_sim_time": True}],
     )
-
+    
     diff_drive_spawner = Node(
         package="controller_manager",
         executable="spawner",

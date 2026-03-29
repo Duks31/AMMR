@@ -2,7 +2,6 @@
 <robot name="cika" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <xacro:include filename="$(find cika_description)/urdf/materials.xacro" />
-    <xacro:include filename="$(find cika_description)/urdf/cika.trans" />
     <xacro:include filename="$(find cika_description)/urdf/cika.gazebo" />
     <link name="base_link">
         <inertial>
@@ -419,7 +418,7 @@
         <origin xyz="-0.055 0.0 0.079555" rpy="0 0 0" />
         <parent link="arm_bottom_1" />
         <child link="turntable_1" />
-        <axis xyz="0.0 -0.0 1.0" /> 
+        <axis xyz="0.0 -0.0 1.0" />
         <!-- Uncomment and change type to "revolute" if cable routing restricts rotation -->
         <!-- <limit lower="-3.14159" upper="3.14159" effort="100" velocity="100" /> -->
     </joint>

@@ -4,8 +4,10 @@
     <gazebo>
         <plugin filename="gz_ros2_control-system"
             name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+            <parameters>$(find cika_description)/config/controllers.yaml</parameters>
         </plugin>
     </gazebo>
+
 
     <!-- Dark Ash -->
     <gazebo reference="base_link">
@@ -38,10 +40,10 @@
         </gazebo>
     </xacro:macro>
 
-    <xacro:wheel_gazebo reference="left_front_wheel_1"/>
-    <xacro:wheel_gazebo reference="left_back_wheel_1"/>
-    <xacro:wheel_gazebo reference="right_front_wheel_1"/>
-    <xacro:wheel_gazebo reference="right_back_wheel_1"/>
+    <xacro:wheel_gazebo reference="left_front_wheel_1" />
+    <xacro:wheel_gazebo reference="left_back_wheel_1" />
+    <xacro:wheel_gazebo reference="right_front_wheel_1" />
+    <xacro:wheel_gazebo reference="right_back_wheel_1" />
 
     <!-- light grey -->
     <gazebo reference="OAKDcamera_1">
@@ -86,12 +88,12 @@
         </gazebo>
     </xacro:macro>
 
-    <xacro:arm_link_gazebo reference="arm_bottom_1" color="black"/>
-    <xacro:arm_link_gazebo reference="turntable_1" color="ash"/>
-    <xacro:arm_link_gazebo reference="lower_arm_1" color="black"/>
-    <xacro:arm_link_gazebo reference="center_arm_1" color="ash"/>
-    <xacro:arm_link_gazebo reference="upper_arm_1" color="black"/>
-    <xacro:arm_link_gazebo reference="gripper_mount_1" color="ash"/>
+    <xacro:arm_link_gazebo reference="arm_bottom_1" color="black" />
+    <xacro:arm_link_gazebo reference="turntable_1" color="ash" />
+    <xacro:arm_link_gazebo reference="lower_arm_1" color="black" />
+    <xacro:arm_link_gazebo reference="center_arm_1" color="ash" />
+    <xacro:arm_link_gazebo reference="upper_arm_1" color="black" />
+    <xacro:arm_link_gazebo reference="gripper_mount_1" color="ash" />
 
     <!-- black and ash pattern -->
     <xacro:macro name="gripper_gazebo" params="reference">
@@ -108,7 +110,7 @@
         </gazebo>
     </xacro:macro>
 
-    <xacro:gripper_gazebo reference="left_gripper_1"/>
-    <xacro:gripper_gazebo reference="right_gripper_1"/>
+    <xacro:gripper_gazebo reference="left_gripper_1" />
+    <xacro:gripper_gazebo reference="right_gripper_1" />
 
 </robot>
