@@ -1,15 +1,14 @@
 <?xml version="1.0"?>
-<robot name="base" xmlns:xacro="http://www.ros.org/wiki/xacro">
+<robot name="cika" xmlns:xacro="http://www.ros.org/wiki/xacro">
 
     <gazebo>
         <plugin filename="gz_ros2_control-system"
             name="gz_ros2_control::GazeboSimROS2ControlPlugin">
             <parameters>$(find cika_description)/config/controllers.yaml</parameters>
         </plugin>
+
     </gazebo>
 
-
-    <!-- Dark Ash -->
     <gazebo reference="base_link">
         <visual>
             <material>
@@ -24,7 +23,6 @@
         <gravity>true</gravity>
     </gazebo>
 
-    <!-- total black -->
     <xacro:macro name="wheel_gazebo" params="reference">
         <gazebo reference="${reference}">
             <visual>
@@ -45,7 +43,6 @@
     <xacro:wheel_gazebo reference="right_front_wheel_1" />
     <xacro:wheel_gazebo reference="right_back_wheel_1" />
 
-    <!-- light grey -->
     <gazebo reference="OAKDcamera_1">
         <visual>
             <material>
@@ -55,9 +52,46 @@
             </material>
         </visual>
         <self_collide>true</self_collide>
+
+        <sensor name="oak_rgb_camera" type="camera">
+            <always_on>true</always_on>
+            <update_rate>30</update_rate>
+            <visualize>true</visualize>
+            <topic>/oak/image</topic>
+            <camera>
+                <horizontal_fov>1.2043</horizontal_fov>
+                <image>
+                    <width>640</width>
+                    <height>480</height>
+                    <format>R8G8B8</format>
+                </image>
+                <clip>
+                    <near>0.1</near>
+                    <far>20.0</far>
+                </clip>
+            </camera>
+        </sensor>
+
+        <sensor name="oak_depth_camera" type="depth_camera">
+            <always_on>true</always_on>
+            <update_rate>30</update_rate>
+            <visualize>true</visualize>
+            <topic>/oak_depth/image</topic>
+            <camera>
+                <horizontal_fov>1.2043</horizontal_fov>
+                <image>
+                    <width>640</width>
+                    <height>480</height>
+                    <format>R_FLOAT32</format>
+                </image>
+                <clip>
+                    <near>0.1</near>
+                    <far>10.0</far>
+                </clip>
+            </camera>
+        </sensor>
     </gazebo>
 
-    <!-- black -->
     <gazebo reference="lidar_1">
         <visual>
             <material>
@@ -67,7 +101,6 @@
         </visual>
     </gazebo>
 
-    <!-- Black and Ash pattern -->
     <xacro:macro name="arm_link_gazebo" params="reference color">
         <gazebo reference="${reference}">
             <visual>
@@ -95,7 +128,6 @@
     <xacro:arm_link_gazebo reference="upper_arm_1" color="black" />
     <xacro:arm_link_gazebo reference="gripper_mount_1" color="ash" />
 
-    <!-- black and ash pattern -->
     <xacro:macro name="gripper_gazebo" params="reference">
         <gazebo reference="${reference}">
             <visual>

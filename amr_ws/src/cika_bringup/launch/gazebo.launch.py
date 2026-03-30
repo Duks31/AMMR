@@ -22,7 +22,9 @@ def generate_launch_description():
 
     controllers_yaml = os.path.join(cika_description, "config", "controllers.yaml")
 
-    bridge_config = os.path.join(get_package_share_directory("cika_bringup"), "config", "ros_gz_bridge.yaml")
+    bridge_config = os.path.join(
+        get_package_share_directory("cika_bringup"), "config", "ros_gz_bridge.yaml"
+    )
 
     model_arg = DeclareLaunchArgument(
         name="model",
@@ -40,6 +42,8 @@ def generate_launch_description():
         value_type=str,
     )
 
+    world_path = os.path.join(cika_description, "worlds", "world.sdf")
+
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
@@ -55,24 +59,30 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(ros_gz_sim, "launch", "gz_sim.launch.py")
         ),
-        launch_arguments=[("gz_args", "-v 4 -r empty.sdf")],
+        launch_arguments=[("gz_args", "-v 2 -r " + world_path)],
     )
 
-    gz_spawn_entity = Node(
-        package="ros_gz_sim",
-        executable="create",
-        output="screen",
-        arguments=[
-            "-topic",
-            "robot_description",
-            "-name",
-            "base",
-            "-x",
-            "0.0",
-            "-y",
-            "0.0",
-            "-z",
-            "0.15",
+    # === DELAYED SPAWN (fixes Visual already exists + race condition) ===
+    gz_spawn_entity = TimerAction(
+        period=3.0,
+        actions=[
+            Node(
+                package="ros_gz_sim",
+                executable="create",
+                output="screen",
+                arguments=[
+                    "-topic",
+                    "robot_description",
+                    "-name",
+                    "cika",
+                    "-x",
+                    "0.0",
+                    "-y",
+                    "0.0",
+                    "-z",
+                    "0.15",
+                ],
+            )
         ],
     )
 
@@ -142,24 +152,35 @@ def generate_launch_description():
 
     skid_steer_controller_spawner = TimerAction(
         period=5.0,
-        actions=[Node(
-            package="controller_manager",
-            executable="spawner",
-            arguments=[
-                "skid_steer_controller",
-                "--controller-manager", "/controller_manager",
-                "--controller-manager-timeout", "30",
-            ],
-            remappings=[
-                ("/cmd_vel", "/skid_steer_controller/cmd_vel_unstamped"),
-            ],
-        )],
+        actions=[
+            Node(
+                package="controller_manager",
+                executable="spawner",
+                arguments=[
+                    "skid_steer_controller",
+                    "--controller-manager",
+                    "/controller_manager",
+                    "--controller-manager-timeout",
+                    "30",
+                ],
+                remappings=[
+                    ("/cmd_vel", "/skid_steer_controller/cmd_vel_unstamped"),
+                ],
+            )
+        ],
+    )
+
+    nvidia_offload = SetEnvironmentVariable(name="__NV_PRIME_RENDER_OFFLOAD", value="1")
+    nvidia_vendor = SetEnvironmentVariable(
+        name="__GLX_VENDOR_LIBRARY_NAME", value="nvidia"
     )
 
     return LaunchDescription(
         [
             model_arg,
             gazebo_resource_path,
+            nvidia_offload,
+            nvidia_vendor,
             robot_state_publisher_node,
             gazebo,
             gz_spawn_entity,
