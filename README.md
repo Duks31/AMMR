@@ -21,9 +21,10 @@
 `docker compose -f docker-compose.dev.yaml exec {service name} bash`
 
 ## Project Structure 
-
+```
 amr_ws/src/
 ├── cika_description/        # URDF, meshes, ros2_control config
 ├── cika_bringup/            # Top-level launch files
 ├── cika_navigation/         # Nav2, SLAM, RTAB-Map
 └── cika_manipulation/       # MoveIt2, arm planning, gripper
+```

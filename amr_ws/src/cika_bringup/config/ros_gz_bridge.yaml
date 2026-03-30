@@ -2,51 +2,64 @@
 - ros_topic_name: /clock
   gz_topic_name: /clock
   ros_type_name: rosgraph_msgs/msg/Clock
-  gz_type_name: gz.msgs.Clock
+  gz_type_name: ignition.msgs.Clock
   direction: GZ_TO_ROS
 
 # Base controller
 - ros_topic_name: /skid_steer_controller/cmd_vel_unstamped
   gz_topic_name: /skid_steer_controller/cmd_vel_unstamped
   ros_type_name: geometry_msgs/msg/Twist
-  gz_type_name: gz.msgs.Twist
+  gz_type_name: ignition.msgs.Twist
   direction: ROS_TO_GZ
 
 - ros_topic_name: /skid_steer_controller/odom
   gz_topic_name: /skid_steer_controller/odom
   ros_type_name: nav_msgs/msg/Odometry
-  gz_type_name: gz.msgs.Odometry
+  gz_type_name: ignition.msgs.Odometry
   direction: GZ_TO_ROS
 
 # Joint states
 - ros_topic_name: /joint_states
   gz_topic_name: /world/empty/model/base/joint_state
   ros_type_name: sensor_msgs/msg/JointState
-  gz_type_name: gz.msgs.Model
+  gz_type_name: ignition.msgs.Model
   direction: GZ_TO_ROS
 
 # LiDAR
 - ros_topic_name: /scan
   gz_topic_name: /scan
   ros_type_name: sensor_msgs/msg/LaserScan
-  gz_type_name: gz.msgs.LaserScan
+  gz_type_name: ignition.msgs.LaserScan
   direction: GZ_TO_ROS
 
-# OAK-D camera
-- ros_topic_name: /camera/image_raw
-  gz_topic_name: /camera/image_raw
+# OAK-D RGB
+- ros_topic_name: /oak/rgb/image_raw
+  gz_topic_name: /oak/image
   ros_type_name: sensor_msgs/msg/Image
-  gz_type_name: gz.msgs.Image
+  gz_type_name: ignition.msgs.Image
   direction: GZ_TO_ROS
 
-- ros_topic_name: /camera/depth/image_raw
-  gz_topic_name: /camera/depth/image_raw
-  ros_type_name: sensor_msgs/msg/Image
-  gz_type_name: gz.msgs.Image
-  direction: GZ_TO_ROS
-
-- ros_topic_name: /camera/camera_info
-  gz_topic_name: /camera/camera_info
+- ros_topic_name: /oak/rgb/camera_info
+  gz_topic_name: /oak/camera_info
   ros_type_name: sensor_msgs/msg/CameraInfo
-  gz_type_name: gz.msgs.CameraInfo
+  gz_type_name: ignition.msgs.CameraInfo
+  direction: GZ_TO_ROS
+
+# OAK-D Depth
+- ros_topic_name: /oak/stereo/image_raw
+  gz_topic_name: /oak_depth/image
+  ros_type_name: sensor_msgs/msg/Image
+  gz_type_name: ignition.msgs.Image
+  direction: GZ_TO_ROS
+
+- ros_topic_name: /oak/stereo/camera_info
+  gz_topic_name: /oak_depth/camera_info
+  ros_type_name: sensor_msgs/msg/CameraInfo
+  gz_type_name: ignition.msgs.CameraInfo
+  direction: GZ_TO_ROS
+
+- ros_topic_name: /oak/stereo/points
+  gz_topic_name: /oak_depth/points
+  ros_type_name: sensor_msgs/msg/PointCloud2
+  gz_type_name: ignition.msgs.PointCloudPacked
   direction: GZ_TO_ROS
