@@ -3,54 +3,104 @@ from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
+
 def generate_launch_description():
-    use_sim_time = LaunchConfiguration('use_sim_time', default='true')
 
+    use_sim_time = LaunchConfiguration("use_sim_time", default="true")
+
+    # ── Shared parameters ────────────────────────────────────────────────────
+    rtabmap_params = [
+        {
+            # Frames
+            "frame_id": "base_link",
+            "odom_frame_id": "odom",
+            # Subscriptions
+            "subscribe_depth": True,
+            "subscribe_scan": True,
+            "subscribe_rgb": True,
+            "subscribe_odom_info": False,
+            # Sync
+            "approx_sync": True,
+            "approx_sync_max_interval": 0.05,  # 50ms — generous for sim
+            "queue_size": 10,
+            # Sim time — NOTE: string key, not variable key
+            "use_sim_time": use_sim_time,
+            # QoS fix
+            "qos_overrides./tf_static.publisher.durability": "transient_local",
+            # RTAB-Map strategy
+            # 1 = ICP (good with LiDAR), 0 = Visual
+            "Reg/Strategy": "1",
+            "ICP/PointToPlane": "false",  # 2D scan, not pointcloud
+            "ICP/Iterations": "30",
+            "ICP/MaxTranslation": "1.0",
+            "ICP/MaxCorrespondenceDistance": "0.1",
+            # Loop closure / graph
+            "RGBD/NeighborLinkRefining": "true",
+            "RGBD/ProximityBySpace": "true",
+            "RGBD/ProximityMaxGraphDepth": "0",
+            "RGBD/OptimizeFromGraphEnd": "false",
+            # Grid map (occupancy for Nav2)
+            "Grid/Sensor": "0",  # 0 = laser scan, 1 = depth
+            "Grid/RangeMin": "0.12",  # match your lidar min range
+            "Grid/RangeMax": "12.0",  # match your LiDAR max range (string!)
+            "Grid/FootprintRadius": "0.35",  # rough radius of cika's base in meters
+            "Grid/CellSize": "0.05",  # 5cm resolution — good for Nav2
+            "Grid/3D": "false",  # 2D occupancy grid for Nav2
+            # Visual odometry (disabled — we use wheel odom)
+            "Odom/Strategy": "0",
+            "RGBD/Enabled": "true",
+            # Memory
+            "Mem/IncrementalMemory": "true",
+            "Mem/InitWMWithAllNodes": "false",
+            "Mem/SaveDepth16Format": "true",
+            "Mem/DepthCompressionFormat": ".png",
+        }
+    ]
+
+    rtabmap_remappings = [
+        ("rgb/image", "/oak/rgb/image_raw"),
+        ("depth/image", "/oak/stereo/image_raw"),
+        ("rgb/camera_info", "/oak/rgb/camera_info"),
+        ("scan", "/scan"),
+        ("odom", "/skid_steer_controller/odom"),
+    ]
+
+    # ── RTAB-Map SLAM node ───────────────────────────────────────────────────
     rtabmap_node = Node(
-        package="rtabmap_slam", executable="rtabmap", output="screen",
-        parameters=[{
-            'frame_id': 'base_link',
-            'subscribe_depth': True,
-            'subscribe_scan': True,
-            'approx_sync': True,
-            use_sim_time: use_sim_time,
-
-            'Reg/Strategy': '1',
-            'RGBD/NeibhorsLinkRefining': 'True',
-            'Grid/RangeMax': 10.0,
-        }],
-
-        remappings=[
-            ('rgb/image', '/oak/rgb/image_raw'),
-            ('depth/image', '/oak/stereo/image_raw'),
-            ('rgb/camera_info', '/oak/rgb/camera_info'),
-            ('scan', '/scan'),
-            ('odom', '/skid_steer_controller/odom'),
-        ], 
-
-        arguments=["-d"]
+        package="rtabmap_slam",
+        executable="rtabmap",
+        name="rtabmap",
+        output="screen",
+        parameters=rtabmap_params,
+        remappings=rtabmap_remappings,
+        arguments=["-d"],  # -d = delete existing database on start (good for dev)
     )
 
-    rtabmap_viz = Node(
-        package="rtabmap_viz", executable="rtabmap_viz", output="screen",
-        parameters=[{
-            'frame_id': 'base_link',
-            'subscribe_depth': True,
-            'subscribe_scan': True,
-            'approx_sync': True,
-            'use_sim_time': use_sim_time,
-        }],
+    # ── RTAB-Map visualizer ──────────────────────────────────────────────────
+    rtabmap_viz_node = Node(
+        package="rtabmap_viz",
+        executable="rtabmap_viz",
+        name="rtabmap_viz",
+        output="screen",
+        parameters=[
+            {
+                "frame_id": "base_link",
+                "odom_frame_id": "odom",
+                "subscribe_depth": True,
+                "subscribe_scan": True,
+                "approx_sync": True,
+                "use_sim_time": use_sim_time,
+            }
+        ],
+        remappings=rtabmap_remappings,
+    )
 
-        remappings=[
-            ('rgb/image', '/oak/rgb/image_raw'),
-            ('depth/image', '/oak/stereo/image_raw'),
-            ('rgb/camera_info', '/oak/rgb/camera_info'),
-            ('scan', '/scan'),
-            ('odom', '/skid_steer_controller/odom'),
+    return LaunchDescription(
+        [
+            DeclareLaunchArgument(
+                "use_sim_time", default_value="true", description="Use simulation clock"
+            ),
+            rtabmap_node,
+            rtabmap_viz_node,
         ]
     )
-
-    return LaunchDescription([
-        rtabmap_node,
-        rtabmap_viz,
-    ])

@@ -42,7 +42,7 @@ def generate_launch_description():
         value_type=str,
     )
 
-    world_path = os.path.join(cika_description, "worlds", "world.sdf")
+    world_path = os.path.join(cika_description, "worlds", "warehouse_world.sdf")
 
     laser_filter_yaml = os.path.join(
         get_package_share_directory("cika_bringup"), "config", "laser_filter.yaml"
