@@ -26,8 +26,8 @@
   direction: GZ_TO_ROS
 
 # LiDAR
-- ros_topic_name: /scan
-  gz_topic_name: /scan
+- ros_topic_name: /scan_raw
+  gz_topic_name: /scan_raw
   ros_type_name: sensor_msgs/msg/LaserScan
   gz_type_name: ignition.msgs.LaserScan
   direction: GZ_TO_ROS

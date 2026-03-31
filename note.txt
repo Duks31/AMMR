@@ -33,4 +33,8 @@
 3/29/2026(Kene)
 - Added new git branch(cika manipulator)
 
-3/30/2016
+3/30/2026 (Chidubem)
+- Added Oak-d lite sensor
+
+3/31/2026 (Chidubem)
+- Add 2D Lidar sensor

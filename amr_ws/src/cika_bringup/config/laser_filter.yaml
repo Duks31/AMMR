@@ -1,0 +1,17 @@
+scan_to_scan_filter_chain:
+  ros__parameters:
+    filter1:
+      name: my_polygon_filter
+      type: laser_filters/LaserScanPolygonFilter
+      params:
+        # We use base_link so it's easy to measure from the center of the robot
+        polygon_frame: base_link
+        
+        # Draw a box covering the back half of the robot where the tower is.
+        # Format: [[X1, Y1], [X2, Y2], [X3, Y3], [X4, Y4]] in meters.
+        # This covers 0cm to 60cm behind the center, and 30cm left/right.
+        polygon: "[[-0.05, 0.35], [-0.55, 0.35], [-0.55, -0.35], [-0.05, -0.35]]"
+        polygon_padding: 0.02
+        
+        # false = "Delete points INSIDE this polygon"
+        invert: false

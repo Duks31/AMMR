@@ -44,6 +44,10 @@ def generate_launch_description():
 
     world_path = os.path.join(cika_description, "worlds", "world.sdf")
 
+    laser_filter_yaml = os.path.join(
+        get_package_share_directory("cika_bringup"), "config", "laser_filter.yaml"
+    )
+
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
@@ -175,6 +179,17 @@ def generate_launch_description():
         name="__GLX_VENDOR_LIBRARY_NAME", value="nvidia"
     )
 
+    laser_filter_node = Node(
+        package="laser_filters",
+        executable="scan_to_scan_filter_chain",
+        parameters=[laser_filter_yaml],
+        remappings=[
+            ("scan", "scan_raw"),
+            ("scan_filtered", "scan")
+        ],
+        output="screen",
+    )
+
     return LaunchDescription(
         [
             model_arg,
@@ -190,5 +205,6 @@ def generate_launch_description():
             arm_controller_spawner,
             gripper_controller_spawner,
             skid_steer_controller_spawner,
+            laser_filter_node,
         ]
     )

@@ -11,7 +11,7 @@ from ament_index_python.packages import get_package_share_directory
 def generate_launch_description():
     share_dir = get_package_share_directory("cika_description")
 
-    rviz_config_file = os.path.join(share_dir, "config", "display.rviz")
+    rviz_config_file = os.path.join(share_dir, "config", "sensors.rviz")
 
     gui_arg = DeclareLaunchArgument(name="gui", default_value="True")
 
