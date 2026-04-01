@@ -60,11 +60,9 @@ RUN pip3 install \
     torch torchvision \
     --index-url https://download.pytorch.org/whl/cu118
 
-RUN pip3 install \
-    ultralytics \
-    numpy \
-    opencv-python-headless \
-    Pillow
+RUN pip3 install --no-cache-dir --default-timeout=1000 numpy Pillow
+RUN pip3 install --no-cache-dir --default-timeout=1000 opencv-python-headless
+RUN pip3 install --no-cache-dir --default-timeout=1000 ultralytics  
 
 # WSLg display support
 ENV DISPLAY=:0
