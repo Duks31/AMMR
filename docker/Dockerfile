@@ -59,7 +59,7 @@ RUN rosdep init || true && \
     rosdep install --from-paths src \
     --ignore-src -r -y \
     --skip-keys="ros_gz_sim ros_gz_bridge gz_ros2_control ign_ros2_control"
-
+    
 # Build workspace
 RUN . /opt/ros/humble/setup.sh && \
     colcon build \
