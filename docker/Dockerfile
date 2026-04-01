@@ -37,19 +37,15 @@ RUN pip3 install --no-cache-dir --default-timeout=1000 \
     torch torchvision \
     --index-url https://download.pytorch.org/whl/cpu
 
-RUN pip3 install \
-    depthai \
-    blobconverter \
-    ultralytics \
-    numpy \
-    opencv-python-headless \
-    Pillow
+RUN pip3 install --no-cache-dir --default-timeout=1000 numpy Pillow
+RUN pip3 install --no-cache-dir --default-timeout=1000 depthai blobconverter
+RUN pip3 install --no-cache-dir --default-timeout=1000 opencv-python-headless
+RUN pip3 install --no-cache-dir --default-timeout=1000 ultralytics
 
 WORKDIR /cika_ws
 
 COPY cika_ws/src/ src/
 COPY cika_ws/config/ config/
-COPY cika_ws/models/ models/
 
 RUN rosdep init || true && \
     rosdep update && \
