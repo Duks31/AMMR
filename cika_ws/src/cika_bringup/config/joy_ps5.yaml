@@ -1,0 +1,23 @@
+teleop_twist_joy_node:
+  ros__parameters:
+    # Forward/Backward on Left Stick (Vertical)
+    axis_linear:
+      x: 1
+    
+    # Left/Right on Right Stick (Horizontal)
+    axis_angular:
+      yaw: 3
+    
+    # Speed Settings
+    scale_linear: 0.5          # Normal speed (m/s)
+    scale_angular: 1.5        # Normal turn speed (rad/s)
+    
+    # Turbo Settings (Hold L1 to go faster)
+    scale_linear_turbo: 1.2    # Turbo speed (m/s)
+    scale_angular_turbo: 2.5  # Turbo turn speed (rad/s)
+    
+    # Button Mapping
+    enable_button: 5          # R1 (Must hold to move)
+    enable_turbo_button: 4    # L1 (Hold with R1 to go fast)
+    
+    publish_stamped_twist: false

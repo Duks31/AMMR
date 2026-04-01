@@ -48,6 +48,8 @@ def generate_launch_description():
         get_package_share_directory("cika_bringup"), "config", "laser_filter.yaml"
     )
 
+    joy_ps5_params = os.path.join(get_package_share_directory("cika_bringup"), "config", "joy_ps5.yaml")
+
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
@@ -190,6 +192,20 @@ def generate_launch_description():
         output="screen",
     )
 
+    joy_ps5_node = Node(
+        package="joy",
+        executable="joy_node",
+        parameters=[joy_ps5_params],
+    )
+
+    joy_ps5_teleop_node = Node(
+        package="teleop_twist_joy",
+        executable="teleop_node",
+        parameters=[joy_ps5_params],
+        remappings=[
+            ("/cmd_vel", "/skid_steer_controller/cmd_vel_unstamped")]
+    )
+
     return LaunchDescription(
         [
             model_arg,
@@ -206,5 +222,7 @@ def generate_launch_description():
             gripper_controller_spawner,
             skid_steer_controller_spawner,
             laser_filter_node,
+            joy_ps5_node,
+            joy_ps5_teleop_node,
         ]
     )
