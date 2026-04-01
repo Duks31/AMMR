@@ -1,7 +1,7 @@
 # Ignore build artifacts
-amr_ws/build/
-amr_ws/install/
-amr_ws/log/
+cika_ws/build/
+cika_ws/install/
+cika_ws/log/
 
 # Ignore training code
 waste_ai/

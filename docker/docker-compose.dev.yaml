@@ -1,29 +1,28 @@
 services:
-
-   # ── Manipulation: MoveIt2 + Arm ──────────────────────────────────
-  amr_manipulation:
+  # ── Manipulation: MoveIt2 + Arm ──────────────────────────────────
+  cika_manipulation:
     build:
       context: ..
       dockerfile: docker/Dockerfile.dev
-    image: amr_ros2:dev
-    container_name: amr_manipulation_dev
+    image: cika_ros2:dev
+    container_name: cika_manipulation_dev
     network_mode: host
     stdin_open: true
-    tty: true           
+    tty: true
     privileged: true
     volumes:
-      - ../amr_ws/src:/amr_ws/src
-      - ../amr_ws/config:/amr_ws/config
+      - ../cika_ws/src:/cika_ws/src
+      - ../cika_ws/config:/cika_ws/config
       - /tmp/.X11-unix:/tmp/.X11-unix
       - /mnt/wslg:/mnt/wslg
     devices:
-      - /dev/ttyUSB0:/dev/ttyUSB0     # ESP32 (after usbipd attach)
+      - /dev/ttyUSB0:/dev/ttyUSB0
     environment:
-      - ROS_DOMAIN_ID=0
+      - ROS_DOMAIN_ID=31
       - DISPLAY=$DISPLAY
       - WAYLAND_DISPLAY=$WAYLAND_DISPLAY
       - XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR
-    deploy:                               # ← add
+    deploy:
       resources:
         reservations:
           devices:
@@ -34,63 +33,62 @@ services:
       - /tmp:size=200m
     command: bash
 
-  # # ── Navigation: SLAM + Nav2 + Gazebo sim ────────────────────────
-  # amr_navigation:
-  #   image: amr_ros2:dev
-  #   container_name: amr_navigation_dev
-  #   network_mode: host
-  #   stdin_open: true
-  #   tty: true           
-  #   privileged: true
-  #   volumes:
-  #     - ../amr_ws/src:/amr_ws/src
-  #     - ../amr_ws/config:/amr_ws/config
-  #     # WSLg display sockets
-  #     - /tmp/.X11-unix:/tmp/.X11-unix
-  #     - /mnt/wslg:/mnt/wslg
-  #   environment:
-  #     - ROS_DOMAIN_ID=0
-  #     - DISPLAY=$DISPLAY
-  #     - WAYLAND_DISPLAY=$WAYLAND_DISPLAY
-  #     - XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR
-  #     - PULSE_SERVER=$PULSE_SERVER
-  #   # GPU access for CUDA PyTorch
-  #   deploy:
-  #     resources:
-  #       reservations:
-  #         devices:
-  #           - driver: nvidia
-  #             count: 1
-  #             capabilities: [gpu]
-  #   tmpfs:
-  #     - /tmp:size=500m
-  #   command: bash   # start shell, launch manually during dev
-    
-  # # ── Perception: OAK-D + YOLO + Classifier ───────────────────────
-  # amr_perception:
-  #   image: amr_ros2:dev
-  #   container_name: amr_perception_dev
-  #   network_mode: host
-  #   stdin_open: true
-  #   tty: true           
-  #   privileged: true
-  #   volumes:
-  #     - ../amr_ws/src:/amr_ws/src
-  #     - ../amr_ws/models:/amr_ws/models
-  #     - /tmp/.X11-unix:/tmp/.X11-unix
-  #     - /mnt/wslg:/mnt/wslg
-  #   devices:
-  #     - /dev/bus/usb:/dev/bus/usb     # OAK-D (after usbipd attach)
-  #   environment:
-  #     - ROS_DOMAIN_ID=0
-  #     - DISPLAY=$DISPLAY
-  #   deploy:
-  #     resources:
-  #       reservations:
-  #         devices:
-  #           - driver: nvidia
-  #             count: 1
-  #             capabilities: [gpu]
-  #   tmpfs:
-  #     - /tmp:size=200m
-  #   command: bash
+  # ── Navigation: SLAM + Nav2 + Gazebo sim ────────────────────────
+  cika_navigation:
+    image: cika_ros2:dev
+    container_name: cika_navigation_dev
+    network_mode: host
+    stdin_open: true
+    tty: true
+    privileged: true
+    volumes:
+      - ../cika_ws/src:/cika_ws/src
+      - ../cika_ws/config:/cika_ws/config
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /mnt/wslg:/mnt/wslg
+      - ../cika_ws/maps:/root/.ros
+    environment:
+      - ROS_DOMAIN_ID=31
+      - DISPLAY=$DISPLAY
+      - WAYLAND_DISPLAY=$WAYLAND_DISPLAY
+      - XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR
+      - USE_SIM_TIME=true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    tmpfs:
+      - /tmp:size=500m
+    command: bash
+
+  # ── Perception: OAK-D + YOLO ────────────────────────────────────
+  cika_perception:
+    image: cika_ros2:dev
+    container_name: cika_perception_dev
+    network_mode: host
+    stdin_open: true
+    tty: true
+    privileged: true
+    volumes:
+      - ../cika_ws/src:/cika_ws/src
+      - ../cika_ws/models:/cika_ws/models
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /mnt/wslg:/mnt/wslg
+    devices:
+      - /dev/bus/usb:/dev/bus/usb
+    environment:
+      - ROS_DOMAIN_ID=31
+      - DISPLAY=$DISPLAY
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    tmpfs:
+      - /tmp:size=200m
+    command: bash

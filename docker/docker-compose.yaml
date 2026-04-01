@@ -1,58 +1,59 @@
+### PLEASE CONFIRM SERVICES BEFORE RUNNING THIS DOCKER COMPOSE FILE ON RPI
+
 services:
-
   # ── Navigation: SLAM + Nav2 ──────────────────────────────────────
-  amr_navigation:
-    build:
-      context: ..                        # AMMR/ root
-      dockerfile: docker/Dockerfile
-    image: amr_ros2:humble
-    container_name: amr_navigation
-    network_mode: host
-    privileged: true
-    volumes:
-      - ../amr_ws/src:/amr_ws/src        # live code editing
-      - ../amr_ws/config:/amr_ws/config  # config files
-    environment:
-      - ROS_DOMAIN_ID=0
-      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
-      - DISPLAY=$DISPLAY                 # for RViz2
-    tmpfs:
-      - /tmp:size=200m                   # protect SD card
-    command: ros2 launch amr_bringup navigation.launch.py
-    restart: unless-stopped
+  # cika_navigation:
+  #   build:
+  #     context: ..
+  #     dockerfile: docker/Dockerfile
+  #   image: cika_ros2:humble
+  #   container_name: cika_navigation
+  #   network_mode: host
+  #   privileged: true
+  #   volumes:
+  #     - ../cika_ws/src:/cika_ws/src
+  #     - ../cika_ws/config:/cika_ws/config
+  #     - ../cika_ws/maps:/root/.ros
+  #   environment:
+  #     - ROS_DOMAIN_ID=31
+  #     - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+  #   tmpfs:
+  #     - /tmp:size=200m
+  #   command: ros2 launch cika_bringup navigation.launch.py
+  #   restart: unless-stopped
 
-  # ── Perception: OAK-D + YOLO + Classifier ───────────────────────
-  amr_perception:
-    image: amr_ros2:humble
-    container_name: amr_perception
-    network_mode: host
-    privileged: true
-    volumes:
-      - ../amr_ws/src:/amr_ws/src
-      - ../amr_ws/models:/amr_ws/models  # YOLO + classifier models
-    devices:
-      - /dev/bus/usb:/dev/bus/usb        # OAK-D Lite (after usbipd attach)
-    environment:
-      - ROS_DOMAIN_ID=0
-    tmpfs:
-      - /tmp:size=200m
-    command: ros2 launch amr_perception perception.launch.py
-    restart: unless-stopped
+  # ── Perception: OAK-D + YOLO ────────────────────────────────────
+  # cika_perception:
+  #   image: cika_ros2:humble
+  #   container_name: cika_perception
+  #   network_mode: host
+  #   privileged: true
+  #   volumes:
+  #     - ../cika_ws/src:/cika_ws/src
+  #     - ../cika_ws/models:/cika_ws/models
+  #   devices:
+  #     - /dev/bus/usb:/dev/bus/usb
+  #   environment:
+  #     - ROS_DOMAIN_ID=31
+  #   tmpfs:
+  #     - /tmp:size=200m
+  #   command: ros2 launch cika_perception perception.launch.py
+  #   restart: unless-stopped
 
   # ── Manipulation: MoveIt2 + Arm ──────────────────────────────────
-  amr_manipulation:
-    image: amr_ros2:humble
-    container_name: amr_manipulation
-    network_mode: host
-    privileged: true
-    volumes:
-      - ../amr_ws/src:/amr_ws/src
-      - ../amr_ws/config:/amr_ws/config
-    devices:
-      - /dev/ttyUSB0:/dev/ttyUSB0        # ESP32 serial
-    environment:
-      - ROS_DOMAIN_ID=0
-    tmpfs:
-      - /tmp:size=200m
-    command: ros2 launch robot_arm_controller main_launch.py
-    restart: unless-stopped
+  # cika_manipulation:
+  #   image: cika_ros2:humble
+  #   container_name: cika_manipulation
+  #   network_mode: host
+  #   privileged: true
+  #   volumes:
+  #     - ../cika_ws/src:/cika_ws/src
+  #     - ../cika_ws/config:/cika_ws/config
+  #   devices:
+  #     - /dev/ttyUSB0:/dev/ttyUSB0
+  #   environment:
+  #     - ROS_DOMAIN_ID=31
+  #   tmpfs:
+  #     - /tmp:size=200m
+  #   command: ros2 launch robot_arm_controller main_launch.py
+  #   restart: unless-stopped
