@@ -1,10 +1,9 @@
 FROM ros:humble-ros-base
 
-# Avoid interactive prompts during apt installs
 ENV DEBIAN_FRONTEND=noninteractive
 ENV ROS_DISTRO=humble
 
-# ─── Add Gazebo Fortress repo (needed for Humble) ──────────────────
+# ─── Add Gazebo Fortress repo ──────────────────────────────────────
 RUN apt-get update && apt-get install -y curl gnupg lsb-release && \
     curl -sSL https://packages.osrfoundation.org/gazebo.gpg \
     -o /usr/share/keyrings/pkgs-osrf-archive-keyring.gpg && \
@@ -12,28 +11,26 @@ RUN apt-get update && apt-get install -y curl gnupg lsb-release && \
     http://packages.osrfoundation.org/gazebo/ubuntu-stable jammy main" \
     > /etc/apt/sources.list.d/gazebo-stable.list
 
-# ─── System dependencies ───────────────────────────────────────────
 RUN apt-get update && apt-get install -y \
     python3-pip \
     python3-colcon-common-extensions \
     python3-rosdep \
     python3-argcomplete \
     git wget curl \
-    # # Nav2 + SLAM
-    # ros-humble-navigation2 \
-    # ros-humble-nav2-bringup \
-    # ros-humble-slam-toolbox \
-    # MoveIt2 + warehouse (needed by robot_arm_moveit)
+    # Nav2
+    ros-humble-navigation2 \
+    ros-humble-nav2-bringup \
+    # RTAB-Map
+    ros-humble-rtabmap-ros \
+    # MoveIt2
     ros-humble-moveit \
     ros-humble-moveit-ros-planning-interface \
     ros-humble-moveit-setup-assistant \
     ros-humble-warehouse-ros \
-    # # ros2_control
+    # ros2_control
     ros-humble-ros2-control \
     ros-humble-ros2-controllers \
-    # # micro-ROS
-    # ros-humble-micro-ros-agent \
-    # # OAK-D
+    # OAK-D
     # ros-humble-depthai-ros \
     # Robot description
     ros-humble-xacro \
@@ -44,6 +41,11 @@ RUN apt-get update && apt-get install -y \
     ros-humble-ros-gz \
     ros-humble-ign-ros2-control \
     ignition-fortress \
+    # Laser filters
+    ros-humble-laser-filters \
+    # Joystick teleop
+    ros-humble-joy \
+    ros-humble-teleop-twist-joy \
     # Visualization
     ros-humble-rviz2 \
     ros-humble-rqt \
@@ -53,51 +55,43 @@ RUN apt-get update && apt-get install -y \
     ros-humble-topic-tools \
     && rm -rf /var/lib/apt/lists/*
 
-# ─── Python dependencies ───────────────────────────────────────────
-# PyTorch with CUDA 11.8 (compatible with GTX 10/16 series)
+# PyTorch with CUDA 11.8
 RUN pip3 install \
     torch torchvision \
     --index-url https://download.pytorch.org/whl/cu118
 
-# Everything else from PyPI
 RUN pip3 install \
-    # depthai \
-    # blobconverter \
     ultralytics \
     numpy \
     opencv-python-headless \
     Pillow
 
-# ─── WSLg display support ──────────────────────────────────────────
+# WSLg display support
 ENV DISPLAY=:0
 ENV WAYLAND_DISPLAY=wayland-0
 ENV XDG_RUNTIME_DIR=/tmp/runtime-root
 ENV LIBGL_ALWAYS_SOFTWARE=0
 
-# ─── Workspace setup ───────────────────────────────────────────────
-WORKDIR /amr_ws
+WORKDIR /cika_ws
 
-COPY amr_ws/src/ src/
-COPY amr_ws/config/ config/
-COPY amr_ws/models/ models/
+COPY cika_ws/src/ src/
+COPY cika_ws/config/ config/
+COPY cika_ws/models/ models/
 
-# rosdep - full install, no skipping (Gazebo is available here)
 RUN rosdep init || true && \
     rosdep update && \
     rosdep install --from-paths src \
     --ignore-src -r -y \
     --skip-keys="warehouse_ros_mongo"
 
-# Build workspace
 RUN . /opt/ros/humble/setup.sh && \
     colcon build \
     --symlink-install \
     --cmake-args -DCMAKE_BUILD_TYPE=Release
 
-# Environment
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
-    echo "source /amr_ws/install/setup.bash" >> ~/.bashrc && \
-    echo "export ROS_DOMAIN_ID=0" >> ~/.bashrc && \
+    echo "source /cika_ws/install/setup.bash" >> ~/.bashrc && \
+    echo "export ROS_DOMAIN_ID=31" >> ~/.bashrc && \
     echo "export RMW_IMPLEMENTATION=rmw_fastrtps_cpp" >> ~/.bashrc
 
 COPY docker/entrypoint.sh /entrypoint.sh
