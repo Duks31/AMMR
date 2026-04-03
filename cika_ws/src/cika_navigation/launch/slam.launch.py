@@ -30,7 +30,9 @@ def generate_launch_description():
             # RTAB-Map strategy
             # 1 = ICP (good with LiDAR), 0 = Visual
             "Reg/Strategy": "1",
+            "Reg/Force3DoF": "true",
             "ICP/PointToPlane": "false",  # 2D scan, not pointcloud
+            "Icp/VoxelSize": "0.05",
             "ICP/Iterations": "30",
             "ICP/MaxTranslation": "1.0",
             "ICP/MaxCorrespondenceDistance": "0.1",
@@ -54,6 +56,10 @@ def generate_launch_description():
             "Mem/InitWMWithAllNodes": "false",
             "Mem/SaveDepth16Format": "true",
             "Mem/DepthCompressionFormat": ".png",
+            "RGBD/DepthMax": "10.0",
+            "RGBD/OptimizeMaxError": "5.0",
+            "Grid/FromDepth": "false",
+            "Optimizer/GravitySigma": "0.3",  # Helps lock the map flat to the ground
         }
     ]
 

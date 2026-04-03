@@ -170,6 +170,8 @@
         </collision>
     </link>
 
+    <link name="OAKDcamera_1_optical" />
+
     <link name="arm_bottom_1">
         <inertial>
             <origin xyz="-0.054909370312956396 -0.0007071460484354419 0.03829370665229939"
@@ -470,6 +472,12 @@
         <child link="right_gripper_1" />
         <axis xyz="-0.290702 0.0 -0.956814" />
         <limit upper="0.785398" lower="0.0" effort="100" velocity="100" />
+    </joint>
+
+    <joint name="oakd_optical_joint" type="fixed">
+        <parent link="OAKDcamera_1" />
+        <child link="OAKDcamera_1_optical" />
+        <origin xyz="0 0 0" rpy="-1.5708 0 -1.5708" />
     </joint>
 
     <ros2_control name="GazeboSystem" type="system">
