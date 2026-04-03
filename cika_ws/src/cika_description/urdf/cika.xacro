@@ -16,7 +16,7 @@
                 <mesh filename="file://$(find cika_description)/meshes/base_link.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
-            <material name="silver" />
+            <material name="military_green" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -169,6 +169,8 @@
             </geometry>
         </collision>
     </link>
+
+    <link name="OAKDcamera_1_optical" />
 
     <link name="arm_bottom_1">
         <inertial>
@@ -470,6 +472,12 @@
         <child link="right_gripper_1" />
         <axis xyz="-0.290702 0.0 -0.956814" />
         <limit upper="0.785398" lower="0.0" effort="100" velocity="100" />
+    </joint>
+
+    <joint name="oakd_optical_joint" type="fixed">
+        <parent link="OAKDcamera_1" />
+        <child link="OAKDcamera_1_optical" />
+        <origin xyz="0 0 0" rpy="-1.5708 0 -1.5708" />
     </joint>
 
     <ros2_control name="GazeboSystem" type="system">
