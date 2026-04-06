@@ -14,6 +14,7 @@ def generate_launch_description():
             # Frames
             "frame_id": "base_link",
             "odom_frame_id": "odom",
+            "camera_frame_id": "OAKDcamera_1_optical",
             # Subscriptions
             "subscribe_depth": True,
             "subscribe_scan": True,
@@ -28,26 +29,26 @@ def generate_launch_description():
             # QoS fix
             "qos_overrides./tf_static.publisher.durability": "transient_local",
             # RTAB-Map strategy
-            # 1 = ICP (good with LiDAR), 0 = Visual
+            # 1 = Icp (good with LiDAR), 0 = Visual
             "Reg/Strategy": "1",
             "Reg/Force3DoF": "true",
-            "ICP/PointToPlane": "false",  # 2D scan, not pointcloud
+            "Icp/PointToPlane": "false",  # 2D scan, not pointcloud
             "Icp/VoxelSize": "0.05",
-            "ICP/Iterations": "30",
-            "ICP/MaxTranslation": "1.0",
-            "ICP/MaxCorrespondenceDistance": "0.1",
+            "Icp/Iterations": "30",
+            "Icp/MaxTranslation": "1.0",
+            "Icp/MaxCorrespondenceDistance": "0.1",
             # Loop closure / graph
             "RGBD/NeighborLinkRefining": "true",
             "RGBD/ProximityBySpace": "true",
             "RGBD/ProximityMaxGraphDepth": "0",
             "RGBD/OptimizeFromGraphEnd": "false",
-            # Grid map (occupancy for Nav2)
-            "Grid/Sensor": "0",  # 0 = laser scan, 1 = depth
+            # Grid map (occupancy for Nav2 + 3D for Rviz)
+            "Grid/Sensor": "2",  # 0 = laser scan, 1 = depth, 2 = depth + scan
             "Grid/RangeMin": "0.12",  # match your lidar min range
             "Grid/RangeMax": "12.0",  # match your LiDAR max range (string!)
             "Grid/FootprintRadius": "0.35",  # rough radius of cika's base in meters
             "Grid/CellSize": "0.05",  # 5cm resolution — good for Nav2
-            "Grid/3D": "false",  # 2D occupancy grid for Nav2
+            "Grid/3D": "true",
             # Visual odometry (disabled — we use wheel odom)
             "Odom/Strategy": "0",
             "RGBD/Enabled": "true",
@@ -58,7 +59,7 @@ def generate_launch_description():
             "Mem/DepthCompressionFormat": ".png",
             "RGBD/DepthMax": "10.0",
             "RGBD/OptimizeMaxError": "5.0",
-            "Grid/FromDepth": "false",
+            "Grid/FromDepth": "true",
             "Optimizer/GravitySigma": "0.3",  # Helps lock the map flat to the ground
         }
     ]
@@ -67,6 +68,7 @@ def generate_launch_description():
         ("rgb/image", "/oak/rgb/image_raw"),
         ("depth/image", "/oak/stereo/image_raw"),
         ("rgb/camera_info", "/oak/rgb/camera_info"),
+        ("depth/camera_info", "/oak/stereo/camera_info"),
         ("scan", "/scan"),
         ("odom", "/skid_steer_controller/odom"),
     ]
