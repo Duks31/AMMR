@@ -14,6 +14,8 @@ RUN apt-get update && apt-get install -y \
     ros-humble-nav2-bringup \
     # RTAB-Map (localization only on robot — no Gazebo)
     ros-humble-rtabmap-ros \
+    # EKF
+    ros-humble-robot-localization \
     # ros2_control
     ros-humble-ros2-control \
     ros-humble-ros2-controllers \
