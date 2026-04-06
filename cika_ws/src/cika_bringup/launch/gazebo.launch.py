@@ -9,11 +9,14 @@ from launch.actions import (
     SetEnvironmentVariable,
     TimerAction,
 )
-from launch.substitutions import Command, LaunchConfiguration
+from launch.substitutions import Command, LaunchConfiguration, PythonExpression
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
+
+from launch.actions import RegisterEventHandler
+from launch.event_handlers import OnProcessExit
 
 
 def generate_launch_description():
@@ -32,6 +35,13 @@ def generate_launch_description():
         description="Absolute path to robot xacro file",
     )
 
+    gui_arg = DeclareLaunchArgument(
+        name="gui",
+        default_value="true",
+        choices=["true", "false"],
+        description="Flag to enable/disable Gazebo GUI (true for GUI, false for headless)",
+    )
+
     gazebo_resource_path = SetEnvironmentVariable(
         name="GZ_SIM_RESOURCE_PATH",
         value=[str(Path(cika_description).parent.resolve())],
@@ -48,7 +58,9 @@ def generate_launch_description():
         get_package_share_directory("cika_bringup"), "config", "laser_filter.yaml"
     )
 
-    joy_ps5_params = os.path.join(get_package_share_directory("cika_bringup"), "config", "joy_ps5.yaml")
+    joy_ps5_params = os.path.join(
+        get_package_share_directory("cika_bringup"), "config", "joy_ps5.yaml"
+    )
 
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
@@ -65,34 +77,95 @@ def generate_launch_description():
         PythonLaunchDescriptionSource(
             os.path.join(ros_gz_sim, "launch", "gz_sim.launch.py")
         ),
-        launch_arguments=[("gz_args", "-v 2 -r " + world_path)],
-    )
-
-    # === DELAYED SPAWN (fixes Visual already exists + race condition) ===
-    gz_spawn_entity = TimerAction(
-        period=3.0,
-        actions=[
-            Node(
-                package="ros_gz_sim",
-                executable="create",
-                output="screen",
-                arguments=[
-                    "-topic",
-                    "robot_description",
-                    "-name",
-                    "cika",
-                    "-x",
-                    "0.0",
-                    "-y",
-                    "0.0",
-                    "-z",
-                    "0.15",
+        launch_arguments=[
+            (
+                "gz_args",
+                [
+                    PythonExpression(
+                        [
+                            "'-s ' if '",
+                            LaunchConfiguration("gui"),
+                            "' == 'false' else ''",
+                        ]
+                    ),
+                    "-v 2 -r ",
+                    world_path,
                 ],
             )
         ],
     )
 
-    # GazeboSimROS2ControlPlugin owns this
+    ros_gz_bridge = Node(
+        package="ros_gz_bridge",
+        executable="parameter_bridge",
+        parameters=[{"config_file": bridge_config}],
+        output="screen",
+    )
+
+    spawn_entity_node = Node(
+        package="ros_gz_sim",
+        executable="create",
+        output="screen",
+        arguments=[
+            "-topic",
+            "robot_description",
+            "-name",
+            "cika",
+            "-x",
+            "0.0",
+            "-y",
+            "0.0",
+            "-z",
+            "0.15",
+        ],
+    )
+
+    gz_spawn_entity = TimerAction(
+        period=3.0,
+        actions=[spawn_entity_node],
+    )
+
+    joint_state_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=[
+            "joint_state_broadcaster",
+            "--controller-manager",
+            "/controller_manager",
+            "--controller-manager-timeout",
+            "120",
+        ],
+    )
+
+    arm_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=[
+            "arm_controller",
+            "--controller-manager",
+            "/controller_manager",
+            "--controller-manager-timeout",
+            "60",
+            "--service-call-timeout",
+            "30.0",
+        ],
+    )
+
+    gripper_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=[
+            "gripper_controller",
+            "--controller-manager",
+            "/controller_manager",
+            "--controller-manager-timeout",
+            "60",
+            "--service-call-timeout",
+            "30.0",
+        ],
+    )
+
+    # GazeboSimROS2ControlPlugin owns this 
     # ros2_control_node = Node(
     #     package="controller_manager",
     #     executable="ros2_control_node",
@@ -104,75 +177,18 @@ def generate_launch_description():
     #     output="screen",
     # )
 
-    ros_gz_bridge = Node(
-        package="ros_gz_bridge",
-        executable="parameter_bridge",
-        parameters=[{"config_file": bridge_config}],
-        output="screen",
-    )
-
-    joint_state_broadcaster_spawner = TimerAction(
-        period=5.0,
-        actions=[
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=[
-                    "joint_state_broadcaster",
-                    "--controller-manager",
-                    "/controller_manager",
-                ],
-            )
+    skid_steer_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=[
+            "skid_steer_controller",
+            "--controller-manager",
+            "/controller_manager",
+            "--controller-manager-timeout",
+            "120",
         ],
-    )
-
-    arm_controller_spawner = TimerAction(
-        period=7.0,
-        actions=[
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=[
-                    "arm_controller",
-                    "--controller-manager",
-                    "/controller_manager",
-                ],
-            )
-        ],
-    )
-
-    gripper_controller_spawner = TimerAction(
-        period=7.0,
-        actions=[
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=[
-                    "gripper_controller",
-                    "--controller-manager",
-                    "/controller_manager",
-                ],
-            )
-        ],
-    )
-
-    skid_steer_controller_spawner = TimerAction(
-        period=7.0,
-        actions=[
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=[
-                    "skid_steer_controller",
-                    "--controller-manager",
-                    "/controller_manager",
-                    "--controller-manager-timeout",
-                    "30",
-                ],
-                remappings=[
-                    ("/cmd_vel", "/skid_steer_controller/cmd_vel_unstamped"),
-                ],
-            )
+        remappings=[
+            ("/cmd_vel", "/skid_steer_controller/cmd_vel_unstamped"),
         ],
     )
 
@@ -186,10 +202,7 @@ def generate_launch_description():
         executable="scan_to_scan_filter_chain",
         name="laser_filter",
         parameters=[laser_filter_yaml],
-        remappings=[
-            ("scan", "/scan_raw"),
-            ("scan_filtered", "/scan")
-        ],
+        remappings=[("scan", "/scan_raw"), ("scan_filtered", "/scan")],
         output="screen",
     )
 
@@ -203,13 +216,31 @@ def generate_launch_description():
         package="teleop_twist_joy",
         executable="teleop_node",
         parameters=[joy_ps5_params],
-        remappings=[
-            ("/cmd_vel", "/skid_steer_controller/cmd_vel_unstamped")]
+        remappings=[("/cmd_vel", "/skid_steer_controller/cmd_vel_unstamped")],
+    )
+
+    delay_joint_state_broadcaster_after_spawn = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=spawn_entity_node,
+            on_exit=[joint_state_broadcaster_spawner],
+        )
+    )
+
+    delay_controllers_after_joint_state = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=joint_state_broadcaster_spawner,
+            on_exit=[
+                TimerAction(period=8.0, actions=[arm_controller_spawner]),
+                TimerAction(period=20.0, actions=[skid_steer_controller_spawner]),
+                TimerAction(period=20.0, actions=[gripper_controller_spawner]),
+            ],
+        )
     )
 
     return LaunchDescription(
         [
             model_arg,
+            gui_arg,
             gazebo_resource_path,
             nvidia_offload,
             nvidia_vendor,
@@ -218,12 +249,10 @@ def generate_launch_description():
             gz_spawn_entity,
             # ros2_control_node, ← REMOVED, GazeboSimROS2ControlPlugin owns this
             ros_gz_bridge,
-            joint_state_broadcaster_spawner,
-            arm_controller_spawner,
-            gripper_controller_spawner,
-            skid_steer_controller_spawner,
             laser_filter_node,
             joy_ps5_node,
             joy_ps5_teleop_node,
+            delay_joint_state_broadcaster_after_spawn,
+            delay_controllers_after_joint_state,
         ]
     )
