@@ -113,67 +113,43 @@ def generate_launch_description():
 
     joint_state_broadcaster_spawner = TimerAction(
         period=3.0,
-        actions=[
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=[
-                    "joint_state_broadcaster",
-                    "--controller-manager",
-                    "/controller_manager",
-                ],
-            )
-        ],
+        actions=[Node(
+            package="controller_manager",
+            executable="spawner",
+            arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager"],
+        )]
     )
 
     arm_controller_spawner = TimerAction(
-        period=5.0,
-        actions=[
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=[
-                    "arm_controller",
-                    "--controller-manager",
-                    "/controller_manager",
-                ],
-            )
-        ],
+        period=8.0,
+        actions=[Node(
+            package="controller_manager",
+            executable="spawner",
+            arguments=["arm_controller", "--controller-manager", "/controller_manager"],
+        )]
     )
 
     gripper_controller_spawner = TimerAction(
-        period=5.0,
-        actions=[
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=[
-                    "gripper_controller",
-                    "--controller-manager",
-                    "/controller_manager",
-                ],
-            )
-        ],
+        period=13.0,
+        actions=[Node(
+            package="controller_manager",
+            executable="spawner",
+            arguments=["gripper_controller", "--controller-manager", "/controller_manager"],
+        )]
     )
 
     skid_steer_controller_spawner = TimerAction(
-        period=5.0,
-        actions=[
-            Node(
-                package="controller_manager",
-                executable="spawner",
-                arguments=[
-                    "skid_steer_controller",
-                    "--controller-manager",
-                    "/controller_manager",
-                    "--controller-manager-timeout",
-                    "30",
-                ],
-                remappings=[
-                    ("/cmd_vel", "/skid_steer_controller/cmd_vel_unstamped"),
-                ],
-            )
-        ],
+        period=18.0,
+        actions=[Node(
+            package="controller_manager",
+            executable="spawner",
+            arguments=[
+                "skid_steer_controller",
+                "--controller-manager", "/controller_manager",
+                "--controller-manager-timeout", "30",
+            ],
+            remappings=[("/cmd_vel", "/skid_steer_controller/cmd_vel_unstamped")],
+        )]
     )
 
     nvidia_offload = SetEnvironmentVariable(name="__NV_PRIME_RENDER_OFFLOAD", value="1")
