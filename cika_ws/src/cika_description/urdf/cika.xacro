@@ -170,7 +170,18 @@
         </collision>
     </link>
 
-    <link name="OAKDcamera_1_optical" />
+    
+    <link name="OAKDcamera_1_optical">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="transparent">
+                <color rgba="0 0 0 0"/>
+            </material>
+        </visual>
+    </link>
 
     <link name="arm_bottom_1">
         <inertial>
@@ -472,6 +483,7 @@
         <child link="right_gripper_1" />
         <axis xyz="-0.290702 0.0 -0.956814" />
         <limit upper="0.785398" lower="0.0" effort="100" velocity="100" />
+        <mimic joint="left_gripper_1_joint" multiplier="-1.0" />
     </joint>
 
     <joint name="oakd_optical_joint" type="fixed">

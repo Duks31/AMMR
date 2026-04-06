@@ -58,23 +58,16 @@ arm_controller:
       - position
     state_interfaces:
       - position
-      - velocity
-    state_publish_rate: 50.0
-    action_monitor_rate: 20.0
-    allow_partial_joints_goal: false
-    use_sim_time: true
+    open_loop_control: true
+    allow_integration_in_goal_trajectories: true
 
 gripper_controller:
   ros__parameters:
     joints:
       - left_gripper_1_joint
-      - right_gripper_1_joint
     command_interfaces:
       - position
     state_interfaces:
       - position
-      - velocity
-    state_publish_rate: 50.0
-    action_monitor_rate: 20.0
-    allow_partial_joints_goal: true
-    use_sim_time: true
+    open_loop_control: true
+    allow_integration_in_goal_trajectories: true

@@ -1,0 +1,9 @@
+# Default initial positions for cika's ros2_control fake system
+
+initial_positions:
+  center_arm_1_joint: 0
+  gripper_mount_1_joint: 0
+  left_gripper_1_joint: 0
+  lower_arm_1_joint: 0
+  turntable_1_joint: 0
+  upper_arm_1_joint: 0

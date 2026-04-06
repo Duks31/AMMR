@@ -1,0 +1,21 @@
+# MoveIt uses this configuration for controller management
+
+moveit_controller_manager: moveit_simple_controller_manager/MoveItSimpleControllerManager
+
+moveit_simple_controller_manager:
+  controller_names:
+    - arm_controller
+    - gripper_controller
+
+  arm_controller:
+    type: FollowJointTrajectory
+    joints:
+      - turntable_1_joint
+      - lower_arm_1_joint
+      - center_arm_1_joint
+      - upper_arm_1_joint
+      - gripper_mount_1_joint
+  gripper_controller:
+    type: FollowJointTrajectory
+    joints:
+      - left_gripper_1_joint
