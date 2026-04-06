@@ -112,7 +112,7 @@ def generate_launch_description():
     )
 
     joint_state_broadcaster_spawner = TimerAction(
-        period=3.0,
+        period=5.0,
         actions=[
             Node(
                 package="controller_manager",
@@ -127,7 +127,7 @@ def generate_launch_description():
     )
 
     arm_controller_spawner = TimerAction(
-        period=5.0,
+        period=7.0,
         actions=[
             Node(
                 package="controller_manager",
@@ -142,7 +142,7 @@ def generate_launch_description():
     )
 
     gripper_controller_spawner = TimerAction(
-        period=5.0,
+        period=7.0,
         actions=[
             Node(
                 package="controller_manager",
@@ -157,7 +157,7 @@ def generate_launch_description():
     )
 
     skid_steer_controller_spawner = TimerAction(
-        period=5.0,
+        period=7.0,
         actions=[
             Node(
                 package="controller_manager",
