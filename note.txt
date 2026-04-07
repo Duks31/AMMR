@@ -39,3 +39,6 @@
 3/31/2026 (Chidubem)
 - Add 2D Lidar sensor
 - deleted base_controller, amr_navigation, amr_perception
+
+4/7/2026 (Chidubem)
+- added navigation
