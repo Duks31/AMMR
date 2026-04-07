@@ -11,7 +11,7 @@ from launch.actions import (
 from launch.conditions import IfCondition, UnlessCondition
 from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.actions import Node, SetParameter
+from launch_ros.actions import Node, SetParameter, SetRemap
 from launch.substitutions import Command
 from launch_ros.parameter_descriptions import ParameterValue
 
@@ -158,19 +158,13 @@ def generate_launch_description():
     )
 
     # ── Nav2 bringup (navigation mode only) ──────────────────────────────────
-    nav2_bringup_launch = IncludeLaunchDescription(
+    nav2_navigation_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(nav2_bringup, "launch", "bringup_launch.py")
+            os.path.join(nav2_bringup, "launch", "navigation_launch.py")
         ),
         launch_arguments={
-            "map": map_yaml_path,
             "use_sim_time": use_sim_time,
             "params_file": nav2_params_path,
-            # Automatic initial pose — docking station is map origin
-            "x_pose": "0.0",
-            "y_pose": "0.0",
-            "z_pose": "0.0",
-            "yaw": "0.0",
         }.items(),
         condition=IfCondition(PythonExpression(["'", mode, "' == 'navigation'"])),
     )
@@ -201,10 +195,11 @@ def generate_launch_description():
             mode_arg,
             use_sim_time_arg,
             set_sim_time,
+            SetRemap(src="/cmd_vel", dst="/skid_steer_controller/cmd_vel_unstamped"),
             ekf_node,
             rtabmap_slam_node,
             rtabmap_localization_node,
-            nav2_bringup_launch,
-            rtabmap_viz_node,
+            nav2_navigation_launch,
+            # rtabmap_viz_node, # Saving CPU by not launching the viz
         ]
     )

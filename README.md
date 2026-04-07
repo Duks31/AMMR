@@ -1,4 +1,4 @@
-# AMR-Robot
+# CIKA - Autonomous Mobile Manipulation Robot for Waste Collection and Sorting
 
 ## Prerequisites
 - Windows 10/11 with WSL2
@@ -39,3 +39,11 @@ ros2 launch cika_bringup display.launch.py
 - Save the map using `ros2 run nav2_map_server map_saver_cli -f cika_map` and store it in `cika_navigation/maps/`.
 
 ## Navigation
+
+```
+# SLAM mode
+ros2 launch cika_navigation cika_nav.launch.py mode:=slam
+
+# Navigation mode
+ros2 launch cika_navigation cika_nav.launch.py mode:=navigation
+```
