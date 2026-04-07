@@ -32,8 +32,10 @@ amr_ws/src/
 ## Mapping
 ```
 ros2 launch cika_bringup gazebo.launch.py gui:=false 
-ros2 launch cika_navigation slam.launch.py 
+ros2 launch cika_navigation cika_slam.launch.py 
 ros2 launch cika_bringup display.launch.py
 ```
 
 - Save the map using `ros2 run nav2_map_server map_saver_cli -f cika_map` and store it in `cika_navigation/maps/`.
+
+## Navigation
