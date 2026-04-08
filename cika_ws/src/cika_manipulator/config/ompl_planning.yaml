@@ -7,23 +7,25 @@ request_adapters: >-
   default_planner_request_adapters/FixStartStateCollision
   default_planner_request_adapters/FixStartStatePathConstraints
 
-# We define the available algorithms and their hidden math parameters here
-RRTConnectkConfigDefault:
-  type: geometric::RRTConnect
-  range: 0.0  # Max motion added to tree. 0.0 sets it automatically.
+# We define the available algorithms and their hidden math parameters here.
+# NOTE: In MoveIt, these must be nested under 'planner_configs:'
+planner_configs:
+  RRTConnectkConfigDefault:
+    type: geometric::RRTConnect
+    range: 0.0  # Max motion added to tree. 0.0 sets it automatically.
 
-RRTkConfigDefault:
-  type: geometric::RRT
-  range: 0.0
-  goal_bias: 0.05
+  RRTkConfigDefault:
+    type: geometric::RRT
+    range: 0.0
+    goal_bias: 0.05
 
-PRMkConfigDefault:
-  type: geometric::PRM
-  max_nearest_neighbors: 10
+  PRMkConfigDefault:
+    type: geometric::PRM
+    max_nearest_neighbors: 10
 
 # Here we map the algorithms to your specific robot arm
 arm:
-  # Notice there is no 'default_planner_config' here. It will stay <unspecified>.
+  default_planner_config: RRTConnectkConfigDefault # <--- Added this line
   planner_configs:
     - RRTConnectkConfigDefault
     - RRTkConfigDefault
@@ -31,5 +33,6 @@ arm:
 
 # Here we map the algorithms to your gripper
 gripper:
+  default_planner_config: RRTConnectkConfigDefault # <--- Added this line
   planner_configs:
     - RRTConnectkConfigDefault

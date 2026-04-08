@@ -1,5 +1,3 @@
-# MoveIt uses this configuration for controller management
-
 moveit_controller_manager: moveit_simple_controller_manager/MoveItSimpleControllerManager
 
 moveit_simple_controller_manager:
@@ -8,6 +6,8 @@ moveit_simple_controller_manager:
     - gripper_controller
 
   arm_controller:
+    action_ns: follow_joint_trajectory  # Tells MoveIt to send goals to /arm_controller/follow_joint_trajectory
+    default: true                       # Sets this as the default controller for the arm group
     type: FollowJointTrajectory
     joints:
       - turntable_1_joint
@@ -15,7 +15,10 @@ moveit_simple_controller_manager:
       - center_arm_1_joint
       - upper_arm_1_joint
       - gripper_mount_1_joint
+      
   gripper_controller:
+    action_ns: follow_joint_trajectory  # Tells MoveIt to send goals to /gripper_controller/follow_joint_trajectory
+    default: true                       # Sets this as the default controller for the gripper group
     type: FollowJointTrajectory
     joints:
       - left_gripper_1_joint
