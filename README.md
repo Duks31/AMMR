@@ -42,8 +42,7 @@ ros2 launch cika_bringup display.launch.py
 
 ```
 # SLAM mode
-ros2 launch cika_navigation cika_nav.launch.py mode:=slam
+ros2 launch cika_bringup cika_full_sim.launch.py mode:=slam
 
 # Navigation mode
-ros2 launch cika_navigation cika_nav.launch.py mode:=navigation
-```
+ros2 launch cika_bringup cika_full_sim.launch.py mode:=navigation```
