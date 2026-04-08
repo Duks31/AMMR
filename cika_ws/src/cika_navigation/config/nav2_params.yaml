@@ -335,3 +335,4 @@ velocity_smoother:
     odom_duration: 0.1
     deadband_velocity: [0.001, 0.001, 0.001]
     velocity_timeout: 1.0
+    cmd_vel_topic: /skid_steer_controller/cmd_vel_unstamped

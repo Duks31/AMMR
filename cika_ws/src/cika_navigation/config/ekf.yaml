@@ -40,4 +40,4 @@ ekf_filter_node:
                    false, false, false,
                    false, false, false,
                    false, false, false]
-    odom1_relative: true
+    odom1_relative: false
