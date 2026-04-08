@@ -11,7 +11,7 @@ from launch.actions import (
 from launch.conditions import IfCondition, UnlessCondition
 from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.actions import Node, SetParameter, SetRemap
+from launch_ros.actions import Node, SetParameter
 from launch.substitutions import Command
 from launch_ros.parameter_descriptions import ParameterValue
 
@@ -42,6 +42,8 @@ def generate_launch_description():
     )
 
     use_sim_time = LaunchConfiguration("use_sim_time")
+    rtabmap_db_path = os.path.join(cika_navigation, "maps", "cika_map.db")
+
     mode = LaunchConfiguration("mode")
 
     # ── Global sim time parameter ─────────────────────────────────────────────
@@ -70,7 +72,7 @@ def generate_launch_description():
         "publish_tf": True,
         "approx_sync_max_interval": 0.05,
         "use_sim_time": use_sim_time,
-        # SLAM mode — incremental memory ON
+        "database_path": rtabmap_db_path,
         "Mem/IncrementalMemory": "true",
         "Mem/InitWMWithAllNodes": "false",
         "Mem/SaveDepth16Format": "false",
@@ -153,7 +155,6 @@ def generate_launch_description():
         output="screen",
         parameters=[nav_params],
         remappings=rtabmap_remappings,
-        # No -d flag — we load the existing db, never delete it in nav mode
         condition=IfCondition(PythonExpression(["'", mode, "' == 'navigation'"])),
     )
 
@@ -195,7 +196,6 @@ def generate_launch_description():
             mode_arg,
             use_sim_time_arg,
             set_sim_time,
-            SetRemap(src="/cmd_vel", dst="/skid_steer_controller/cmd_vel_unstamped"),
             ekf_node,
             rtabmap_slam_node,
             rtabmap_localization_node,

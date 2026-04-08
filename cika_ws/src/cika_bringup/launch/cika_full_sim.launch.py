@@ -18,13 +18,23 @@ def generate_launch_description():
         choices=["slam", "navigation"],
         description="slam = build map, navigation = localize + Nav2",
     )
+
+    gui_arg = DeclareLaunchArgument(
+        name="gui",
+        default_value="false",
+        description="Launch Gazebo GUI",
+    )
+
     mode = LaunchConfiguration("mode")
 
     gazebo_launch = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
             os.path.join(bringup_dir, "launch", "gazebo.launch.py")
         ),
-        launch_arguments={"gui": "false", "use_sim_time": "true"}.items(),
+        launch_arguments={
+            "gui": LaunchConfiguration("gui"),
+            "use_sim_time": "true"
+        }.items(),
     )
 
     nav_launch = IncludeLaunchDescription(
@@ -41,11 +51,12 @@ def generate_launch_description():
         launch_arguments={"use_sim_time": "true"}.items(),
     )
 
-    delayed_nav = TimerAction(period=10.0, actions=[nav_launch])
-    delayed_display = TimerAction(period=15.0, actions=[display_launch])
+    delayed_nav = TimerAction(period=12.0, actions=[nav_launch])
+    delayed_display = TimerAction(period=17.0, actions=[display_launch])
 
     return LaunchDescription([
         mode_arg, # --- 3. RETURN IT: Make sure the master launch knows it exists ---
+        gui_arg,
         gazebo_launch,
         delayed_nav,
         delayed_display

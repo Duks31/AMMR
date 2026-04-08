@@ -29,21 +29,23 @@ amr_ws/src/
 └── cika_manipulation/       # MoveIt2, arm planning, gripper
 ```
 
-## Mapping
+## Mapping and Navigation
+
+```bash
+# SLAM mode — builds and saves the map database
+ros2 launch cika_bringup cika_full_sim.launch.py mode:=slam gui:=false
+
+# Navigation mode — loads saved map and runs Nav2
+ros2 launch cika_bringup cika_full_sim.launch.py mode:=navigation gui:=false
 ```
-ros2 launch cika_bringup gazebo.launch.py gui:=false 
-ros2 launch cika_navigation cika_slam.launch.py 
-ros2 launch cika_bringup display.launch.py
-```
 
-- Save the map using `ros2 run nav2_map_server map_saver_cli -f cika_map` and store it in `cika_navigation/maps/`.
+After a mapping run, the database is saved automatically to
+`cika_navigation/maps/cika_map.db`. To switch to navigation mode,
+simply relaunch with `mode:=navigation` — no manual copying needed.
 
-## Navigation
-
-```
-# SLAM mode
-ros2 launch cika_navigation cika_nav.launch.py mode:=slam
-
-# Navigation mode
-ros2 launch cika_navigation cika_nav.launch.py mode:=navigation
+> **Warning:** launching `mode:=slam` deletes the existing database on start.
+> Back up `cika_warehouse.db` before remapping if you want to keep a good map.
+```bash
+cp src/cika_navigation/maps/cika_warehouse.db \
+   src/cika_navigation/maps/cika_warehouse_backup.db
 ```
