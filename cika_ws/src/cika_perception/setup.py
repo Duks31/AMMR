@@ -1,29 +1,19 @@
-from setuptools import find_packages, setup
-
-package_name = 'cika_perception'
+from setuptools import setup, find_packages
 
 setup(
-    name=package_name,
-    version='0.0.0',
-    packages=find_packages(exclude=['test']),
-    data_files=[
-        ('share/ament_index/resource_index/packages',
-            ['resource/' + package_name]),
-        ('share/' + package_name, ['package.xml']),
-    ],
-    install_requires=['setuptools'],
+    name="cika_perception",
+    version="0.0.1",
+    packages=find_packages(exclude=["test"]),
+    install_requires=["setuptools"],
     zip_safe=True,
-    maintainer='ncep',
-    maintainer_email='chidubemjan31@gmail.com',
-    description='TODO: Package description',
-    license='TODO: License declaration',
-    extras_require={
-        'test': [
-            'pytest',
-        ],
-    },
+    maintainer="Chidubem",
+    maintainer_email="chidubem@nileuniversity.edu.ng",
+    description="Perception package for cika AMR",
+    license="Apache-2.0",
     entry_points={
-        'console_scripts': [
+        "console_scripts": [
+            "detector_node   = cika_perception.detector_node:main",
+            "classifier_node = cika_perception.classifier_node:main",
         ],
     },
 )
