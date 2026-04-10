@@ -27,6 +27,8 @@ amr_ws/src/
 ├── cika_bringup/            # Top-level launch files
 ├── cika_navigation/         # Nav2, SLAM, RTAB-Map
 └── cika_manipulation/       # MoveIt2, arm planning, gripper
+└── cika_perception/         # Object detection, point cloud processing
+└── cika_task_manager/       # High-level task execution, state machine, connections to perception and navigation 
 ```
 
 ## Mapping and Navigation
