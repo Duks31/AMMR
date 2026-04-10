@@ -1,0 +1,28 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# cika_task_manager config
+# ─────────────────────────────────────────────────────────────────────────────
+
+task_manager_node:
+  ros__parameters:
+    use_sim_time: true
+
+    # ── Detection thresholds ──────────────────────────────────────────────────
+    detector_conf_threshold:   0.55   # min YOLO confidence to consider a detection
+    classifier_conf_threshold: 0.65   # min classifier confidence to confirm label
+
+    # ── Navigation ────────────────────────────────────────────────────────────
+    approach_distance: 0.4            # metres — stop this far from detected object
+    nav2_retry_limit:  1              # retry once before skipping to IDLE
+
+    # ── Verification ─────────────────────────────────────────────────────────
+    verify_frames_required: 5         # consecutive confident frames before pick
+                                      # at ~1.7Hz detection rate ≈ 3 seconds
+
+    # ── Pick stub ─────────────────────────────────────────────────────────────
+    pick_stub_duration: 3.0           # seconds — simulated pick time until
+                                      # cika_manipulator action server is ready
+
+    # ── Topics and frames ─────────────────────────────────────────────────────
+    detections_topic: /cika/waste_detections_classified
+    robot_base_frame: base_link
+    global_frame: map
