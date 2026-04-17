@@ -29,6 +29,8 @@ RUN apt-get update && apt-get install -y \
     ros-humble-moveit-ros-planning-interface \
     ros-humble-moveit-setup-assistant \
     ros-humble-warehouse-ros \
+    ros-humble-moveit-ros-perception \ 
+    ros-humble-moveit-ros-occupancy-map-monitor \
     # ros2_control
     ros-humble-ros2-control \
     ros-humble-ros2-controllers \
