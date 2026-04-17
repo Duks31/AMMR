@@ -7,7 +7,7 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(ament_cmake_python REQUIRED)
-find_package(rclpy REQUIRED)
+# find_package(rclpy REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
@@ -19,10 +19,10 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 )
 
 # ── Python package ────────────────────────────────────────────────────────────
-ament_python_install_package(${PROJECT_NAME})
+ament_python_install_package(cika_task_manager_core)
 
 install(PROGRAMS
-  cika_task_manager/task_manager_node.py
+  cika_task_manager_core/task_manager_node.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
