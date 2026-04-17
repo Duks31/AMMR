@@ -58,9 +58,187 @@
         </model>
 
         <include>
-            <uri>
-                https://fuel.gazebosim.org/1.0/OpenRobotics/models/Depot</uri>
+            <uri>https://fuel.gazebosim.org/1.0/OpenRobotics/models/Depot</uri>
         </include>
+
+        <!-- ═══════════════════════════════════════════════════════════════════
+             WASTE OBJECTS
+             Colour coding:
+               Green  cylinder → recyclable can    (x3)
+               Blue   box      → recyclable carton (x2)
+               Grey   sphere   → non-recyclable    (x1)
+
+             Positions chosen for open aisles in the Depot floor.
+             Robot spawns at (0, 0). Adjust z to 0.05 so objects sit on floor.
+             ═══════════════════════════════════════════════════════════════════ -->
+
+        <!-- Waste 1: recyclable can — center aisle, ahead of spawn -->
+        <model name="waste_can_1">
+            <static>true</static>
+            <pose>2.0 0.0 0.05 0 0 0</pose>
+            <link name="link">
+                <collision name="collision">
+                    <geometry>
+                        <cylinder>
+                            <radius>0.05</radius>
+                            <length>0.12</length>
+                        </cylinder>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <cylinder>
+                            <radius>0.05</radius>
+                            <length>0.12</length>
+                        </cylinder>
+                    </geometry>
+                    <material>
+                        <ambient>0.0 0.8 0.0 1</ambient>
+                        <diffuse>0.0 0.8 0.0 1</diffuse>
+                        <specular>0.1 0.1 0.1 1</specular>
+                    </material>
+                </visual>
+            </link>
+        </model>
+
+        <!-- Waste 2: recyclable can — left aisle -->
+        <model name="waste_can_2">
+            <static>true</static>
+            <pose>3.5 -3.0 0.05 0 0 0</pose>
+            <link name="link">
+                <collision name="collision">
+                    <geometry>
+                        <cylinder>
+                            <radius>0.05</radius>
+                            <length>0.12</length>
+                        </cylinder>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <cylinder>
+                            <radius>0.05</radius>
+                            <length>0.12</length>
+                        </cylinder>
+                    </geometry>
+                    <material>
+                        <ambient>0.0 0.8 0.0 1</ambient>
+                        <diffuse>0.0 0.8 0.0 1</diffuse>
+                        <specular>0.1 0.1 0.1 1</specular>
+                    </material>
+                </visual>
+            </link>
+        </model>
+
+        <!-- Waste 3: recyclable can — right aisle -->
+        <model name="waste_can_3">
+            <static>true</static>
+            <pose>3.5 3.0 0.05 0 0 0</pose>
+            <link name="link">
+                <collision name="collision">
+                    <geometry>
+                        <cylinder>
+                            <radius>0.05</radius>
+                            <length>0.12</length>
+                        </cylinder>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <cylinder>
+                            <radius>0.05</radius>
+                            <length>0.12</length>
+                        </cylinder>
+                    </geometry>
+                    <material>
+                        <ambient>0.0 0.8 0.0 1</ambient>
+                        <diffuse>0.0 0.8 0.0 1</diffuse>
+                        <specular>0.1 0.1 0.1 1</specular>
+                    </material>
+                </visual>
+            </link>
+        </model>
+
+        <!-- Waste 4: recyclable carton box — center aisle, further ahead -->
+        <model name="waste_carton_1">
+            <static>true</static>
+            <pose>5.0 1.0 0.075 0 0 0</pose>
+            <link name="link">
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>0.15 0.10 0.15</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>0.15 0.10 0.15</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <ambient>0.0 0.3 0.9 1</ambient>
+                        <diffuse>0.0 0.3 0.9 1</diffuse>
+                        <specular>0.1 0.1 0.1 1</specular>
+                    </material>
+                </visual>
+            </link>
+        </model>
+
+        <!-- Waste 5: recyclable carton box — left aisle deeper -->
+        <model name="waste_carton_2">
+            <static>true</static>
+            <pose>6.0 -3.0 0.075 0 0 0</pose>
+            <link name="link">
+                <collision name="collision">
+                    <geometry>
+                        <box>
+                            <size>0.15 0.10 0.15</size>
+                        </box>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <box>
+                            <size>0.15 0.10 0.15</size>
+                        </box>
+                    </geometry>
+                    <material>
+                        <ambient>0.0 0.3 0.9 1</ambient>
+                        <diffuse>0.0 0.3 0.9 1</diffuse>
+                        <specular>0.1 0.1 0.1 1</specular>
+                    </material>
+                </visual>
+            </link>
+        </model>
+
+        <!-- Waste 6: non-recyclable — center aisle -->
+        <model name="waste_nonrecyclable_1">
+            <static>true</static>
+            <pose>4.0 0.0 0.05 0 0 0</pose>
+            <link name="link">
+                <collision name="collision">
+                    <geometry>
+                        <sphere>
+                            <radius>0.06</radius>
+                        </sphere>
+                    </geometry>
+                </collision>
+                <visual name="visual">
+                    <geometry>
+                        <sphere>
+                            <radius>0.06</radius>
+                        </sphere>
+                    </geometry>
+                    <material>
+                        <ambient>0.5 0.5 0.5 1</ambient>
+                        <diffuse>0.5 0.5 0.5 1</diffuse>
+                        <specular>0.1 0.1 0.1 1</specular>
+                    </material>
+                </visual>
+            </link>
+        </model>
 
     </world>
 </sdf>
