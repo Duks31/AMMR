@@ -1,0 +1,11 @@
+# Goal — sent by task manager to manipulator
+geometry_msgs/Point target_position   # object position in base_link frame
+string waste_label                     # "recyclable" or "non_recyclable"
+---
+# Result — returned when action completes
+bool success
+string message
+---
+# Feedback — streamed during execution
+string current_phase                   # "reaching", "gripping", "disposing", "returning"
+float32 progress                       # 0.0 → 1.0
