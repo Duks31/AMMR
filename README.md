@@ -1,7 +1,7 @@
 # CIKA - Autonomous Mobile Manipulation Robot for Waste Collection and Sorting
 
 ## Prerequisites
-- Windows 10/11 with WSL2
+- Linux OR Windows 10/11 with WSL2 (Ubuntu 22.04 LTS recommended)
 - Docker Desktop with WSL2 backend enabled
 - Git
 
@@ -51,3 +51,24 @@ simply relaunch with `mode:=navigation` — no manual copying needed.
 cp src/cika_navigation/maps/cika_warehouse.db \
    src/cika_navigation/maps/cika_warehouse_backup.db
 ```
+
+## Perception
+
+```bash
+# Simulation — YOLOv8 detector + EfficientNet-B0 classifier, simulated OAK-D Lite
+ros2 launch cika_perception perception.launch.py backend:=sim use_sim_time:=true
+
+# Hardware — same pipeline, tuned for Raspberry Pi 4B + physical OAK-D Lite
+ros2 launch cika_perception perception.launch.py backend:=hardware use_sim_time:=false
+```
+
+The perception pipeline runs two nodes in sequence:
+
+- **detector_node** — runs YOLOv8 on the RGB stream, back-projects detections to 3D using the depth image and camera intrinsics, and publishes on `/cika/waste_detections`
+- **classifier_node** — crops each detection bounding box from the RGB frame, runs EfficientNet-B0 to verify the `recyclable` / `non_recyclable` label, and republishes enriched detections on `/cika/waste_detections_classified`
+
+A debug image with bounding boxes and labels is published on `/cika/perception/debug_image` whenever a subscriber is present.
+
+> **Note:** `backend:=sim` and `backend:=hardware` load different parameter configs
+> (`perception_sim.yaml` / `perception_hardware.yaml`) — inference rate is 5 Hz in
+> sim and 2 Hz on hardware to stay within RPi 4B CPU limits.
