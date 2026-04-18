@@ -1,0 +1,29 @@
+# perception_sim.yaml
+# Parameters for detector_node + classifier_node in Gazebo simulation.
+# model_path is OVERRIDDEN at launch time with absolute paths — no need to set here.
+# Topics match the ros_ign_bridge remappings for simulated OAK-D Lite.
+
+detector_node:
+  ros__parameters:
+    # model_path is injected by the launch file (resolved absolute path)
+    confidence_threshold: 0.45
+    iou_threshold: 0.45
+    device: "cpu"                          # GTX 1650 available on your laptop; swap to "cuda" if you want GPU in sim
+    rgb_topic: "/oak/rgb/image_raw"
+    depth_topic: "/oak/stereo/image_raw"
+    camera_info_topic: "/oak/rgb/camera_info"
+    detections_topic: "/cika/waste_detections"
+    debug_image_topic: "/cika/perception/debug_image"
+    camera_frame: "OAKDcamera_1_optical"
+    base_frame: "base_link"
+    inference_rate: 5.0                    # Hz — keep low in sim to avoid bottlenecking Gazebo
+
+classifier_node:
+  ros__parameters:
+    # model_path is injected by the launch file
+    model_type: "efficientnet"             # matches efficientnetb0_finetuned.pth
+    confidence_threshold: 0.70
+    device: "cpu"
+    detections_input_topic: "/cika/waste_detections"
+    rgb_topic: "/oak/rgb/image_raw"
+    detections_output_topic: "/cika/waste_detections_classified"
