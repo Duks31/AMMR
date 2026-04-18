@@ -79,3 +79,7 @@ Just a minor issue, since the models is trained in kaggle, and I Downloaded it a
 Next run the model for 100 epochs on kaggle.
 - try Data Aug, on the fly during Training
 - Try fine tuning
+
+Ran 100 epochs on Kaggle and observed stability in loss curves
+93 layers, 25,840,918 parameters, 100 epochs completed in 1.647 hours
+- Still yet to fix data imbalance in the dataset 3484:457 (non-recyclable vs recyclable)
