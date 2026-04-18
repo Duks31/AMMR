@@ -3,6 +3,7 @@
 
     <xacro:include filename="$(find cika_description)/urdf/materials.xacro" />
     <xacro:include filename="$(find cika_description)/urdf/cika.gazebo" />
+    <xacro:arg name="use_sim" default="true" />
     <link name="base_link">
         <inertial>
             <origin xyz="-0.33260926446179306 0.15120963934333517 0.1740750380233756" rpy="0 0 0" />
@@ -480,11 +481,21 @@
         <origin xyz="0 0 0" rpy="-1.5708 0 -1.5708" />
     </joint>
 
-    <ros2_control name="GazeboSystem" type="system">
+    <ros2_control name="CikaSystem" type="system">
         <hardware>
-            <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+            <xacro:if value="$(arg use_sim)">
+                <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+            </xacro:if>
+            <xacro:unless value="$(arg use_sim)">
+                <plugin>cika_hardware/CikaDriveInterface</plugin>
+                <param name="wheel_separation">0.363</param>
+                <param name="wheel_radius">0.0885</param>
+                <param name="odom_topic">/cika/odom</param>
+                <param name="cmd_topic">/cika/drive/wheel_vel_cmd</param>
+            </xacro:unless>
         </hardware>
 
+        <!-- Drive joints — velocity controlled -->
         <joint name="left_front_wheel_1_joint">
             <command_interface name="velocity" />
             <state_interface name="position" />
@@ -506,6 +517,7 @@
             <state_interface name="velocity" />
         </joint>
 
+        <!-- Arm joints — position controlled (CikaArmInterface in Phase 2) -->
         <joint name="turntable_1_joint">
             <command_interface name="position" />
             <state_interface name="position" />
@@ -532,6 +544,7 @@
             <state_interface name="velocity" />
         </joint>
 
+        <!-- Gripper joints -->
         <joint name="left_gripper_1_joint">
             <command_interface name="position" />
             <state_interface name="position" />
@@ -543,5 +556,5 @@
             <state_interface name="velocity" />
         </joint>
     </ros2_control>
-
+    
 </robot>
