@@ -16,10 +16,11 @@ Nav2 failures trigger one retry before skipping back to IDLE.
 """
 
 import math
-import time
 
 import rclpy
 import rclpy.duration
+import tf2_ros
+import tf2_geometry_msgs  # noqa: F401 — required for PoseStamped transform support
 from rclpy.node import Node
 from rclpy.action import ActionClient
 from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy
@@ -35,17 +36,18 @@ from cika_perception.msg import WasteDetection, WasteDetectionArray
 # ── Action import — stubbed until cika_manipulator is ready ──────────────────
 try:
     from cika_manipulator.action import PickAndDispose
+
     MANIPULATOR_AVAILABLE = True
 except ImportError:
     MANIPULATOR_AVAILABLE = False
 
 
 class State(Enum):
-    IDLE       = auto()
-    SELECTING  = auto()
+    IDLE = auto()
+    SELECTING = auto()
     NAVIGATING = auto()
-    VERIFYING  = auto()
-    PICKING    = auto()
+    VERIFYING = auto()
+    PICKING = auto()
 
 
 class TaskManagerNode(Node):
@@ -54,31 +56,39 @@ class TaskManagerNode(Node):
         super().__init__("task_manager_node")
 
         # ── Parameters ────────────────────────────────────────────────────────
-        self.declare_parameter("approach_distance",        0.4)   # metres from object
-        self.declare_parameter("detector_conf_threshold",  0.55)  # min YOLO conf to consider
-        self.declare_parameter("classifier_conf_threshold",0.65)  # min classifier conf
-        self.declare_parameter("verify_frames_required",   5)     # consecutive frames to confirm
-        self.declare_parameter("nav2_retry_limit",         1)     # retries before skip
-        self.declare_parameter("pick_stub_duration",       3.0)   # seconds to simulate pick
-        self.declare_parameter("detections_topic",  "/cika/waste_detections_classified")
-        self.declare_parameter("robot_base_frame",  "base_link")
-        self.declare_parameter("global_frame",      "map")
+        self.declare_parameter("approach_distance", 0.4)  # metres from object
+        self.declare_parameter(
+            "detector_conf_threshold", 0.55
+        )  # min YOLO conf to consider
+        self.declare_parameter("classifier_conf_threshold", 0.65)  # min classifier conf
+        self.declare_parameter(
+            "verify_frames_required", 5
+        )  # consecutive frames to confirm
+        self.declare_parameter("nav2_retry_limit", 1)  # retries before skip
+        self.declare_parameter("pick_stub_duration", 3.0)  # seconds to simulate pick
+        self.declare_parameter("detections_topic", "/cika/waste_detections_classified")
+        self.declare_parameter("robot_base_frame", "base_link")
+        self.declare_parameter("global_frame", "map")
 
-        self.approach_dist      = self.get_parameter("approach_distance").value
-        self.det_conf_thresh    = self.get_parameter("detector_conf_threshold").value
-        self.cls_conf_thresh    = self.get_parameter("classifier_conf_threshold").value
-        self.verify_frames_req  = self.get_parameter("verify_frames_required").value
-        self.nav2_retry_limit   = self.get_parameter("nav2_retry_limit").value
+        self.approach_dist = self.get_parameter("approach_distance").value
+        self.det_conf_thresh = self.get_parameter("detector_conf_threshold").value
+        self.cls_conf_thresh = self.get_parameter("classifier_conf_threshold").value
+        self.verify_frames_req = self.get_parameter("verify_frames_required").value
+        self.nav2_retry_limit = self.get_parameter("nav2_retry_limit").value
         self.pick_stub_duration = self.get_parameter("pick_stub_duration").value
-        self.base_frame         = self.get_parameter("robot_base_frame").value
-        self.global_frame       = self.get_parameter("global_frame").value
+        self.base_frame = self.get_parameter("robot_base_frame").value
+        self.global_frame = self.get_parameter("global_frame").value
 
         # ── State ─────────────────────────────────────────────────────────────
-        self._state           = State.IDLE
+        self._state = State.IDLE
         self._target: WasteDetection | None = None
-        self._nav2_retries    = 0
-        self._verify_count    = 0
+        self._nav2_retries = 0
+        self._verify_count = 0
         self._nav2_goal_handle = None
+
+        # ── TF2 ───────────────────────────────────────────────────────────────────
+        self.tf_buffer   = tf2_ros.Buffer()
+        self.tf_listener = tf2_ros.TransformListener(self.tf_buffer, self)
 
         # ── Action clients ────────────────────────────────────────────────────
         self._nav2_client = ActionClient(self, NavigateToPose, "navigate_to_pose")
@@ -127,11 +137,14 @@ class TaskManagerNode(Node):
     def _try_select(self, msg: WasteDetectionArray):
         """Pick the best detection — highest combined confidence with valid 3D position."""
         candidates = [
-            d for d in msg.detections
+            d
+            for d in msg.detections
             if d.has_3d_position
-            and d.confidence_detector  >= self.det_conf_thresh
-            and (d.confidence_classifier == 0.0              # classifier not yet scored
-                 or d.confidence_classifier >= self.cls_conf_thresh)
+            and d.confidence_detector >= self.det_conf_thresh
+            and (
+                d.confidence_classifier == 0.0  # classifier not yet scored
+                or d.confidence_classifier >= self.cls_conf_thresh
+            )
         ]
 
         if not candidates:
@@ -140,7 +153,11 @@ class TaskManagerNode(Node):
         # Score = detector_conf * 0.6 + classifier_conf * 0.4
         # If classifier hasn't scored yet, weight purely on detector
         def score(d: WasteDetection) -> float:
-            cls_conf = d.confidence_classifier if d.confidence_classifier > 0.0 else d.confidence_detector
+            cls_conf = (
+                d.confidence_classifier
+                if d.confidence_classifier > 0.0
+                else d.confidence_detector
+            )
             return d.confidence_detector * 0.6 + cls_conf * 0.4
 
         best = max(candidates, key=score)
@@ -170,8 +187,20 @@ class TaskManagerNode(Node):
             self._reset()
             return
 
+        # Transform approach pose from base_link → map frame for Nav2
+        try:
+            approach_map = self.tf_buffer.transform(
+                approach,
+                self.global_frame,
+                timeout=rclpy.duration.Duration(seconds=0.5),
+            )
+        except Exception as exc:
+            self.get_logger().error(f"TF2 transform base_link → map failed: {exc} — returning to IDLE")
+            self._reset()
+            return
+
         goal = NavigateToPose.Goal()
-        goal.pose = approach
+        goal.pose = approach_map
 
         self._state = State.NAVIGATING
         self.get_logger().info(
@@ -260,7 +289,9 @@ class TaskManagerNode(Node):
     def _handle_nav2_failure(self):
         if self._nav2_retries < self.nav2_retry_limit:
             self._nav2_retries += 1
-            self.get_logger().info(f"Retrying navigation (attempt {self._nav2_retries})")
+            self.get_logger().info(
+                f"Retrying navigation (attempt {self._nav2_retries})"
+            )
             if self._target is not None:
                 self._navigate_to_target(self._target)
         else:
@@ -280,7 +311,7 @@ class TaskManagerNode(Node):
         # Check if any detection still matches our target label with sufficient confidence
         confirmed = any(
             d.label == self._target.label
-            and d.confidence_detector  >= self.det_conf_thresh
+            and d.confidence_detector >= self.det_conf_thresh
             and d.has_3d_position
             for d in msg.detections
         )
@@ -295,7 +326,9 @@ class TaskManagerNode(Node):
                 self._state = State.PICKING
                 self._trigger_pick()
         else:
-            self.get_logger().warn("Target lost during verification — returning to IDLE")
+            self.get_logger().warn(
+                "Target lost during verification — returning to IDLE"
+            )
             self._reset()
 
     # ── Pick ───────────────────────────────────────────────────────────────────
@@ -308,13 +341,15 @@ class TaskManagerNode(Node):
     def _trigger_pick_real(self):
         """Send PickAndDispose goal to cika_manipulator action server."""
         if not self._arm_client.wait_for_server(timeout_sec=5.0):
-            self.get_logger().error("pick_and_dispose action server not available — using stub")
+            self.get_logger().error(
+                "pick_and_dispose action server not available — using stub"
+            )
             self._trigger_pick_stub()
             return
 
         goal = PickAndDispose.Goal()
         goal.target_position = self._target.position
-        goal.waste_label     = self._target.label
+        goal.waste_label = self._target.label
 
         send_future = self._arm_client.send_goal_async(
             goal,
@@ -341,36 +376,36 @@ class TaskManagerNode(Node):
     def _arm_result_cb(self, future):
         result = future.result().result
         if result.success:
-            self.get_logger().info(f"Pick complete: {result.message} — returning to IDLE")
+            self.get_logger().info(
+                f"Pick complete: {result.message} — returning to IDLE"
+            )
         else:
             self.get_logger().warn(f"Pick failed: {result.message} — returning to IDLE")
         self._reset()
 
+
     def _trigger_pick_stub(self):
-        """
-        Stub pick — simulates arm pick with a timer delay.
-        Replace with _trigger_pick_real() when cika_manipulator is ready.
-        """
         self.get_logger().warn(
             f"[STUB] Arm pick triggered for '{self._target.label}' at "
             f"({self._target.position.x:.2f}, {self._target.position.y:.2f}, "
             f"{self._target.position.z:.2f}) — simulating {self.pick_stub_duration}s pick"
         )
-        self.create_timer(
+        self._stub_timer = self.create_timer(
             self.pick_stub_duration,
             self._stub_pick_complete,
         )
 
     def _stub_pick_complete(self):
+        self._stub_timer.cancel()  # cancel before reset
         self.get_logger().info("[STUB] Pick complete — returning to IDLE")
         self._reset()
 
     # ── Reset ──────────────────────────────────────────────────────────────────
     def _reset(self):
-        self._state            = State.IDLE
-        self._target           = None
-        self._nav2_retries     = 0
-        self._verify_count     = 0
+        self._state = State.IDLE
+        self._target = None
+        self._nav2_retries = 0
+        self._verify_count = 0
         self._nav2_goal_handle = None
         self.get_logger().info("State → IDLE | searching for waste")
 
