@@ -441,7 +441,7 @@
         <parent link="turntable_1" />
         <child link="lower_arm_1" />
         <axis xyz="-0.0 1.0 0.0" />
-        <limit upper="3.420845" lower="0.0" effort="100" velocity="100" />
+        <limit upper="3.142" lower="-0.1" effort="100" velocity="100" />
     </joint>
 
     <joint name="center_arm_1_joint" type="revolute">
@@ -449,7 +449,7 @@
         <parent link="lower_arm_1" />
         <child link="center_arm_1" />
         <axis xyz="0.0 -1.0 -0.0" />
-        <limit upper="2.617994" lower="-0.349066" effort="100" velocity="100" />
+        <limit upper="2.793" lower="-0.349066" effort="100" velocity="100" />
     </joint>
 
     <joint name="upper_arm_1_joint" type="revolute">
@@ -457,7 +457,7 @@
         <parent link="center_arm_1" />
         <child link="upper_arm_1" />
         <axis xyz="-0.0 1.0 0.0" />
-        <limit upper="0.349066" lower="-2.094395" effort="100" velocity="100" />
+        <limit upper="1.0476" lower="-2.094395" effort="100" velocity="100" />
     </joint>
 
     <joint name="gripper_mount_1_joint" type="revolute">
@@ -465,7 +465,7 @@
         <parent link="upper_arm_1" />
         <child link="gripper_mount_1" />
         <axis xyz="0.956814 -0.0 -0.290702" />
-        <limit upper="0.785398" lower="-0.785398" effort="100" velocity="100" />
+        <limit upper="2.3567" lower="-0.785398" effort="100" velocity="100" />
     </joint>
 
     <!-- GRIPPER -->
