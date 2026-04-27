@@ -53,7 +53,6 @@ RUN pip3 install --no-cache-dir --default-timeout=1000 ultralytics
 WORKDIR /cika_ws
 
 COPY cika_ws/src/ src/
-COPY cika_ws/config/ config/
 
 RUN rosdep init || true && \
     rosdep update && \
