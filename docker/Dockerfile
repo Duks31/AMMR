@@ -19,8 +19,10 @@ RUN apt-get update && apt-get install -y \
     # ros2_control
     ros-humble-ros2-control \
     ros-humble-ros2-controllers \
-    # micro-ROS (ESP32 comms)
-    # ros-humble-micro-ros-agent \
+    # ── micro-ROS Agent — runs on Pi HOST (not Docker) ──────────────
+    # sudo snap install micro-ros-agent
+    # micro-ros-agent serial --dev /dev/ttyUSB0 -b 115200
+    # Must be started before cika_navigation
     # OAK-D
     # ros-humble-depthai-ros \ 
     # Robot description
@@ -39,9 +41,9 @@ RUN apt-get update && apt-get install -y \
 
 RUN ARCH=$(uname -m) && \
     if [ "$ARCH" = "aarch64" ]; then \
-        pip3 install --no-cache-dir torch torchvision; \
+        pip3 install --no-cache-dir --timeout=1000 --retries=5 torch torchvision; \
     else \
-        pip3 install --no-cache-dir torch torchvision \
+        pip3 install --no-cache-dir --timeout=1000 --retries=5 torch torchvision \
             --index-url https://download.pytorch.org/whl/cpu; \
     fi
 
