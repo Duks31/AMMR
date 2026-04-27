@@ -32,8 +32,8 @@ def generate_launch_description():
     is_hardware = PythonExpression(["'", backend, "' == 'hardware'"])
 
     # ── Model paths ────────────────────────────────────────────────────────────
-    detector_model   = os.path.join(pkg, "models", "detector",   "kaggle_run_100_epochs.pt")
-    classifier_model = os.path.join(pkg, "models", "classifier", "efficientnetb0_finetuned.pth")
+    detector_model   = os.path.join(pkg, "models", "detector",   "kaggle_run_100_epochs.onnx")
+    classifier_model = os.path.join(pkg, "models", "classifier", "efficientnetb0_finetuned.onnx")
 
     config_sim = os.path.join(pkg, "config", "perception_sim.yaml")
     config_hw  = os.path.join(pkg, "config", "perception_hardware.yaml")

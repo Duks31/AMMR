@@ -39,18 +39,11 @@ RUN apt-get update && apt-get install -y \
     ros-humble-image-transport-plugins \
     && rm -rf /var/lib/apt/lists/*
 
-RUN ARCH=$(uname -m) && \
-    if [ "$ARCH" = "aarch64" ]; then \
-        pip3 install --no-cache-dir --timeout=1000 --retries=5 torch torchvision; \
-    else \
-        pip3 install --no-cache-dir --timeout=1000 --retries=5 torch torchvision \
-            --index-url https://download.pytorch.org/whl/cpu; \
-    fi
+RUN pip3 install --no-cache-dir --timeout=300 onnxruntime
 
 RUN pip3 install --no-cache-dir --default-timeout=1000 numpy Pillow
 RUN pip3 install --no-cache-dir --default-timeout=1000 depthai blobconverter
 RUN pip3 install --no-cache-dir --default-timeout=1000 opencv-python-headless
-RUN pip3 install --no-cache-dir --default-timeout=1000 ultralytics
 
 WORKDIR /cika_ws
 

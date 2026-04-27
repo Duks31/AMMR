@@ -18,6 +18,8 @@ import rclpy.duration
 from rclpy.node import Node
 from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy
 
+import cv2
+import onnxruntime as ort
 import numpy as np
 from cv_bridge import CvBridge
 from image_geometry import PinholeCameraModel
@@ -127,15 +129,17 @@ class DetectorNode(Node):
     # ── Model loading ──────────────────────────────────────────────────────────
     def _load_model(self, model_path: str):
         if not model_path:
-            self.get_logger().error("model_path is empty — check perception_sim.yaml")
+            self.get_logger().error("model_path is empty — check perception config")
             return None
         try:
-            from ultralytics import YOLO
-            model = YOLO(model_path)
-            self.get_logger().info(f"Loaded YOLO model: {model_path}")
-            return model
+            session = ort.InferenceSession(
+                model_path,
+                providers=["CPUExecutionProvider"]
+            )
+            self.get_logger().info(f"Loaded ONNX detector: {model_path}")
+            return session
         except Exception as exc:
-            self.get_logger().error(f"YOLO load failed: {exc}")
+            self.get_logger().error(f"ONNX detector load failed: {exc}")
             return None
 
     # ── Camera info ────────────────────────────────────────────────────────────
@@ -163,36 +167,75 @@ class DetectorNode(Node):
             self.get_logger().warn(f"Image conversion error: {exc}")
             return
 
-        # ── YOLO inference ────────────────────────────────────────────────────
-        results = self.model.predict(
-            rgb,
-            conf=self.conf_thresh,
-            iou=self.iou_thresh,
-            device=self.device,
-            verbose=False,
-        )
+        # Preprocess
+        h, w = rgb.shape[:2]
+        rgb_resized = cv2.resize(rgb, (640, 640))
+        blob = rgb_resized.transpose(2, 0, 1)[np.newaxis].astype(np.float32) / 255.0
+
+        # Inference
+        raw = self.model.run(None, {"images": blob})[0]  # (1, 6, 8400)
+        raw = raw[0].T  # (8400, 6) — x_center, y_center, w, h, conf_cls0, conf_cls1
 
         det_array = WasteDetectionArray()
         det_array.header = rgb_msg.header
         viz_list = []
 
-        for result in results:
-            if result.boxes is None:
+        sx, sy = w / 640.0, h / 640.0
+
+        for row in raw:
+            x_c, y_c, bw, bh = row[0], row[1], row[2], row[3]
+            scores = row[4:]
+            cls_id = int(np.argmax(scores))
+            conf = float(scores[cls_id])
+            if conf < self.conf_thresh:
                 continue
-            for box in result.boxes:
-                det = self._process_box(box, depth, rgb_msg.header.stamp)
-                if det is None:
-                    continue
-                det_array.detections.append(det)
-                viz_list.append({
-                    "bbox":                   det.bbox,
-                    "label":                  det.label,
-                    "confidence_detector":    det.confidence_detector,
-                    "confidence_classifier":  det.confidence_classifier,
-                    "has_3d_position":        det.has_3d_position,
-                    "position": (det.position.x, det.position.y, det.position.z)
-                                if det.has_3d_position else None,
-                })
+
+            x1 = (x_c - bw / 2) * sx
+            y1 = (y_c - bh / 2) * sy
+            x2 = (x_c + bw / 2) * sx
+            y2 = (y_c + bh / 2) * sy
+
+            # reuse existing _process_box logic inline
+            det = WasteDetection()
+            det.header.stamp    = rgb_msg.header.stamp
+            det.header.frame_id = self.base_frame
+            det.bbox                  = [float(x1), float(y1), float(x2), float(y2)]
+            det.confidence_detector   = conf
+            det.label                 = CLASS_NAMES.get(cls_id, "unknown")
+            det.confidence_classifier = 0.0
+            det.has_3d_position       = False
+
+            # 3D projection — reuse existing logic
+            if self._camera_info_ready and depth is not None:
+                u, v    = bbox_center(det.bbox)
+                depth_m = sample_depth(depth, u, v)
+                xyz_cam = deproject_pixel(self.camera_model, u, v, depth_m)
+                if xyz_cam is not None:
+                    ps_cam = make_point_stamped(xyz_cam, self.camera_frame, rgb_msg.header.stamp)
+                    try:
+                        ps_base = self.tf_buffer.transform(
+                            ps_cam, self.base_frame,
+                            timeout=rclpy.duration.Duration(seconds=0.1),
+                        )
+                        det.position.x      = ps_base.point.x
+                        det.position.y      = ps_base.point.y
+                        det.position.z      = ps_base.point.z
+                        det.has_3d_position = True
+                    except Exception as exc:
+                        self.get_logger().warn(
+                            f"TF transform failed: {exc}", throttle_duration_sec=5.0
+                        )
+
+            det_array.detections.append(det)
+            viz_list.append({
+                "bbox":                  det.bbox,
+                "label":                 det.label,
+                "confidence_detector":   det.confidence_detector,
+                "confidence_classifier": det.confidence_classifier,
+                "has_3d_position":       det.has_3d_position,
+                "position": (det.position.x, det.position.y, det.position.z)
+                            if det.has_3d_position else None,
+            })
 
         self.detections_pub.publish(det_array)
 
@@ -203,49 +246,6 @@ class DetectorNode(Node):
                 self.bridge.cv2_to_imgmsg(debug_img, encoding="bgr8")
             )
 
-    # ── Process a single YOLO box ──────────────────────────────────────────────
-    def _process_box(self, box, depth: np.ndarray, stamp) -> WasteDetection | None:
-        try:
-            xyxy   = box.xyxy[0].cpu().numpy()
-            conf   = float(box.conf[0].cpu().numpy())
-            cls_id = int(box.cls[0].cpu().numpy())
-        except Exception as exc:
-            self.get_logger().warn(f"Box parse error: {exc}")
-            return None
-
-        det = WasteDetection()
-        det.header.stamp    = stamp
-        det.header.frame_id = self.base_frame
-        det.bbox                 = [float(v) for v in xyxy]
-        det.confidence_detector  = conf
-        det.label                = CLASS_NAMES.get(cls_id, "unknown")
-        det.confidence_classifier = 0.0   # filled by classifier_node
-        det.has_3d_position      = False
-
-        # ── 3D projection ──────────────────────────────────────────────────────
-        if self._camera_info_ready and depth is not None:
-            u, v     = bbox_center(det.bbox)
-            depth_m  = sample_depth(depth, u, v)
-            xyz_cam  = deproject_pixel(self.camera_model, u, v, depth_m)
-
-            if xyz_cam is not None:
-                ps_cam = make_point_stamped(xyz_cam, self.camera_frame, stamp)
-                try:
-                    ps_base = self.tf_buffer.transform(
-                        ps_cam,
-                        self.base_frame,
-                        timeout=rclpy.duration.Duration(seconds=0.1),
-                    )
-                    det.position.x      = ps_base.point.x
-                    det.position.y      = ps_base.point.y
-                    det.position.z      = ps_base.point.z
-                    det.has_3d_position = True
-                except Exception as exc:
-                    self.get_logger().warn(
-                        f"TF transform failed: {exc}", throttle_duration_sec=5.0
-                    )
-
-        return det
 
 
 def main(args=None):

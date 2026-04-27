@@ -16,6 +16,8 @@ detector_node:
     camera_frame: "OAKDcamera_1_optical"
     base_frame: "base_link"
     inference_rate: 2.0                    # Hz — RPi 4B CPU can't sustain 5Hz with YOLOv8
+    model_path: /cika_ws/src/cika_perception/models/detector/kaggle_run_100_epochs.onnx
+
 
 classifier_node:
   ros__parameters:
@@ -25,3 +27,4 @@ classifier_node:
     detections_input_topic: "/cika/waste_detections"
     rgb_topic: "/oak/rgb/image_raw"
     detections_output_topic: "/cika/waste_detections_classified"
+    model_path: /cika_ws/src/cika_perception/models/classifier/efficientnetb0.onnx
