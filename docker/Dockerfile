@@ -20,7 +20,7 @@ RUN apt-get update && apt-get install -y \
     ros-humble-ros2-control \
     ros-humble-ros2-controllers \
     # micro-ROS (ESP32 comms)
-    ros-humble-micro-ros-agent \
+    # ros-humble-micro-ros-agent \
     # OAK-D
     # ros-humble-depthai-ros \ 
     # Robot description
