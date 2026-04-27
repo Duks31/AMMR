@@ -18,7 +18,7 @@ services:
     devices:
       - /dev/ttyUSB0:/dev/ttyUSB0
     environment:
-      - ROS_DOMAIN_ID=31
+      - ROS_DOMAIN_ID=0
       - DISPLAY=$DISPLAY
       - WAYLAND_DISPLAY=$WAYLAND_DISPLAY
       - XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR
@@ -48,7 +48,7 @@ services:
       - /mnt/wslg:/mnt/wslg
       - ../cika_ws/maps:/root/.ros
     environment:
-      - ROS_DOMAIN_ID=31
+      - ROS_DOMAIN_ID=0
       - DISPLAY=$DISPLAY
       - WAYLAND_DISPLAY=$WAYLAND_DISPLAY
       - XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR
@@ -80,7 +80,7 @@ services:
     devices:
       - /dev/bus/usb:/dev/bus/usb
     environment:
-      - ROS_DOMAIN_ID=31
+      - ROS_DOMAIN_ID=0
       - DISPLAY=$DISPLAY
     deploy:
       resources:

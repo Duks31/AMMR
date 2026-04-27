@@ -76,7 +76,7 @@ RUN . /opt/ros/humble/setup.sh && \
 
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
     echo "source /cika_ws/install/setup.bash" >> ~/.bashrc && \
-    echo "export ROS_DOMAIN_ID=31" >> ~/.bashrc && \
+    echo "export ROS_DOMAIN_ID=0" >> ~/.bashrc && \
     echo "export RMW_IMPLEMENTATION=rmw_fastrtps_cpp" >> ~/.bashrc
 
 COPY docker/entrypoint.sh /entrypoint.sh

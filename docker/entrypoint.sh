@@ -8,7 +8,7 @@ if [ -f /cika_ws/install/setup.bash ]; then
     source /cika_ws/install/setup.bash
 fi
 
-export ROS_DOMAIN_ID=31
+export ROS_DOMAIN_ID=0
 export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
 
 if [ "$USE_SIM_TIME" = "true" ]; then
