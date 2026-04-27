@@ -170,7 +170,18 @@
         </collision>
     </link>
 
-    <link name="OAKDcamera_1_optical" />
+    
+    <link name="OAKDcamera_1_optical">
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <box size="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="transparent">
+                <color rgba="0 0 0 0"/>
+            </material>
+        </visual>
+    </link>
 
     <link name="arm_bottom_1">
         <inertial>
@@ -430,7 +441,7 @@
         <parent link="turntable_1" />
         <child link="lower_arm_1" />
         <axis xyz="-0.0 1.0 0.0" />
-        <limit upper="3.420845" lower="0.0" effort="100" velocity="100" />
+        <limit upper="3.142" lower="-0.1" effort="100" velocity="100" />
     </joint>
 
     <joint name="center_arm_1_joint" type="revolute">
@@ -438,7 +449,7 @@
         <parent link="lower_arm_1" />
         <child link="center_arm_1" />
         <axis xyz="0.0 -1.0 -0.0" />
-        <limit upper="2.617994" lower="-0.349066" effort="100" velocity="100" />
+        <limit upper="2.793" lower="-0.349066" effort="100" velocity="100" />
     </joint>
 
     <joint name="upper_arm_1_joint" type="revolute">
@@ -446,7 +457,7 @@
         <parent link="center_arm_1" />
         <child link="upper_arm_1" />
         <axis xyz="-0.0 1.0 0.0" />
-        <limit upper="0.349066" lower="-2.094395" effort="100" velocity="100" />
+        <limit upper="1.0476" lower="-2.094395" effort="100" velocity="100" />
     </joint>
 
     <joint name="gripper_mount_1_joint" type="revolute">
@@ -454,7 +465,7 @@
         <parent link="upper_arm_1" />
         <child link="gripper_mount_1" />
         <axis xyz="0.956814 -0.0 -0.290702" />
-        <limit upper="0.785398" lower="-0.785398" effort="100" velocity="100" />
+        <limit upper="2.3567" lower="-0.785398" effort="100" velocity="100" />
     </joint>
 
     <!-- GRIPPER -->
@@ -472,6 +483,7 @@
         <child link="right_gripper_1" />
         <axis xyz="-0.290702 0.0 -0.956814" />
         <limit upper="0.785398" lower="0.0" effort="100" velocity="100" />
+        <mimic joint="left_gripper_1_joint" multiplier="-1.0" />
     </joint>
 
     <joint name="oakd_optical_joint" type="fixed">

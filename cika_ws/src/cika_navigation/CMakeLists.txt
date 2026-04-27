@@ -13,8 +13,8 @@ find_package(ament_cmake REQUIRED)
 
 install (DIRECTORY
   launch
-  config
-  maps
+  #config
+  #maps
   DESTINATION share/${PROJECT_NAME}/
 )
 

@@ -1,0 +1,11 @@
+# Goal         
+int32 task_number
+float64 x    
+float64 y
+float64 z
+---
+# Result
+bool success
+---
+# Feedback
+int32 percentage
