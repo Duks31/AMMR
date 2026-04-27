@@ -6,3 +6,9 @@ build/
 install/
 log/
 maps/
+microros_ws/src/micro_ros_setup/
+microros_ws/src/uros/
+microros_ws/build/
+microros_ws/install/
+microros_ws/log/
+.pio/

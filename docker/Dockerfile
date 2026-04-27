@@ -14,6 +14,8 @@ RUN apt-get update && apt-get install -y \
     ros-humble-nav2-bringup \
     # RTAB-Map (localization only on robot — no Gazebo)
     ros-humble-rtabmap-ros \
+    # EKF
+    ros-humble-robot-localization \
     # ros2_control
     ros-humble-ros2-control \
     ros-humble-ros2-controllers \
@@ -30,12 +32,18 @@ RUN apt-get update && apt-get install -y \
     ros-humble-teleop-twist-joy \
     # Laser filters
     ros-humble-laser-filters \
+    # Foxglove bridge dependencies
+    ros-humble-foxglove-bridge \
+    ros-humble-image-transport-plugins \
     && rm -rf /var/lib/apt/lists/*
 
-# Python dependencies — CPU only PyTorch for RPi
-RUN pip3 install --no-cache-dir --default-timeout=1000 \
-    torch torchvision \
-    --index-url https://download.pytorch.org/whl/cpu
+RUN ARCH=$(uname -m) && \
+    if [ "$ARCH" = "aarch64" ]; then \
+        pip3 install --no-cache-dir torch torchvision; \
+    else \
+        pip3 install --no-cache-dir torch torchvision \
+            --index-url https://download.pytorch.org/whl/cpu; \
+    fi
 
 RUN pip3 install --no-cache-dir --default-timeout=1000 numpy Pillow
 RUN pip3 install --no-cache-dir --default-timeout=1000 depthai blobconverter
@@ -68,7 +76,7 @@ RUN . /opt/ros/humble/setup.sh && \
 
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
     echo "source /cika_ws/install/setup.bash" >> ~/.bashrc && \
-    echo "export ROS_DOMAIN_ID=31" >> ~/.bashrc && \
+    echo "export ROS_DOMAIN_ID=0" >> ~/.bashrc && \
     echo "export RMW_IMPLEMENTATION=rmw_fastrtps_cpp" >> ~/.bashrc
 
 COPY docker/entrypoint.sh /entrypoint.sh

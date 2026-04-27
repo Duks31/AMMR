@@ -2,43 +2,46 @@
 
 services:
   # ── Navigation: SLAM + Nav2 ──────────────────────────────────────
-  # cika_navigation:
-  #   build:
-  #     context: ..
-  #     dockerfile: docker/Dockerfile
-  #   image: cika_ros2:humble
-  #   container_name: cika_navigation
-  #   network_mode: host
-  #   privileged: true
-  #   volumes:
-  #     - ../cika_ws/src:/cika_ws/src
-  #     - ../cika_ws/config:/cika_ws/config
-  #     - ../cika_ws/maps:/root/.ros
-  #   environment:
-  #     - ROS_DOMAIN_ID=31
-  #     - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
-  #   tmpfs:
-  #     - /tmp:size=200m
-  #   command: ros2 launch cika_bringup navigation.launch.py
-  #   restart: unless-stopped
+  cika_navigation:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    image: cika_ros2:humble
+    container_name: cika_navigation
+    network_mode: host
+    privileged: true
+    volumes:
+      - ../cika_ws/src:/cika_ws/src
+      - ../cika_ws/config:/cika_ws/config
+      - ../cika_ws/maps:/root/.ros
+    environment:
+      - ROS_DOMAIN_ID=0
+      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+    tmpfs:
+      - /tmp:size=200m
+    command: ros2 launch cika_bringup navigation.launch.py use_sim_time:=false
+    restart: unless-stopped
 
   # ── Perception: OAK-D + YOLO ────────────────────────────────────
-  # cika_perception:
-  #   image: cika_ros2:humble
-  #   container_name: cika_perception
-  #   network_mode: host
-  #   privileged: true
-  #   volumes:
-  #     - ../cika_ws/src:/cika_ws/src
-  #     - ../cika_ws/models:/cika_ws/models
-  #   devices:
-  #     - /dev/bus/usb:/dev/bus/usb
-  #   environment:
-  #     - ROS_DOMAIN_ID=31
-  #   tmpfs:
-  #     - /tmp:size=200m
-  #   command: ros2 launch cika_perception perception.launch.py
-  #   restart: unless-stopped
+  cika_perception:
+    image: cika_ros2:humble # reuses image built by cika_navigation
+    container_name: cika_perception
+    network_mode: host
+    privileged: true
+    depends_on:
+      - cika_navigation # ensures image is built first
+    volumes:
+      - ../cika_ws/src:/cika_ws/src
+      - ../cika_ws/models:/cika_ws/models
+    devices:
+      - /dev/bus/usb:/dev/bus/usb
+    environment:
+      - ROS_DOMAIN_ID=0
+      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+    tmpfs:
+      - /tmp:size=200m
+    command: ros2 launch cika_perception perception.launch.py backend:=hardware use_sim_time:=false
+    restart: unless-stopped
 
   # ── Manipulation: MoveIt2 + Arm ──────────────────────────────────
   # cika_manipulation:
@@ -52,8 +55,19 @@ services:
   #   devices:
   #     - /dev/ttyUSB0:/dev/ttyUSB0
   #   environment:
-  #     - ROS_DOMAIN_ID=31
+  #     - ROS_DOMAIN_ID=0
+  #     - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
   #   tmpfs:
   #     - /tmp:size=200m
   #   command: ros2 launch robot_arm_controller main_launch.py
   #   restart: unless-stopped
+
+  foxglove_bridge:
+    image: cika_ros2:humble
+    container_name: foxglove_bridge
+    network_mode: host
+    environment:
+      - ROS_DOMAIN_ID=0
+      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+    command: ros2 launch foxglove_bridge foxglove_bridge_launch.xml port:=8765
+    restart: unless-stopped

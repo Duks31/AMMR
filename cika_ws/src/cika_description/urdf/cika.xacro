@@ -13,7 +13,7 @@
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/base_link.stl"
+                <mesh filename="package://cika_description/meshes/base_link.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <material name="military_green" />
@@ -21,7 +21,7 @@
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/base_link.stl"
+                <mesh filename="package://cika_description/meshes/base_link.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
@@ -36,7 +36,7 @@
         <visual>
             <origin xyz="0.100089 -0.332003 -0.0962" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/left_front_wheel_1.stl"
+                <mesh filename="package://cika_description/meshes/left_front_wheel_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <material name="black" />
@@ -44,7 +44,7 @@
         <collision>
             <origin xyz="0.100089 -0.332003 -0.0962" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/left_front_wheel_1.stl"
+                <mesh filename="package://cika_description/meshes/left_front_wheel_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
@@ -60,7 +60,7 @@
         <visual>
             <origin xyz="0.47736 -0.332003 -0.0962" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/left_back_wheel_1.stl"
+                <mesh filename="package://cika_description/meshes/left_back_wheel_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <material name="black" />
@@ -68,7 +68,7 @@
         <collision>
             <origin xyz="0.47736 -0.332003 -0.0962" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/left_back_wheel_1.stl"
+                <mesh filename="package://cika_description/meshes/left_back_wheel_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
@@ -84,7 +84,7 @@
         <visual>
             <origin xyz="0.099911 0.031017 -0.0962" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/right_front_wheel_1.stl"
+                <mesh filename="package://cika_description/meshes/right_front_wheel_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <material name="black" />
@@ -92,7 +92,7 @@
         <collision>
             <origin xyz="0.099911 0.031017 -0.0962" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/right_front_wheel_1.stl"
+                <mesh filename="package://cika_description/meshes/right_front_wheel_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
@@ -108,7 +108,7 @@
         <visual>
             <origin xyz="0.47736 0.030997 -0.0962" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/right_back_wheel_1.stl"
+                <mesh filename="package://cika_description/meshes/right_back_wheel_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <material name="black" />
@@ -116,7 +116,7 @@
         <collision>
             <origin xyz="0.47736 0.030997 -0.0962" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/right_back_wheel_1.stl"
+                <mesh filename="package://cika_description/meshes/right_back_wheel_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
@@ -132,7 +132,7 @@
         <visual>
             <origin xyz="0.038004 -0.265503 -0.193866" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/lidar_1.stl"
+                <mesh filename="package://cika_description/meshes/lidar_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <material name="ash" />
@@ -140,7 +140,7 @@
         <collision>
             <origin xyz="0.038004 -0.265503 -0.193866" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/lidar_1.stl"
+                <mesh filename="package://cika_description/meshes/lidar_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
@@ -156,7 +156,7 @@
         <visual>
             <origin xyz="0.517714 -0.150503 -0.657116" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/OAKDcamera_1.stl"
+                <mesh filename="package://cika_description/meshes/OAKDcamera_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <material name="ash" />
@@ -164,7 +164,7 @@
         <collision>
             <origin xyz="0.517714 -0.150503 -0.657116" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/OAKDcamera_1.stl"
+                <mesh filename="package://cika_description/meshes/OAKDcamera_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
@@ -194,7 +194,7 @@
         <visual>
             <origin xyz="0.069976 -0.15041 -0.149616" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/arm_bottom_1.stl"
+                <mesh filename="package://cika_description/meshes/arm_bottom_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <material name="dark_grey" />
@@ -202,7 +202,7 @@
         <collision>
             <origin xyz="0.069976 -0.15041 -0.149616" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/arm_bottom_1.stl"
+                <mesh filename="package://cika_description/meshes/arm_bottom_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
@@ -219,7 +219,7 @@
         <visual>
             <origin xyz="0.124976 -0.15041 -0.229171" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/turntable_1.stl"
+                <mesh filename="package://cika_description/meshes/turntable_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <material name="dark_grey" />
@@ -227,7 +227,7 @@
         <collision>
             <origin xyz="0.124976 -0.15041 -0.229171" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/turntable_1.stl"
+                <mesh filename="package://cika_description/meshes/turntable_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
@@ -244,7 +244,7 @@
         <visual>
             <origin xyz="0.124726 -0.11861 -0.294671" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/lower_arm_1.stl"
+                <mesh filename="package://cika_description/meshes/lower_arm_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <material name="light_grey" />
@@ -252,7 +252,7 @@
         <collision>
             <origin xyz="0.124726 -0.11861 -0.294671" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/lower_arm_1.stl"
+                <mesh filename="package://cika_description/meshes/lower_arm_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
@@ -269,7 +269,7 @@
         <visual>
             <origin xyz="0.308014 -0.17411 -0.269563" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/center_arm_1.stl"
+                <mesh filename="package://cika_description/meshes/center_arm_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <material name="dark_grey" />
@@ -277,7 +277,7 @@
         <collision>
             <origin xyz="0.308014 -0.17411 -0.269563" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/center_arm_1.stl"
+                <mesh filename="package://cika_description/meshes/center_arm_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
@@ -293,7 +293,7 @@
         <visual>
             <origin xyz="0.353547 -0.18061 -0.377882" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/upper_arm_1.stl"
+                <mesh filename="package://cika_description/meshes/upper_arm_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <material name="light_grey" />
@@ -301,7 +301,7 @@
         <collision>
             <origin xyz="0.353547 -0.18061 -0.377882" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/upper_arm_1.stl"
+                <mesh filename="package://cika_description/meshes/upper_arm_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
@@ -316,7 +316,7 @@
         <visual>
             <origin xyz="0.272519 -0.15066 -0.373681" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/gripper_mount_1.stl"
+                <mesh filename="package://cika_description/meshes/gripper_mount_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <material name="dark_grey" />
@@ -324,7 +324,7 @@
         <collision>
             <origin xyz="0.272519 -0.15066 -0.373681" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/gripper_mount_1.stl"
+                <mesh filename="package://cika_description/meshes/gripper_mount_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
@@ -340,7 +340,7 @@
         <visual>
             <origin xyz="0.200041 -0.15066 -0.35166" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/left_gripper_1.stl"
+                <mesh filename="package://cika_description/meshes/left_gripper_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <material name="light_grey" />
@@ -348,7 +348,7 @@
         <collision>
             <origin xyz="0.200041 -0.15066 -0.35166" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/left_gripper_1.stl"
+                <mesh filename="package://cika_description/meshes/left_gripper_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
@@ -364,7 +364,7 @@
         <visual>
             <origin xyz="0.200041 -0.15066 -0.35166" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/right_gripper_1.stl"
+                <mesh filename="package://cika_description/meshes/right_gripper_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
             <material name="light_grey" />
@@ -372,7 +372,7 @@
         <collision>
             <origin xyz="0.200041 -0.15066 -0.35166" rpy="0 0 0" />
             <geometry>
-                <mesh filename="file://$(find cika_description)/meshes/right_gripper_1.stl"
+                <mesh filename="package://cika_description/meshes/right_gripper_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
         </collision>

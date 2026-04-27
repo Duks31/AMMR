@@ -1,0 +1,27 @@
+# perception_hardware.yaml
+# Parameters for detector_node + classifier_node on physical cika hardware.
+# Runs on Raspberry Pi 4B — CPU only, conservative inference rate.
+# Topics match depthai-ros default topic names for OAK-D Lite.
+
+detector_node:
+  ros__parameters:
+    confidence_threshold: 0.50             # slightly higher on hardware to reduce false positives
+    iou_threshold: 0.45
+    device: "cpu"                          # RPi 4B — no GPU
+    rgb_topic: "/oak/rgb/image_raw"        # depthai-ros default
+    depth_topic: "/oak/stereo/image_raw"   # depthai-ros default
+    camera_info_topic: "/oak/rgb/camera_info"
+    detections_topic: "/cika/waste_detections"
+    debug_image_topic: "/cika/perception/debug_image"
+    camera_frame: "OAKDcamera_1_optical"
+    base_frame: "base_link"
+    inference_rate: 2.0                    # Hz — RPi 4B CPU can't sustain 5Hz with YOLOv8
+
+classifier_node:
+  ros__parameters:
+    model_type: "efficientnet"
+    confidence_threshold: 0.75             # stricter on hardware — false overrides are costly
+    device: "cpu"
+    detections_input_topic: "/cika/waste_detections"
+    rgb_topic: "/oak/rgb/image_raw"
+    detections_output_topic: "/cika/waste_detections_classified"
