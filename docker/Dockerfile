@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y \
     # micro-ROS (ESP32 comms)
     ros-humble-micro-ros-agent \
     # OAK-D
-    ros-humble-depthai-ros \
+    # ros-humble-depthai-ros \ 
     # Robot description
     ros-humble-xacro \
     ros-humble-joint-state-publisher \
