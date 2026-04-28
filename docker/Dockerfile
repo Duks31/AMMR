@@ -37,6 +37,12 @@ RUN apt-get update && apt-get install -y \
     # Foxglove bridge dependencies
     ros-humble-foxglove-bridge \
     ros-humble-image-transport-plugins \
+    # MoveIt2 — core only, no GUI/warehouse
+    ros-humble-moveit-ros-move-group \
+    ros-humble-moveit-kinematics \
+    ros-humble-moveit-planners \
+    ros-humble-moveit-simple-controller-manager \
+    ros-humble-moveit-configs-utils \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install --no-cache-dir --timeout=300 onnxruntime
@@ -53,26 +59,12 @@ RUN rosdep init || true && \
     rosdep update && \
     rosdep install --from-paths src \
     --ignore-src -r -y \
-    --skip-keys="ros_gz_sim ros_gz_bridge gz_ros2_control ign_ros2_control \
-                 ignition-fortress robot_arm_description robot_arm_controller \
-                 robot_arm_moveit robot_arm_msgs robot_arm_remote \
-                 ros-humble-moveit-ros-move-group ros-humble-moveit-kinematics \
-                 ros-humble-moveit-planners ros-humble-moveit-simple-controller-manager \
-                 ros-humble-moveit-configs-utils ros-humble-moveit-ros-visualization \
-                 ros-humble-moveit-ros-warehouse ros-humble-moveit-setup-assistant \
-                 ros-humble-joint-state-publisher-gui ros-humble-rviz2 \
-                 ros-humble-warehouse-ros-mongo"
+    --skip-keys="ros_gz_sim ros_gz_bridge gz_ros2_control ign_ros2_control ignition-fortress"
 
 RUN . /opt/ros/humble/setup.sh && \
     colcon build \
     --symlink-install \
-    --cmake-args -DCMAKE_BUILD_TYPE=Release \
-    --packages-skip \
-        robot_arm_description \
-        robot_arm_controller \
-        robot_arm_moveit \
-        robot_arm_msgs \
-        robot_arm_remote
+    --cmake-args -DCMAKE_BUILD_TYPE=Release
 
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
     echo "source /cika_ws/install/setup.bash" >> ~/.bashrc && \

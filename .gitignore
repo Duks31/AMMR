@@ -12,3 +12,6 @@ microros_ws/build/
 microros_ws/install/
 microros_ws/log/
 .pio/
+cika_ws/build/
+cika_ws/install/
+cika_ws/log/
