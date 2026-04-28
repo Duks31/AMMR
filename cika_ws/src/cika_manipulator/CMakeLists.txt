@@ -12,10 +12,10 @@ find_package(std_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 # 3. Generate interfaces (Must happen BEFORE ament_package)
-rosidl_generate_interfaces(${PROJECT_NAME}
-  "action/RobotarmTask.action"
-  DEPENDENCIES std_msgs # Add this if your action uses std_msgs types
-)
+# rosidl_generate_interfaces(${PROJECT_NAME}
+#   "action/RobotarmTask.action"
+#   DEPENDENCIES std_msgs # Add this if your action uses std_msgs types
+# )
 
 # 4. Install rules
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/launch")
