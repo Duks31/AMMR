@@ -61,6 +61,14 @@ RUN rosdep init || true && \
     --ignore-src -r -y \
     --skip-keys="ros_gz_sim ros_gz_bridge gz_ros2_control ign_ros2_control ignition-fortress"
 
+RUN apt-get update && \
+    rosdep init || true && \
+    rosdep update && \
+    rosdep install --from-paths src \
+    --ignore-src -r -y \
+    --skip-keys="ros_gz_sim ros_gz_bridge gz_ros2_control ign_ros2_control ignition-fortress joint_state_publisher_gui" && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN . /opt/ros/humble/setup.sh && \
     colcon build \
     --symlink-install \
