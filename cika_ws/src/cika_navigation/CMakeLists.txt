@@ -14,7 +14,7 @@ find_package(ament_cmake REQUIRED)
 install (DIRECTORY
   launch
   config
-  maps
+#   maps # IF maps have been generated, uncomment this line and add the maps directory to your package
   DESTINATION share/${PROJECT_NAME}/
 )
 
