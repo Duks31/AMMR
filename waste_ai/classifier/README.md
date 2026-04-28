@@ -1,1 +1,0 @@
-_... for now go to `notes.txt`, would update this after completion..._

@@ -1,8 +1,0 @@
-path: C:/Users/chidu/Documents/NileMechatronics/NinthSemester/SDP/AMMR/waste_ai/detector/data/TACO/data/taco_yolo
-
-train: images/train
-val: images/val
-
-names:
- 0: recyclable
- 1: non-recyclable
