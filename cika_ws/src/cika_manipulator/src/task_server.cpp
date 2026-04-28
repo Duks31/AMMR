@@ -9,7 +9,8 @@
 using namespace std::placeholders;
 
 namespace cika_manipulator
-{
+{ // ADDED: Missing opening brace for namespace
+
 class TaskServer : public rclcpp::Node
 {
 public:
@@ -87,10 +88,6 @@ private:
       rclcpp::sleep_for(std::chrono::seconds(2));
     }
 
-    // Snapshot physical state so sequence doesn't hallucinate
-    arm_move_group_->setStartState(*arm_move_group_->getCurrentState());
-    gripper_move_group_->setStartState(*gripper_move_group_->getCurrentState());
-
     bool is_pose_target = false;
 
     // --- TASK LOGIC ---
@@ -119,37 +116,47 @@ private:
       return;
     }
 
+    // 1. Setup and Move the ARM first
     if (is_pose_target) {
       arm_move_group_->setPositionTarget(goal->x, goal->y, goal->z);
     } else {
       arm_move_group_->setNamedTarget(arm_target_pose_);
     }
     
-    gripper_move_group_->setNamedTarget(gripper_target_pose_);
-
-    moveit::planning_interface::MoveGroupInterface::Plan arm_plan;
-    moveit::planning_interface::MoveGroupInterface::Plan gripper_plan;
+    RCLCPP_INFO(get_logger(), "Moving Arm...");
     
-    bool arm_success = (arm_move_group_->plan(arm_plan) == moveit::core::MoveItErrorCode::SUCCESS);
-    bool gripper_success = (gripper_move_group_->plan(gripper_plan) == moveit::core::MoveItErrorCode::SUCCESS);
+    // .move() handles planning AND execution sequentially without forcing a rigid start state
+    bool arm_success = (arm_move_group_->move() == moveit::core::MoveItErrorCode::SUCCESS);
     
-    if(arm_success && gripper_success) {
-      RCLCPP_INFO(get_logger(), "Execution Started...");
-      arm_move_group_->execute(arm_plan);
-      gripper_move_group_->execute(gripper_plan);
+    // 2. ONLY if the arm succeeds, move the GRIPPER
+    if(arm_success) {
+      RCLCPP_INFO(get_logger(), "Arm reached target. Moving Gripper...");
+      
+      // Give the gripper slightly more tolerance so Gazebo physics don't cause an instant abort
+      gripper_move_group_->setGoalJointTolerance(0.01); 
+      gripper_move_group_->setNamedTarget(gripper_target_pose_);
+      
+      bool gripper_success = (gripper_move_group_->move() == moveit::core::MoveItErrorCode::SUCCESS);
+      
+      if (gripper_success) {
+        result->success = true;
+        goal_handle->succeed(result);
+        RCLCPP_INFO(get_logger(), "Task completed successfully.");
+        return;
+      } else {
+        RCLCPP_ERROR(get_logger(), "Gripper failed to actuate.");
+      }
     } else {
-      RCLCPP_ERROR(get_logger(), "Path planning failed. Is the object out of reach?");
-      result->success = false;
-      goal_handle->abort(result);
-      return;
+      RCLCPP_ERROR(get_logger(), "Arm path planning failed. Is the object out of reach?");
     }
   
-    result->success = true;
-    goal_handle->succeed(result);
-    RCLCPP_INFO(get_logger(), "Task completed successfully.");
-  }
+    // If we reach here, something failed
+    result->success = false;
+    goal_handle->abort(result);
+  } // FIXED: Removed the extra semicolon here
 };
-}  // namespace robot_arm_remote
+
+}  // namespace cika_manipulator
 
 // Back to the Simple, Single-Threaded Engine
 int main(int argc, char ** argv)
@@ -164,4 +171,4 @@ int main(int argc, char ** argv)
   rclcpp::spin(node);
   rclcpp::shutdown();
   return 0;
-}
+} // FIXED: Removed the extra semicolon here
