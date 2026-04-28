@@ -55,7 +55,13 @@ RUN rosdep init || true && \
     --ignore-src -r -y \
     --skip-keys="ros_gz_sim ros_gz_bridge gz_ros2_control ign_ros2_control \
                  ignition-fortress robot_arm_description robot_arm_controller \
-                 robot_arm_moveit robot_arm_msgs robot_arm_remote"
+                 robot_arm_moveit robot_arm_msgs robot_arm_remote \
+                 ros-humble-moveit-ros-move-group ros-humble-moveit-kinematics \
+                 ros-humble-moveit-planners ros-humble-moveit-simple-controller-manager \
+                 ros-humble-moveit-configs-utils ros-humble-moveit-ros-visualization \
+                 ros-humble-moveit-ros-warehouse ros-humble-moveit-setup-assistant \
+                 ros-humble-joint-state-publisher-gui ros-humble-rviz2 \
+                 ros-humble-warehouse-ros-mongo"
 
 RUN . /opt/ros/humble/setup.sh && \
     colcon build \
