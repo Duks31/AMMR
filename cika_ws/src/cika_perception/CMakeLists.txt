@@ -26,6 +26,7 @@ ament_python_install_package(cika_core)
 install(PROGRAMS
   cika_core/detector_node.py
   cika_core/classifier_node.py
+  cika_core/camera_node.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
