@@ -14,7 +14,7 @@ services:
     network_mode: host
     privileged: true
     volumes:
-      - ../cika_ws/src:/cika_ws/src
+      # - ../cika_ws/src:/cika_ws/src
       - ../cika_ws/maps:/root/.ros
     devices:
       - /dev/ttyUSB1:/dev/ttyUSB1    # RPLIDAR C1 — change to ttyUSB0 if needed
@@ -35,7 +35,7 @@ services:
     depends_on:
       - cika_navigation
     volumes:
-      - ../cika_ws/src:/cika_ws/src
+      # - ../cika_ws/src:/cika_ws/src
     devices:
       - /dev/bus/usb:/dev/bus/usb    # OAK-D Lite
     environment:
@@ -55,7 +55,7 @@ services:
       - cika_navigation
       - cika_perception
     volumes:
-      - ../cika_ws/src:/cika_ws/src
+      # - ../cika_ws/src:/cika_ws/src
     environment:
       - ROS_DOMAIN_ID=0
       - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
@@ -75,7 +75,7 @@ services:
   #   depends_on:
   #     - cika_navigation
   #   volumes:
-  #     - ../cika_ws/src:/cika_ws/src
+  # #    - ../cika_ws/src:/cika_ws/src
   #   devices:
   #     - /dev/ttyUSB0:/dev/ttyUSB0    # ESP32 arm controller
   #   environment:
