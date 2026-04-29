@@ -1,6 +1,7 @@
 ### docker-compose.yaml — cika robot hardware deployment (RPi 4B)
 ### Run order: micro-ROS agent (host) → then docker compose up
 ### For SLAM: docker compose run --rm cika_navigation ros2 launch cika_navigation cika_slam.launch.py use_sim_time:=false
+### micro-ros-agent serial --dev /dev/ttyUSB0 -b 115200
 
 services:
   # ── Navigation: RTAB-Map localization + EKF + Nav2 ───────────────
@@ -87,33 +88,7 @@ services:
   #     - /tmp:size=200m
   #   command: ros2 launch cika_manipulator moveit.launch.py use_sim_time:=false
   #   restart: unless-stopped
-
-  microros_agent_base:
-    image: cika_ros2:humble
-    container_name: microros_agent_base
-    network_mode: host
-    privileged: true
-    devices:
-      - /dev/cika_base:/dev/cika_base
-    environment:
-      - ROS_DOMAIN_ID=0
-      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
-    command: micro_ros_agent serial --dev /dev/cika_base -b 115200
-    restart: unless-stopped
-
-  # microros_agent_arm:
-  #   image: cika_ros2:humble
-  #   container_name: microros_agent_arm
-  #   network_mode: host
-  #   privileged: true
-  #   devices:
-  #     - /dev/cika_arm:/dev/cika_arm
-  #   environment:
-  #     - ROS_DOMAIN_ID=0
-  #     - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
-  #   command: micro_ros_agent serial --dev /dev/cika_arm -b 115200
-  #   restart: unless-stopped
-
+    
   # ── Foxglove Bridge: Remote Monitoring ────────────────────────────
   # Connect from laptop: https://app.foxglove.dev → ws://<pi-ip>:8765
   foxglove_bridge:
