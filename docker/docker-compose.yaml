@@ -3,7 +3,6 @@
 ### For SLAM: docker compose run --rm cika_navigation ros2 launch cika_navigation cika_slam.launch.py use_sim_time:=false
 
 services:
-
   # ── Navigation: RTAB-Map localization + EKF + Nav2 ───────────────
   cika_navigation:
     build:
@@ -12,12 +11,14 @@ services:
     image: cika_ros2:humble
     container_name: cika_navigation
     network_mode: host
+    depends_on:
+      - microros_agent_base
     privileged: true
     volumes:
       # - ../cika_ws/src:/cika_ws/src
       - ../cika_ws/maps:/root/.ros
     devices:
-      - /dev/ttyUSB1:/dev/ttyUSB1    # RPLIDAR C1 — change to ttyUSB0 if needed
+      - /dev/ttyUSB1:/dev/ttyUSB1 # RPLIDAR C1 — change to ttyUSB0 if needed
     environment:
       - ROS_DOMAIN_ID=0
       - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
@@ -35,7 +36,7 @@ services:
     depends_on:
       - cika_navigation
     devices:
-      - /dev/bus/usb:/dev/bus/usb    # OAK-D Lite
+      - /dev/bus/usb:/dev/bus/usb # OAK-D Lite
     environment:
       - ROS_DOMAIN_ID=0
       - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
@@ -70,6 +71,7 @@ services:
   #   privileged: true
   #   depends_on:
   #     - cika_navigation
+  #     - microros_agent_arm
   #   devices:
   #     - /dev/ttyUSB0:/dev/ttyUSB0    # ESP32 arm controller
   #   environment:
@@ -78,6 +80,32 @@ services:
   #   tmpfs:
   #     - /tmp:size=200m
   #   command: ros2 launch cika_manipulator moveit.launch.py use_sim_time:=false
+  #   restart: unless-stopped
+
+  microros_agent_base:
+    image: cika_ros2:humble
+    container_name: microros_agent_base
+    network_mode: host
+    privileged: true
+    devices:
+      - /dev/cika_base:/dev/cika_base
+    environment:
+      - ROS_DOMAIN_ID=0
+      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+    command: micro_ros_agent serial --dev /dev/cika_base -b 115200
+    restart: unless-stopped
+
+  # microros_agent_arm:
+  #   image: cika_ros2:humble
+  #   container_name: microros_agent_arm
+  #   network_mode: host
+  #   privileged: true
+  #   devices:
+  #     - /dev/cika_arm:/dev/cika_arm
+  #   environment:
+  #     - ROS_DOMAIN_ID=0
+  #     - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+  #   command: micro_ros_agent serial --dev /dev/cika_arm -b 115200
   #   restart: unless-stopped
 
   # ── Foxglove Bridge: Remote Monitoring ────────────────────────────
