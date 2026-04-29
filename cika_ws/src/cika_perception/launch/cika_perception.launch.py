@@ -33,7 +33,7 @@ def generate_launch_description():
 
     # ── Model paths ────────────────────────────────────────────────────────────
     detector_model   = os.path.join(pkg, "models", "detector",   "kaggle_run_100_epochs.onnx")
-    classifier_model = os.path.join(pkg, "models", "classifier", "efficientnetb0_finetuned.onnx")
+    classifier_model = os.path.join(pkg, "models", "classifier", "efficientnetb0.onnx")
 
     config_sim = os.path.join(pkg, "config", "perception_sim.yaml")
     config_hw  = os.path.join(pkg, "config", "perception_hardware.yaml")

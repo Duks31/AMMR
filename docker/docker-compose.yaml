@@ -1,7 +1,10 @@
-### PLEASE CONFIRM SERVICES BEFORE RUNNING THIS DOCKER COMPOSE FILE ON RPI
+### docker-compose.yaml — cika robot hardware deployment (RPi 4B)
+### Run order: micro-ROS agent (host) → then docker compose up
+### For SLAM: docker compose run --rm cika_navigation ros2 launch cika_navigation cika_slam.launch.py use_sim_time:=false
 
 services:
-  # ── Navigation: SLAM + Nav2 ──────────────────────────────────────
+
+  # ── Navigation: RTAB-Map localization + EKF + Nav2 ───────────────
   cika_navigation:
     build:
       context: ..
@@ -12,56 +15,79 @@ services:
     privileged: true
     volumes:
       - ../cika_ws/src:/cika_ws/src
-      - ../cika_ws/config:/cika_ws/config
       - ../cika_ws/maps:/root/.ros
+    devices:
+      - /dev/ttyUSB1:/dev/ttyUSB1    # RPLIDAR C1 — change to ttyUSB0 if needed
     environment:
       - ROS_DOMAIN_ID=0
       - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
     tmpfs:
       - /tmp:size=200m
-    command: ros2 launch cika_bringup navigation.launch.py use_sim_time:=false
+    command: ros2 launch cika_navigation cika_nav.launch.py use_sim_time:=false
     restart: unless-stopped
 
-  # ── Perception: OAK-D + YOLO ────────────────────────────────────
+  # ── Perception: OAK-D Lite + YOLO + EfficientNet ─────────────────
   cika_perception:
-    image: cika_ros2:humble # reuses image built by cika_navigation
+    image: cika_ros2:humble
     container_name: cika_perception
     network_mode: host
     privileged: true
     depends_on:
-      - cika_navigation # ensures image is built first
+      - cika_navigation
     volumes:
       - ../cika_ws/src:/cika_ws/src
-      - ../cika_ws/models:/cika_ws/models
     devices:
-      - /dev/bus/usb:/dev/bus/usb
+      - /dev/bus/usb:/dev/bus/usb    # OAK-D Lite
     environment:
       - ROS_DOMAIN_ID=0
       - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
     tmpfs:
       - /tmp:size=200m
-    command: ros2 launch cika_perception perception.launch.py backend:=hardware use_sim_time:=false
+    command: ros2 launch cika_perception cika_perception.launch.py backend:=hardware use_sim_time:=false
     restart: unless-stopped
 
-  # ── Manipulation: MoveIt2 + Arm ──────────────────────────────────
+  # ── Task Manager: State Machine ───────────────────────────────────
+  cika_task_manager:
+    image: cika_ros2:humble
+    container_name: cika_task_manager
+    network_mode: host
+    depends_on:
+      - cika_navigation
+      - cika_perception
+    volumes:
+      - ../cika_ws/src:/cika_ws/src
+    environment:
+      - ROS_DOMAIN_ID=0
+      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+    tmpfs:
+      - /tmp:size=200m
+    command: ros2 launch cika_task_manager cika_task_manager.launch.py use_sim_time:=false
+    restart: unless-stopped
+
+  # ── Manipulation: MoveIt2 + Arm ───────────────────────────────────
+  # Requires micro-ROS agent on host for ESP32 arm controller
+  # Uncomment when ready to test arm
   # cika_manipulation:
   #   image: cika_ros2:humble
   #   container_name: cika_manipulation
   #   network_mode: host
   #   privileged: true
+  #   depends_on:
+  #     - cika_navigation
   #   volumes:
   #     - ../cika_ws/src:/cika_ws/src
-  #     - ../cika_ws/config:/cika_ws/config
   #   devices:
-  #     - /dev/ttyUSB0:/dev/ttyUSB0
+  #     - /dev/ttyUSB0:/dev/ttyUSB0    # ESP32 arm controller
   #   environment:
   #     - ROS_DOMAIN_ID=0
   #     - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
   #   tmpfs:
   #     - /tmp:size=200m
-  #   command: ros2 launch robot_arm_controller main_launch.py
+  #   command: ros2 launch cika_manipulator moveit.launch.py use_sim_time:=false
   #   restart: unless-stopped
 
+  # ── Foxglove Bridge: Remote Monitoring ────────────────────────────
+  # Connect from laptop: https://app.foxglove.dev → ws://<pi-ip>:8765
   foxglove_bridge:
     image: cika_ros2:humble
     container_name: foxglove_bridge
