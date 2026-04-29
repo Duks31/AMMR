@@ -14,6 +14,7 @@ setup(
         "console_scripts": [
             "detector_node   = cika_perception.cika_core.detector_node:main",
             "classifier_node = cika_perception.cika_core.classifier_node:main",
+            "camera_node = cika_perception.cika_core.camera_node:main",
         ],
     },
 )

@@ -25,18 +25,20 @@ def generate_launch_description():
         description="Use simulation clock",
     )
 
-    backend      = LaunchConfiguration("backend")
+    backend = LaunchConfiguration("backend")
     use_sim_time = LaunchConfiguration("use_sim_time")
 
-    is_sim      = PythonExpression(["'", backend, "' == 'sim'"])
+    is_sim = PythonExpression(["'", backend, "' == 'sim'"])
     is_hardware = PythonExpression(["'", backend, "' == 'hardware'"])
 
     # ── Model paths ────────────────────────────────────────────────────────────
-    detector_model   = os.path.join(pkg, "models", "detector",   "kaggle_run_100_epochs.onnx")
+    detector_model = os.path.join(
+        pkg, "models", "detector", "kaggle_run_100_epochs.onnx"
+    )
     classifier_model = os.path.join(pkg, "models", "classifier", "efficientnetb0.onnx")
 
     config_sim = os.path.join(pkg, "config", "perception_sim.yaml")
-    config_hw  = os.path.join(pkg, "config", "perception_hardware.yaml")
+    config_hw = os.path.join(pkg, "config", "perception_hardware.yaml")
 
     # ── Detector node — SIM ────────────────────────────────────────────────────
     detector_sim = Node(
@@ -90,11 +92,31 @@ def generate_launch_description():
         ],
     )
 
-    return LaunchDescription([
-        backend_arg,
-        use_sim_time_arg,
-        detector_sim,
-        detector_hw,
-        classifier_sim,
-        classifier_hw,
-    ])
+    camera_node = Node(
+        condition=IfCondition(is_hardware),
+        package="cika_perception",
+        executable="camera_node.py",
+        name="camera_node",
+        output="screen",
+        parameters=[
+            {
+                "rgb_width": 1280,
+                "rgb_height": 720,
+                "fps": 15,
+                "camera_frame": "OAKDcamera_1_optical",
+                "use_sim_time": use_sim_time,
+            }
+        ],
+    )
+
+    return LaunchDescription(
+        [
+            backend_arg,
+            use_sim_time_arg,
+            detector_sim,
+            detector_hw,
+            classifier_sim,
+            classifier_hw,
+            camera_node,
+        ]
+    )

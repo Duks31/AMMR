@@ -47,7 +47,8 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip3 install --no-cache-dir --timeout=300 onnxruntime
 
-RUN pip3 install --no-cache-dir --default-timeout=1000 numpy Pillow
+RUN pip3 install --no-cache-dir --default-timeout=1000 Pillow
+RUN pip3 install --no-cache-dir --default-timeout=1000 "numpy<2"
 RUN pip3 install --no-cache-dir --default-timeout=1000 depthai blobconverter
 RUN pip3 install --no-cache-dir --default-timeout=1000 opencv-python-headless
 
