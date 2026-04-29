@@ -12,8 +12,6 @@ services:
     image: cika_ros2:humble
     container_name: cika_navigation
     network_mode: host
-    depends_on:
-      - microros_agent_base
     privileged: true
     volumes:
       - ../cika_ws/src:/cika_ws/src
@@ -76,7 +74,6 @@ services:
   #   privileged: true
   #   depends_on:
   #     - cika_navigation
-  #     - microros_agent_arm
       # volumes:
       # - ../cika_ws/src:/cika_ws/src
   #   devices:
@@ -88,7 +85,7 @@ services:
   #     - /tmp:size=200m
   #   command: ros2 launch cika_manipulator moveit.launch.py use_sim_time:=false
   #   restart: unless-stopped
-    
+
   # ── Foxglove Bridge: Remote Monitoring ────────────────────────────
   # Connect from laptop: https://app.foxglove.dev → ws://<pi-ip>:8765
   foxglove_bridge:
