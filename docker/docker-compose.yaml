@@ -36,7 +36,7 @@ services:
       - cika_navigation
     volumes:
       - ../cika_ws/src:/cika_ws/src
-      - /dev:dev
+      - /dev:/dev
     # devices:
     #   - /dev/bus/usb:/dev/bus/usb # OAK-D Lite
     environment:
