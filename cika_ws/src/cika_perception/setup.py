@@ -12,8 +12,8 @@ setup(
     license="Apache-2.0",
     entry_points={
         "console_scripts": [
-            "detector_node   = cika_perception.detector_node:main",
-            "classifier_node = cika_perception.classifier_node:main",
+            "detector_node   = cika_perception.cika_core.detector_node:main",
+            "classifier_node = cika_perception.cika_core.classifier_node:main",
         ],
     },
 )
