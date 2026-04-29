@@ -36,8 +36,9 @@ services:
       - cika_navigation
     volumes:
       - ../cika_ws/src:/cika_ws/src
-    devices:
-      - /dev/bus/usb:/dev/bus/usb # OAK-D Lite
+      - /dev:dev
+    # devices:
+    #   - /dev/bus/usb:/dev/bus/usb # OAK-D Lite
     environment:
       - ROS_DOMAIN_ID=0
       - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
