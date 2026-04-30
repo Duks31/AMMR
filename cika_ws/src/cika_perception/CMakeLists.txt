@@ -24,15 +24,13 @@ ament_python_install_package(cika_core)
 
 # ── Python node scripts ───────────────────────────────────────────────────────
 install(PROGRAMS
-  cika_core/detector_node.py
-  cika_core/classifier_node.py
-  cika_core/camera_node.py
+  scripts/inference_node.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
 # ── Config, launch, models ────────────────────────────────────────────────────
 install(DIRECTORY
-  config
+#   config
   launch
   models
   DESTINATION share/${PROJECT_NAME}

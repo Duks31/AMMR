@@ -1,15 +1,8 @@
-std_msgs/Header header
+# cika_perception/msg/WasteDetection.msg
+string label                       # "plastic", "paper", or "metal"
+float32 confidence                 # Single YOLO confidence score
+float32[4] bbox                    # [xmin, ymin, xmax, ymax] in pixels
 
-# 2D detection from YOLO
-float32 confidence_detector        # YOLO detection confidence
-float32[4] bbox                    # [x1, y1, x2, y2] in image pixels
-
-# Classification result
-string label                       # "recyclable" or "non_recyclable"
-float32 confidence_classifier      # Classifier confidence on the crop (0.0 = not yet classified)
-
-# 3D position in base_link frame (from depth projection)
-geometry_msgs/Point position       # x, y, z in metres relative to base_link
-
-# Whether 3D position is valid (depth data available and finite)
+# 3D position (Ready for your SLAM setup later)
+geometry_msgs/Point position       
 bool has_3d_position

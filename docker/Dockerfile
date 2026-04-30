@@ -45,6 +45,10 @@ RUN apt-get update && apt-get install -y \
     ros-humble-moveit-configs-utils \
     && rm -rf /var/lib/apt/lists/*
 
+RUN apt-get update && apt-get install -y \
+    ros-humble-depthai-ros \
+    && rm -rf /var/lib/apt/lists/*
+
 RUN pip3 install --no-cache-dir --timeout=300 onnxruntime
 
 RUN pip3 install --no-cache-dir --default-timeout=1000 \
@@ -56,7 +60,6 @@ RUN pip3 install --no-cache-dir --default-timeout=1000 \
 
 WORKDIR /cika_ws
 
-COPY cika_ws/src/ src/
 
 RUN apt-get update && \
     rosdep init || true && \

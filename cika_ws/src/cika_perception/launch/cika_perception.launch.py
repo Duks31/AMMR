@@ -1,122 +1,43 @@
 import os
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument
-from launch.conditions import IfCondition, UnlessCondition
-from launch.substitutions import LaunchConfiguration, PythonExpression
+from launch.actions import IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
 
-
 def generate_launch_description():
+    # ── Paths ────────────────────────────────────────────────────────────
+    perception_dir = get_package_share_directory('cika_perception')
+    depthai_driver_dir = get_package_share_directory('depthai_ros_driver')
 
-    pkg = get_package_share_directory("cika_perception")
+    # Path to your Luxonis-generated JSON config (which automatically loads the .blob)
+    nn_config_path = os.path.join(perception_dir, 'models', '300_epoch_best.json')
 
-    # ── Arguments ─────────────────────────────────────────────────────────────
-    backend_arg = DeclareLaunchArgument(
-        name="backend",
-        default_value="sim",
-        choices=["sim", "hardware"],
-        description="sim = .pt on CPU/GPU  |  hardware = .blob on OAK-D VPU",
+    # ── Nodes & Drivers ──────────────────────────────────────────────────
+
+    # 1. The Official OAK-D Driver (Configured for YOLO + SLAM)
+    oak_driver = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(depthai_driver_dir, 'launch', 'camera.launch.py')
+        ),
+        launch_arguments={
+            'name': 'oak',
+            'camera.i_pipeline_type': 'yolo',         # Enables YOLO + Spatial Detection
+            'nn.i_nn_config_path': nn_config_path,    # Loads your custom AI
+            'stereo.i_align_depth': 'true',           # CRITICAL FOR SLAM: Maps depth to RGB
+            'camera.i_enable_pointcloud': 'true',     # CRITICAL FOR SLAM: Generates 3D points
+        }.items()
     )
 
-    use_sim_time_arg = DeclareLaunchArgument(
-        name="use_sim_time",
-        default_value="true",
-        description="Use simulation clock",
+    # 2. Your Custom Inference Translator
+    inference_node = Node(
+        package='cika_perception',
+        executable='inference_node.py',
+        name='inference_node',
+        output='screen'
     )
 
-    backend = LaunchConfiguration("backend")
-    use_sim_time = LaunchConfiguration("use_sim_time")
-
-    is_sim = PythonExpression(["'", backend, "' == 'sim'"])
-    is_hardware = PythonExpression(["'", backend, "' == 'hardware'"])
-
-    # ── Model paths ────────────────────────────────────────────────────────────
-    detector_model = os.path.join(
-        pkg, "models", "detector", "kaggle_run_100_epochs.onnx"
-    )
-    classifier_model = os.path.join(pkg, "models", "classifier", "efficientnetb0.onnx")
-
-    config_sim = os.path.join(pkg, "config", "perception_sim.yaml")
-    config_hw = os.path.join(pkg, "config", "perception_hardware.yaml")
-
-    # ── Detector node — SIM ────────────────────────────────────────────────────
-    detector_sim = Node(
-        condition=IfCondition(is_sim),
-        package="cika_perception",
-        executable="detector_node.py",
-        name="detector_node",
-        output="screen",
-        parameters=[
-            config_sim,
-            {"model_path": detector_model, "use_sim_time": use_sim_time},
-        ],
-    )
-
-    # ── Detector node — HARDWARE ───────────────────────────────────────────────
-    detector_hw = Node(
-        condition=IfCondition(is_hardware),
-        package="cika_perception",
-        executable="detector_node.py",
-        name="detector_node",
-        output="screen",
-        parameters=[
-            config_hw,
-            {"model_path": detector_model, "use_sim_time": use_sim_time},
-        ],
-    )
-
-    # ── Classifier node — SIM ──────────────────────────────────────────────────
-    classifier_sim = Node(
-        condition=IfCondition(is_sim),
-        package="cika_perception",
-        executable="classifier_node.py",
-        name="classifier_node",
-        output="screen",
-        parameters=[
-            config_sim,
-            {"model_path": classifier_model, "use_sim_time": use_sim_time},
-        ],
-    )
-
-    # ── Classifier node — HARDWARE ─────────────────────────────────────────────
-    classifier_hw = Node(
-        condition=IfCondition(is_hardware),
-        package="cika_perception",
-        executable="classifier_node.py",
-        name="classifier_node",
-        output="screen",
-        parameters=[
-            config_hw,
-            {"model_path": classifier_model, "use_sim_time": use_sim_time},
-        ],
-    )
-
-    camera_node = Node(
-        condition=IfCondition(is_hardware),
-        package="cika_perception",
-        executable="camera_node.py",
-        name="camera_node",
-        output="screen",
-        parameters=[
-            {
-                "rgb_width": 1280,
-                "rgb_height": 720,
-                "fps": 15,
-                "camera_frame": "OAKDcamera_1_optical",
-                "use_sim_time": use_sim_time,
-            }
-        ],
-    )
-
-    return LaunchDescription(
-        [
-            backend_arg,
-            use_sim_time_arg,
-            detector_sim,
-            detector_hw,
-            classifier_sim,
-            classifier_hw,
-            camera_node,
-        ]
-    )
+    return LaunchDescription([
+        oak_driver,
+        inference_node
+    ])
