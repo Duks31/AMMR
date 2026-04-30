@@ -3,6 +3,7 @@ import numpy as np
 import rclpy
 from rclpy.node import Node
 import depthai as dai
+from sensor_msgs.msg import Image
 
 from cika_perception.msg import WasteDetectionArray, WasteDetection
 
@@ -69,9 +70,11 @@ class InferenceNode(Node):
             10)
         self._device    = None                      # fix 5: init to None
         self._nn_queue  = None
+        self._img_queue = None
         self._start_pipeline()
         self.create_timer(0.033, self._poll)
         self.get_logger().info("Inference Node Ready. Listening to OAK-D Lite...")
+        self.image_pub = self.create_publisher(Image, '/cika/perception/image_raw', 10)
 
     def _start_pipeline(self):
         pipeline = dai.Pipeline()
@@ -94,6 +97,14 @@ class InferenceNode(Node):
         self._device   = dai.Device(pipeline)
         self._nn_queue = self._device.getOutputQueue(
             "nn", maxSize=4, blocking=False)
+        
+        img_out = pipeline.create(dai.node.XLinkOut)
+        img_out.setStreamName("rgb")
+        cam.preview.link(img_out.input)
+
+        self._device    = dai.Device(pipeline)
+        self._nn_queue  = self._device.getOutputQueue("nn",  maxSize=4, blocking=False)
+        self._img_queue = self._device.getOutputQueue("rgb", maxSize=4, blocking=False)
 
     def _poll(self):
         if self._nn_queue is None:
@@ -114,6 +125,21 @@ class InferenceNode(Node):
             return
 
         detections = parse_yolov8(output, CONF_THRESH, IOU_THRESH)
+
+        # Publish camera frame
+        if self._img_queue is not None:
+            img_packet = self._img_queue.tryGet()
+            if img_packet is not None:
+                frame = img_packet.getCvFrame()
+                img_msg = Image()
+                img_msg.header.stamp    = self.get_clock().now().to_msg()
+                img_msg.header.frame_id = "oak_rgb_camera_optical_frame"
+                img_msg.height          = frame.shape[0]
+                img_msg.width           = frame.shape[1]
+                img_msg.encoding        = "bgr8"
+                img_msg.step            = frame.shape[1] * 3
+                img_msg.data            = frame.tobytes()
+                self.image_pub.publish(img_msg)
 
         msg = WasteDetectionArray()
         msg.header.stamp    = self.get_clock().now().to_msg()
