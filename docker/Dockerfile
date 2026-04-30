@@ -45,16 +45,12 @@ RUN apt-get update && apt-get install -y \
     ros-humble-moveit-configs-utils \
     && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update && apt-get install -y \
-    ros-humble-depthai-ros \
-    && rm -rf /var/lib/apt/lists/*
-
 RUN pip3 install --no-cache-dir --timeout=300 onnxruntime
 
 RUN pip3 install --no-cache-dir --default-timeout=1000 \
     "numpy<2" \
     Pillow \
-    depthai \
+    "depthai==2.24.0" \
     blobconverter \
     opencv-python-headless
 
