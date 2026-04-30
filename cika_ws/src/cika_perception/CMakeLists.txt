@@ -20,7 +20,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
 )
  
 # ── Python package ────────────────────────────────────────────────────────────
-# ament_python_install_package(cika_core)
+ament_python_install_package(scripts)
 
 # ── Python node scripts ───────────────────────────────────────────────────────
 install(PROGRAMS
