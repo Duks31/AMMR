@@ -79,17 +79,6 @@ WORKDIR /cika_ws
 
 COPY cika_ws/src/ src/
 
-RUN rosdep init || true && \
-    rosdep update && \
-    rosdep install --from-paths src \
-    --ignore-src -r -y \
-    --skip-keys="warehouse_ros_mongo"
-
-RUN . /opt/ros/humble/setup.sh && \
-    colcon build \
-    --symlink-install \
-    --cmake-args -DCMAKE_BUILD_TYPE=Release
-
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
     echo "source /cika_ws/install/setup.bash" >> ~/.bashrc && \
     echo "export ROS_DOMAIN_ID=0" >> ~/.bashrc && \
