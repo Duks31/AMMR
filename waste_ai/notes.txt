@@ -1,0 +1,37 @@
+-- KAGGLE OUTPUT --
+
+50 epochs completed in 0.571 hours.
+Optimizer stripped from /kaggle/working/runs/detect/ammr_vision/taco_3class_run/weights/last.pt, 22.5MB
+Optimizer stripped from /kaggle/working/runs/detect/ammr_vision/taco_3class_run/weights/best.pt, 22.5MB
+
+Validating /kaggle/working/runs/detect/ammr_vision/taco_3class_run/weights/best.pt...
+Ultralytics 8.4.45 🚀 Python-3.12.12 torch-2.10.0+cu128 CUDA:0 (Tesla T4, 14913MiB)
+Model summary (fused): 73 layers, 11,126,745 parameters, 0 gradients, 28.4 GFLOPs
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 100% ━━━━━━━━━━━━ 9/9 1.7it/s 5.3s0.5s
+                   all        258        570      0.411      0.324      0.311      0.232
+               plastic        221        415      0.519      0.499      0.451      0.317
+                 paper         63         85       0.36      0.188      0.191      0.148
+                 metal         36         70      0.354      0.286      0.292      0.229
+Speed: 0.2ms preprocess, 4.1ms inference, 0.0ms loss, 1.8ms postprocess per image
+Results saved to /kaggle/working/runs/detect/ammr_vision/taco_3class_run
+
+
+DATA AUGUMENTATION
+# --- Data Augmentation Parameters ---
+    degrees=45.0,           # Rotate images up to 45 degrees (trash lands at weird angles)
+    hsv_s=0.3,              # Alter color saturation by 30% (helps with outdoor vs indoor lighting)
+    hsv_v=0.3,              # Alter brightness by 30% (simulates shadows from the robot arm)
+    flipud=0.5,             # Flip images upside down 50% of the time 
+    fliplr=0.5              # Flip images left/right 50% of the time    
+
+EarlyStopping: Training stopped early as no improvement observed in last 50 epochs. Best results observed at epoch 162, best model saved as best.pt.
+To update EarlyStopping(patience=50) pass a new patience value, i.e. `patience=300` or use `patience=0` to disable EarlyStopping.
+
+212 epochs completed in 2.370 hours.
+Optimizer stripped from /kaggle/working/runs/detect/ammr_vision/taco_production_run/weights/last.pt, 22.5MB
+Optimizer stripped from /kaggle/working/runs/detect/ammr_vision/taco_production_run/weights/best.pt, 22.5MB
+
+Validating /kaggle/working/runs/detect/ammr_vision/taco_production_run/weights/best.pt...
+Ultralytics 8.4.45 🚀 Python-3.12.12 torch-2.10.0+cu128 CUDA:0 (Tesla T4, 14913MiB)
+Model summary (fused): 73 layers, 11,126,745 parameters, 0 gradients, 28.4 GFLOPs
+                 Class     Images  Instances      Box(P          R      mAP50  mAP50-95): 56% ━━━━━━╸───── 5/9 1.4it/s 3.2s<3.0s
