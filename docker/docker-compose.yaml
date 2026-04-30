@@ -2,6 +2,8 @@
 ### Run order: micro-ROS agent (host) → then docker compose up
 ### For SLAM: docker compose run --rm cika_navigation ros2 launch cika_navigation cika_slam.launch.py use_sim_time:=false
 ### micro-ros-agent serial --dev /dev/ttyUSB0 -b 115200
+volumes:
+  cika_ws_install:
 
 services:
   # ── Navigation: RTAB-Map localization + EKF + Nav2 ───────────────
@@ -15,6 +17,8 @@ services:
     privileged: true
     volumes:
       - ../cika_ws/src:/cika_ws/src
+      - cika_ws_install:/cika_ws/install
+      - cika_ws_install:/cika_ws/build
       - ../cika_ws/maps:/root/.ros
     devices:
       - /dev/ttyUSB1:/dev/ttyUSB1 # RPLIDAR C1 — change to ttyUSB0 if needed
@@ -34,6 +38,8 @@ services:
     privileged: true
     volumes:
       - ../cika_ws/src:/cika_ws/src
+      - cika_ws_install:/cika_ws/install
+      - cika_ws_install:/cika_ws/build
       - /dev:/dev
       - /dev/bus/usb:/dev/bus/usb
     devices:
@@ -56,6 +62,8 @@ services:
       - cika_perception
     volumes:
       - ../cika_ws/src:/cika_ws/src
+      - cika_ws_install:/cika_ws/install
+      - cika_ws_install:/cika_ws/build
     environment:
       - ROS_DOMAIN_ID=0
       - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
@@ -74,8 +82,10 @@ services:
   #   privileged: true
   #   depends_on:
   #     - cika_navigation
-      # volumes:
-      # - ../cika_ws/src:/cika_ws/src
+  #   volumes:
+  #     - ../cika_ws/src:/cika_ws/src
+  #     - cika_ws_install:/cika_ws/install
+  #     - cika_ws_install:/cika_ws/build
   #   devices:
   #     - /dev/ttyUSB0:/dev/ttyUSB0    # ESP32 arm controller
   #   environment:
@@ -92,6 +102,8 @@ services:
     image: cika_ros2:humble
     container_name: foxglove_bridge
     network_mode: host
+    volumes:
+      - cika_ws_install:/cika_ws/install
     environment:
       - ROS_DOMAIN_ID=0
       - RMW_IMPLEMENTATION=rmw_fastrtps_cpp

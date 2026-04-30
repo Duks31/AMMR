@@ -3,10 +3,14 @@ set -e
 
 source /opt/ros/humble/setup.bash
 
-# Only source workspace if it has been built
-if [ -f /cika_ws/install/setup.bash ]; then
-    source /cika_ws/install/setup.bash
+# Build workspace if not already built
+if [ ! -f /cika_ws/install/setup.bash ]; then
+    echo "[entrypoint] Building workspace..."
+    cd /cika_ws
+    colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=Release
 fi
+
+source /cika_ws/install/setup.bash
 
 export ROS_DOMAIN_ID=0
 export RMW_IMPLEMENTATION=rmw_fastrtps_cpp
