@@ -69,33 +69,33 @@ class CameraNode(Node):
             f"CameraNode ready (DepthAI v3) | {self.rgb_w}x{self.rgb_h} @ {self.fps}fps "
             f"| frame: {self.camera_frame}"
         )
-
-    # ── Pipeline ───────────────────────────────────────────────────────────────
+        
+# ── Pipeline ───────────────────────────────────────────────────────────────
     def _build_pipeline(self):
         pipeline = dai.Pipeline()
 
         # RGB camera (V3: uses unified Camera node)
-        cam_rgb = pipeline.create(dai.node.Camera).build(dai.CameraBoardSocket.CAM_A)
-        cam_rgb.setFps(self.fps)
-        
-        # requestOutput replaces the old ColorCamera setup and linking
-        rgb_out = cam_rgb.requestOutput((self.rgb_w, self.rgb_h), type=dai.ImgFrame.Type.BGR888p)
+        cam_rgb = pipeline.create(dai.node.Camera)
+        cam_rgb.build(boardSocket=dai.CameraBoardSocket.CAM_A)
+        # requestOutput replaces the old ColorCamera setup and sets the FPS directly
+        rgb_out = cam_rgb.requestOutput((self.rgb_w, self.rgb_h), type=dai.ImgFrame.Type.BGR888p, fps=self.fps)
 
-        # Stereo depth (V3: uses unified Camera node for mono inputs)
-        mono_left  = pipeline.create(dai.node.Camera).build(dai.CameraBoardSocket.CAM_B)
-        mono_left.setFps(self.fps)
-        left_out = mono_left.requestOutput((640, 400), type=dai.ImgFrame.Type.GRAY8)
+        # Stereo depth (Left)
+        mono_left = pipeline.create(dai.node.Camera)
+        mono_left.build(boardSocket=dai.CameraBoardSocket.CAM_B)
+        left_out = mono_left.requestOutput((640, 400), type=dai.ImgFrame.Type.GRAY8, fps=self.fps)
 
-        mono_right = pipeline.create(dai.node.Camera).build(dai.CameraBoardSocket.CAM_C)
-        mono_right.setFps(self.fps)
-        right_out = mono_right.requestOutput((640, 400), type=dai.ImgFrame.Type.GRAY8)
+        # Stereo depth (Right)
+        mono_right = pipeline.create(dai.node.Camera)
+        mono_right.build(boardSocket=dai.CameraBoardSocket.CAM_C)
+        right_out = mono_right.requestOutput((640, 400), type=dai.ImgFrame.Type.GRAY8, fps=self.fps)
 
         # Build the Stereo node
         stereo = pipeline.create(dai.node.StereoDepth)
         stereo.setDefaultProfilePreset(dai.node.StereoDepth.PresetMode.FAST_ACCURACY)
         stereo.setDepthAlign(dai.CameraBoardSocket.CAM_A)  # align depth to RGB
         
-        # In V3, we link the requested camera outputs directly to the stereo inputs
+        # Link the requested camera outputs directly to the stereo inputs
         left_out.link(stereo.left)
         right_out.link(stereo.right)
 
@@ -103,7 +103,7 @@ class CameraNode(Node):
         depth_out = stereo.depth
 
         return pipeline, rgb_out, depth_out
-
+    
     # ── Timer callback ─────────────────────────────────────────────────────────
     def _timer_cb(self):
         now = self.get_clock().now().to_msg()
