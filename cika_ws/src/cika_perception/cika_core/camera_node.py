@@ -70,24 +70,23 @@ class CameraNode(Node):
             f"| frame: {self.camera_frame}"
         )
 
-    # ── Pipeline ───────────────────────────────────────────────────────────────
+# ── Pipeline ───────────────────────────────────────────────────────────────
     def _build_pipeline(self):
         pipeline = dai.Pipeline()
 
-        # RGB camera
+        # RGB camera (Physical sensor boots at 1080p, outputs 720p)
         cam_rgb = pipeline.create(dai.node.Camera)
-        # V3 explicitly defines sensor mode (socket, resolution, fps) inside .build()
-        cam_rgb.build(dai.CameraBoardSocket.CAM_A, (self.rgb_w, self.rgb_h), self.fps)
+        cam_rgb.build(dai.CameraBoardSocket.CAM_A, dai.CameraSensorResolution.THE_1080_P, self.fps)
         rgb_out = cam_rgb.requestOutput((self.rgb_w, self.rgb_h), type=dai.ImgFrame.Type.BGR888p)
 
-        # Stereo depth (Left)
+        # Stereo depth Left (Physical sensor boots at 400p, outputs 400p)
         mono_left = pipeline.create(dai.node.Camera)
-        mono_left.build(dai.CameraBoardSocket.CAM_B, (640, 400), self.fps)
+        mono_left.build(dai.CameraBoardSocket.CAM_B, dai.CameraSensorResolution.THE_400_P, self.fps)
         left_out = mono_left.requestOutput((640, 400), type=dai.ImgFrame.Type.GRAY8)
 
-        # Stereo depth (Right)
+        # Stereo depth Right
         mono_right = pipeline.create(dai.node.Camera)
-        mono_right.build(dai.CameraBoardSocket.CAM_C, (640, 400), self.fps)
+        mono_right.build(dai.CameraBoardSocket.CAM_C, dai.CameraSensorResolution.THE_400_P, self.fps)
         right_out = mono_right.requestOutput((640, 400), type=dai.ImgFrame.Type.GRAY8)
 
         # Build the Stereo node
