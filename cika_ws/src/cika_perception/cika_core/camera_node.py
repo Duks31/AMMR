@@ -94,7 +94,7 @@ class CameraNode(Node):
         mono_right.setBoardSocket(dai.CameraBoardSocket.CAM_C)
         mono_right.setFps(self.fps)
 
-        stereo.setDefaultProfilePreset(dai.node.StereoDepth.PresetMode.HIGH_ACCURACY)
+        stereo.setDefaultProfilePreset(dai.node.StereoDepth.PresetMode.FAST_ACCURACY)
         stereo.setDepthAlign(dai.CameraBoardSocket.CAM_A)  # align depth to RGB
         stereo.setOutputSize(self.rgb_w, self.rgb_h)
 
