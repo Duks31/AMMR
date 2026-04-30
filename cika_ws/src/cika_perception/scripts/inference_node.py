@@ -74,22 +74,21 @@ class InferenceNode(Node):
         pipeline = dai.Pipeline()
 
         # Camera
-        cam = pipeline.create(dai.node.ColorCamera)
-        cam.setPreviewSize(INPUT_W, INPUT_H)
-        cam.setInterleaved(False)
-        cam.setColorOrder(dai.ColorCameraProperties.ColorOrder.BGR)
+        cam = pipeline.create(dai.node.Camera)
+        cam.setBoardSocket(dai.CameraBoardSocket.CAM_A)
+        cam.setSize(INPUT_W, INPUT_H)
         cam.setFps(15)
 
         # NN
         nn = pipeline.create(dai.node.NeuralNetwork)
         nn.setBlobPath(BLOB_PATH)
         nn.setNumInferenceThreads(2)
-        cam.preview.link(nn.input)
+        cam.requestOutput((INPUT_W, INPUT_H), dai.ImgFrame.Type.BGR888p).link(nn.input)
 
-        # Output
-        xout = pipeline.create(dai.node.XLinkOut)
-        xout.setStreamName("nn")
-        nn.out.link(xout.input)
+        # Output queue
+        nn_out = pipeline.create(dai.node.XLinkOut)
+        nn_out.setStreamName("nn")
+        nn.out.link(nn_out.input)
 
         self._device   = dai.Device(pipeline)
         self._nn_queue = self._device.getOutputQueue("nn", maxSize=4, blocking=False)
@@ -99,9 +98,10 @@ class InferenceNode(Node):
         if packet is None:
             return
 
-        # Raw layer → numpy
-        layer  = packet.getFirstLayerFp16()          # [1, 7, 8400] or [1, 4+nc, 8400]
+        layer  = packet.getFirstLayerFp16()
         output = np.array(layer, dtype=np.float32)
+        nc     = len(CLASSES)
+        output = output.reshape(1, 4 + nc, -1)
         # Reshape to [1, 4+nc, 8400]
         nc     = len(CLASSES)
         output = output.reshape(1, 4 + nc, -1)
