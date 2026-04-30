@@ -2,6 +2,7 @@
   ros__parameters:
     camera:
       i_pipeline_type: "RGB"
+      i_nn_type: "rgb"
     rgb:
       i_enable_preview: true
     nn:
