@@ -60,20 +60,6 @@ RUN pip3 install --no-cache-dir --default-timeout=1000 \
 
 WORKDIR /cika_ws
 
-
-RUN apt-get update && \
-    rosdep init || true && \
-    rosdep update && \
-    rosdep install --from-paths src \
-    --ignore-src -r -y \
-    --skip-keys="ros_gz_sim ros_gz_bridge gz_ros2_control ign_ros2_control ignition-fortress joint_state_publisher_gui" && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN . /opt/ros/humble/setup.sh && \
-    colcon build \
-    --symlink-install \
-    --cmake-args -DCMAKE_BUILD_TYPE=Release
-
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc && \
     echo "source /cika_ws/install/setup.bash" >> ~/.bashrc && \
     echo "export ROS_DOMAIN_ID=0" >> ~/.bashrc && \
