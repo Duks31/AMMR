@@ -29,6 +29,10 @@ def generate_launch_description():
             package='cika_perception',
             executable='inference_node.py',
             name='inference_node',
-            output='screen'
+            output='screen',
+            parameters=[{
+                'blob_path': '/cika_ws/src/cika_perception/models/300_epoch_best.blob',
+                'config_path': '/cika_ws/src/cika_perception/models/300_epoch_best.json',
+            }]
         )
     ])
