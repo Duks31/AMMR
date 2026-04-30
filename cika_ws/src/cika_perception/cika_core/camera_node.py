@@ -3,7 +3,7 @@
 camera_node.py
 ────────────────────────────────────────────────────────────────────────────
 Publishes OAK-D Lite RGB + stereo depth as ROS2 Image topics using the
-depthai Python SDK. Replaces ros-humble-depthai-ros for arm64 Pi deployment.
+depthai Python SDK (V3 API). Replaces ros-humble-depthai-ros for arm64 Pi.
 
 Publishes:
     /oak/rgb/image_raw        (sensor_msgs/Image, BGR8)
@@ -22,13 +22,11 @@ from cv_bridge import CvBridge
 from sensor_msgs.msg import Image, CameraInfo
 from builtin_interfaces.msg import Time
 
-
 SENSOR_QOS = QoSProfile(
     reliability=ReliabilityPolicy.BEST_EFFORT,
     durability=DurabilityPolicy.VOLATILE,
     depth=5,
 )
-
 
 class CameraNode(Node):
 
@@ -54,18 +52,21 @@ class CameraNode(Node):
 
         self.bridge = CvBridge()
 
-        # ── Build depthai pipeline ────────────────────────────────────────────
-        self.pipeline = self._build_pipeline()
-        self.device   = dai.Device(self.pipeline)
+        # ── Build depthai pipeline (V3 API) ───────────────────────────────────
+        self.pipeline, rgb_out, depth_out = self._build_pipeline()
 
-        self.rgb_queue   = self.device.getOutputQueue("rgb",   maxSize=4, blocking=False)
-        self.depth_queue = self.device.getOutputQueue("depth", maxSize=4, blocking=False)
+        # Create Output Queues directly (Replaces XLinkOut)
+        self.rgb_queue   = rgb_out.createOutputQueue(maxSize=4, blocking=False)
+        self.depth_queue = depth_out.createOutputQueue(maxSize=4, blocking=False)
+
+        # Start the pipeline (Replaces dai.Device)
+        self.pipeline.start()
 
         # ── Timer — poll camera at fps rate ───────────────────────────────────
         self.create_timer(1.0 / self.fps, self._timer_cb)
 
         self.get_logger().info(
-            f"CameraNode ready | {self.rgb_w}x{self.rgb_h} @ {self.fps}fps "
+            f"CameraNode ready (DepthAI v3) | {self.rgb_w}x{self.rgb_h} @ {self.fps}fps "
             f"| frame: {self.camera_frame}"
         )
 
@@ -73,44 +74,35 @@ class CameraNode(Node):
     def _build_pipeline(self):
         pipeline = dai.Pipeline()
 
-        # RGB camera
-        cam_rgb = pipeline.create(dai.node.ColorCamera)
-        cam_rgb.setResolution(dai.ColorCameraProperties.SensorResolution.THE_1080_P)
-        cam_rgb.setPreviewSize(self.rgb_w, self.rgb_h)
-        cam_rgb.setInterleaved(False)
-        cam_rgb.setColorOrder(dai.ColorCameraProperties.ColorOrder.BGR)
+        # RGB camera (V3: uses unified Camera node)
+        cam_rgb = pipeline.create(dai.node.Camera).build(dai.CameraBoardSocket.CAM_A)
         cam_rgb.setFps(self.fps)
+        
+        # requestOutput replaces the old ColorCamera setup and linking
+        rgb_out = cam_rgb.requestOutput((self.rgb_w, self.rgb_h), type=dai.ImgFrame.Type.BGR888p)
 
-        # Stereo depth
-        mono_left  = pipeline.create(dai.node.MonoCamera)
-        mono_right = pipeline.create(dai.node.MonoCamera)
-        stereo     = pipeline.create(dai.node.StereoDepth)
-
-        mono_left.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
-        mono_left.setBoardSocket(dai.CameraBoardSocket.CAM_B)
+        # Stereo depth (V3: uses unified Camera node for mono inputs)
+        mono_left  = pipeline.create(dai.node.Camera).build(dai.CameraBoardSocket.CAM_B)
         mono_left.setFps(self.fps)
+        left_out = mono_left.requestOutput((640, 400), type=dai.ImgFrame.Type.GRAY8)
 
-        mono_right.setResolution(dai.MonoCameraProperties.SensorResolution.THE_400_P)
-        mono_right.setBoardSocket(dai.CameraBoardSocket.CAM_C)
+        mono_right = pipeline.create(dai.node.Camera).build(dai.CameraBoardSocket.CAM_C)
         mono_right.setFps(self.fps)
+        right_out = mono_right.requestOutput((640, 400), type=dai.ImgFrame.Type.GRAY8)
 
+        # Build the Stereo node
+        stereo = pipeline.create(dai.node.StereoDepth)
         stereo.setDefaultProfilePreset(dai.node.StereoDepth.PresetMode.FAST_ACCURACY)
         stereo.setDepthAlign(dai.CameraBoardSocket.CAM_A)  # align depth to RGB
-        stereo.setOutputSize(self.rgb_w, self.rgb_h)
+        
+        # In V3, we link the requested camera outputs directly to the stereo inputs
+        left_out.link(stereo.left)
+        right_out.link(stereo.right)
 
-        mono_left.out.link(stereo.left)
-        mono_right.out.link(stereo.right)
+        # We return the raw output streams, no XLinkOut nodes needed
+        depth_out = stereo.depth
 
-        # Output streams
-        xout_rgb   = pipeline.create(dai.node.XLinkOut)
-        xout_depth = pipeline.create(dai.node.XLinkOut)
-        xout_rgb.setStreamName("rgb")
-        xout_depth.setStreamName("depth")
-
-        cam_rgb.preview.link(xout_rgb.input)
-        stereo.depth.link(xout_depth.input)
-
-        return pipeline
+        return pipeline, rgb_out, depth_out
 
     # ── Timer callback ─────────────────────────────────────────────────────────
     def _timer_cb(self):
@@ -143,7 +135,6 @@ class CameraNode(Node):
         msg.width  = width
         msg.height = height
         # Approximate intrinsics for OAK-D Lite at 1280x720
-        # Replace with actual calibration values from oakd_calibration if available
         fx = 857.5
         fy = 857.5
         cx = width  / 2.0
@@ -161,7 +152,6 @@ class CameraNode(Node):
         msg.distortion_model = "plumb_bob"
         return msg
 
-
 def main(args=None):
     rclpy.init(args=args)
     node = CameraNode()
@@ -172,7 +162,6 @@ def main(args=None):
     finally:
         node.destroy_node()
         rclpy.shutdown()
-
 
 if __name__ == "__main__":
     main()
