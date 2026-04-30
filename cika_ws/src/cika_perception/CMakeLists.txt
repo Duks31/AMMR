@@ -30,7 +30,7 @@ install(PROGRAMS
 
 # ── Config, launch, models ────────────────────────────────────────────────────
 install(DIRECTORY
-#   config
+  config
   launch
   models
   DESTINATION share/${PROJECT_NAME}

@@ -1,0 +1,10 @@
+/oak:
+  ros__parameters:
+    camera:
+      i_pipeline_type: "yolo"
+      i_enable_pointcloud: true
+    nn:
+      # We use the absolute path in the Docker container so it NEVER gets lost
+      i_nn_config_path: "/cika_ws/src/cika_perception/models/300_epoch_best.json"
+    stereo:
+      i_align_depth: true
