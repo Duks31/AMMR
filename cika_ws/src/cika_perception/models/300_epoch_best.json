@@ -1,4 +1,7 @@
 {
+    "model": {
+        "blob": "/cika_ws/src/cika_perception/models/300_epoch_best.blob"
+    },
     "modelName": "300_epoch_best.blob",
     "nn_config": {
         "output_format": "detection",
