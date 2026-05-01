@@ -74,8 +74,6 @@ class InferenceNode(Node):
         super().__init__("inference_node")
         self.publisher  = self.create_publisher(
             WasteDetectionArray, "/cika/perception/waste_detections", 10)
-        self.image_pub  = self.create_publisher(
-            CompressedImage, "/cika/perception/image_raw/compressed", 10)
         self._device          = None
         self._nn_queue        = None
         self._img_queue       = None
