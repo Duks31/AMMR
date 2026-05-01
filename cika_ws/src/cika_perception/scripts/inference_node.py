@@ -8,6 +8,7 @@ from sensor_msgs.msg import CompressedImage
 from std_srvs.srv import SetBool
 
 from cika_perception.msg import WasteDetectionArray, WasteDetection
+from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 
 BLOB_PATH   = "/cika_ws/src/cika_perception/models/300_epoch_best.blob"
 INPUT_W     = 640
@@ -17,6 +18,11 @@ IOU_THRESH  = 0.45
 CLASSES     = ["plastic", "paper", "metal"]
 NC          = len(CLASSES)
 
+qos = QoSProfile(
+    reliability=ReliabilityPolicy.RELIABLE,
+    history=HistoryPolicy.KEEP_LAST,
+    depth=1
+)
 
 def xywh2xyxy(cx, cy, w, h):
     return cx - w / 2, cy - h / 2, cx + w / 2, cy + h / 2
@@ -80,6 +86,7 @@ class InferenceNode(Node):
         self.create_service(
             SetBool, "/cika/perception/set_inference_active", self._enable_cb)
         self.get_logger().info("Inference Node Ready. Listening to OAK-D Lite...")
+        self.image_pub = self.create_publisher(CompressedImage, "/cika/perception/image_raw/compressed", qos)
 
     def _enable_cb(self, request, response):
         self._inference_active = request.data

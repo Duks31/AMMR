@@ -97,15 +97,14 @@ services:
   #   restart: unless-stopped
 
   # ── Foxglove Bridge: Remote Monitoring ────────────────────────────
-  # Connect from laptop: https://app.foxglove.dev → ws://<pi-ip>:8765
   foxglove_bridge:
-    image: cika_ros2:humble
-    container_name: foxglove_bridge
-    network_mode: host
-    volumes:
-      - cika_ws_install:/cika_ws/install
-    environment:
-      - ROS_DOMAIN_ID=0
-      - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
-    command: ros2 launch foxglove_bridge foxglove_bridge_launch.xml port:=8765
-    restart: unless-stopped
+      image: cika_ros2:humble
+      container_name: foxglove_bridge
+      network_mode: host
+      volumes:
+        - cika_ws_install:/cika_ws/install
+      environment:
+        - ROS_DOMAIN_ID=0
+        - RMW_IMPLEMENTATION=rmw_fastrtps_cpp
+      command: ros2 launch foxglove_bridge foxglove_bridge_launch.xml port:=8765 send_buffer_limit:=100000000
+      restart: unless-stopped
