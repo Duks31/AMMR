@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 import numpy as np
 import rclpy
+import cv2
 from rclpy.node import Node
 import depthai as dai
-from sensor_msgs.msg import Image
+from sensor_msgs.msg import CompressedImage
+from std_srvs.srv import SetBool
 
 from cika_perception.msg import WasteDetectionArray, WasteDetection
 
@@ -13,7 +15,7 @@ INPUT_H     = 640
 CONF_THRESH = 0.5
 IOU_THRESH  = 0.45
 CLASSES     = ["plastic", "paper", "metal"]
-NC          = len(CLASSES)                          # fix 3: module-level constant
+NC          = len(CLASSES)
 
 
 def xywh2xyxy(cx, cy, w, h):
@@ -36,8 +38,8 @@ def nms(boxes, scores, iou_thresh):
         yy1 = np.maximum(y1[i], y1[order[1:]])
         xx2 = np.minimum(x2[i], x2[order[1:]])
         yy2 = np.minimum(y2[i], y2[order[1:]])
-        w_  = np.maximum(0.0, xx2 - xx1)           # fix 4: renamed to w_
-        h_  = np.maximum(0.0, yy2 - yy1)           # fix 4: renamed to h_
+        w_  = np.maximum(0.0, xx2 - xx1)
+        h_  = np.maximum(0.0, yy2 - yy1)
         iou = (w_ * h_) / (areas[i] + areas[order[1:]] - w_ * h_ + 1e-6)
         order = order[np.where(iou <= iou_thresh)[0] + 1]
     return keep
@@ -63,18 +65,28 @@ def parse_yolov8(output: np.ndarray, conf_thresh: float, iou_thresh: float):
 
 class InferenceNode(Node):
     def __init__(self):
-        super().__init__('inference_node')
+        super().__init__("inference_node")
         self.publisher  = self.create_publisher(
-            WasteDetectionArray,
-            '/cika/perception/waste_detections',
-            10)
-        self._device    = None                      # fix 5: init to None
-        self._nn_queue  = None
-        self._img_queue = None
+            WasteDetectionArray, "/cika/perception/waste_detections", 10)
+        self.image_pub  = self.create_publisher(
+            CompressedImage, "/cika/perception/image_raw/compressed", 10)
+        self._device          = None
+        self._nn_queue        = None
+        self._img_queue       = None
+        self._inference_active = False
         self._start_pipeline()
         self.create_timer(0.033, self._poll)
+        self.create_service(
+            SetBool, "/cika/perception/set_inference_active", self._enable_cb)
         self.get_logger().info("Inference Node Ready. Listening to OAK-D Lite...")
-        self.image_pub = self.create_publisher(Image, '/cika/perception/image_raw', 10)
+
+    def _enable_cb(self, request, response):
+        self._inference_active = request.data
+        self.get_logger().info(
+            f"Inference {'enabled' if request.data else 'disabled'}")
+        response.success = True
+        response.message = "ok"
+        return response
 
     def _start_pipeline(self):
         pipeline = dai.Pipeline()
@@ -84,9 +96,8 @@ class InferenceNode(Node):
         cam.setVideoSize(INPUT_W, INPUT_H)
         cam.setInterleaved(False)
         cam.setColorOrder(dai.ColorCameraProperties.ColorOrder.BGR)
-        cam.setFps(15)
+        cam.setFps(10)
 
-        # NN — linked to preview
         nn = pipeline.create(dai.node.NeuralNetwork)
         nn.setBlobPath(BLOB_PATH)
         nn.setNumInferenceThreads(2)
@@ -96,21 +107,38 @@ class InferenceNode(Node):
         nn_out.setStreamName("nn")
         nn.out.link(nn_out.input)
 
-        # Image — linked to video (separate output from preview)
         img_out = pipeline.create(dai.node.XLinkOut)
         img_out.setStreamName("rgb")
-        cam.video.link(img_out.input)   # video, NOT preview
-    
-        # Single device creation — after all nodes are defined
+        cam.video.link(img_out.input)
+
         self._device    = dai.Device(pipeline)
         self._nn_queue  = self._device.getOutputQueue("nn",  maxSize=4, blocking=False)
         self._img_queue = self._device.getOutputQueue("rgb", maxSize=4, blocking=False)
-        
+
     def _poll(self):
         if self._nn_queue is None:
             return
         packet = self._nn_queue.tryGet()
         if packet is None:
+            return
+
+        # Always publish image regardless of inference state
+        if self._img_queue is not None:
+            img_packet = self._img_queue.tryGet()
+            if img_packet is not None:
+                frame = img_packet.getCvFrame()
+                _, buf = cv2.imencode(
+                    '.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 50])
+                img_msg             = CompressedImage()
+                img_msg.header.stamp    = self.get_clock().now().to_msg()
+                img_msg.header.frame_id = "oak_rgb_camera_optical_frame"
+                img_msg.format          = "jpeg"
+                img_msg.data            = buf.tobytes()
+                self.image_pub.publish(img_msg)
+
+        # ros2 service call /cika/perception/set_inference_active std_srvs/srv/SetBool "{data: true}"
+        # ros2 service call /cika/perception/set_inference_active std_srvs/srv/SetBool "{data: false}"
+        if not self._inference_active:
             return
 
         try:
@@ -126,26 +154,11 @@ class InferenceNode(Node):
 
         detections = parse_yolov8(output, CONF_THRESH, IOU_THRESH)
 
-        # Publish camera frame
-        if self._img_queue is not None:
-            img_packet = self._img_queue.tryGet()
-            if img_packet is not None:
-                frame = img_packet.getCvFrame()
-                img_msg = Image()
-                img_msg.header.stamp    = self.get_clock().now().to_msg()
-                img_msg.header.frame_id = "oak_rgb_camera_optical_frame"
-                img_msg.height          = frame.shape[0]
-                img_msg.width           = frame.shape[1]
-                img_msg.encoding        = "bgr8"
-                img_msg.step            = frame.shape[1] * 3
-                img_msg.data            = frame.tobytes()
-                self.image_pub.publish(img_msg)
-
         msg = WasteDetectionArray()
         msg.header.stamp    = self.get_clock().now().to_msg()
         msg.header.frame_id = "oak_rgb_camera_optical_frame"
 
-        for (box, score, class_id) in detections:
+        for box, score, class_id in detections:
             d                 = WasteDetection()
             d.label           = CLASSES[class_id]
             d.confidence      = float(score)
@@ -157,8 +170,11 @@ class InferenceNode(Node):
             self.publisher.publish(msg)
 
     def destroy_node(self):
-        if self._device is not None:                # fix 5: guard against None
-            self._device.close()
+        try:
+            if self._device is not None:
+                self._device.close()
+        except Exception:
+            pass
         super().destroy_node()
 
 
@@ -173,5 +189,6 @@ def main(args=None):
         node.destroy_node()
         rclpy.shutdown()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()
