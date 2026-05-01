@@ -81,10 +81,12 @@ class InferenceNode(Node):
 
         cam = pipeline.create(dai.node.ColorCamera)
         cam.setPreviewSize(INPUT_W, INPUT_H)
+        cam.setVideoSize(INPUT_W, INPUT_H)
         cam.setInterleaved(False)
         cam.setColorOrder(dai.ColorCameraProperties.ColorOrder.BGR)
         cam.setFps(15)
 
+        # NN — linked to preview
         nn = pipeline.create(dai.node.NeuralNetwork)
         nn.setBlobPath(BLOB_PATH)
         nn.setNumInferenceThreads(2)
@@ -94,18 +96,16 @@ class InferenceNode(Node):
         nn_out.setStreamName("nn")
         nn.out.link(nn_out.input)
 
-        self._device   = dai.Device(pipeline)
-        self._nn_queue = self._device.getOutputQueue(
-            "nn", maxSize=4, blocking=False)
-        
+        # Image — linked to video (separate output from preview)
         img_out = pipeline.create(dai.node.XLinkOut)
         img_out.setStreamName("rgb")
-        cam.preview.link(img_out.input)
-
+        cam.video.link(img_out.input)   # video, NOT preview
+    
+        # Single device creation — after all nodes are defined
         self._device    = dai.Device(pipeline)
         self._nn_queue  = self._device.getOutputQueue("nn",  maxSize=4, blocking=False)
         self._img_queue = self._device.getOutputQueue("rgb", maxSize=4, blocking=False)
-
+        
     def _poll(self):
         if self._nn_queue is None:
             return
