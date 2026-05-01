@@ -76,6 +76,7 @@ class InferenceNode(Node):
         self._inference_active = False
         self._start_pipeline()
         self.create_timer(0.033, self._poll)
+        self.create_timer(0.1, self._publish_image)
         self.create_service(
             SetBool, "/cika/perception/set_inference_active", self._enable_cb)
         self.get_logger().info("Inference Node Ready. Listening to OAK-D Lite...")
@@ -122,20 +123,6 @@ class InferenceNode(Node):
         if packet is None:
             return
 
-        # Always publish image regardless of inference state
-        if self._img_queue is not None:
-            img_packet = self._img_queue.tryGet()
-            if img_packet is not None:
-                frame = img_packet.getCvFrame()
-                _, buf = cv2.imencode(
-                    '.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 50])
-                img_msg             = CompressedImage()
-                img_msg.header.stamp    = self.get_clock().now().to_msg()
-                img_msg.header.frame_id = "oak_rgb_camera_optical_frame"
-                img_msg.format          = "jpeg"
-                img_msg.data            = buf.tobytes()
-                self.image_pub.publish(img_msg)
-
         # ros2 service call /cika/perception/set_inference_active std_srvs/srv/SetBool "{data: true}"
         # ros2 service call /cika/perception/set_inference_active std_srvs/srv/SetBool "{data: false}"
         if not self._inference_active:
@@ -168,6 +155,21 @@ class InferenceNode(Node):
 
         if msg.detections:
             self.publisher.publish(msg)
+    
+    def _publish_image(self):
+        if self._img_queue is None:
+            return
+        img_packet = self._img_queue.tryGet()
+        if img_packet is None:
+            return
+        frame = img_packet.getCvFrame()
+        _, buf = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 50])
+        img_msg             = CompressedImage()
+        img_msg.header.stamp    = self.get_clock().now().to_msg()
+        img_msg.header.frame_id = "oak_rgb_camera_optical_frame"
+        img_msg.format          = "jpeg"
+        img_msg.data            = buf.tobytes()
+        self.image_pub.publish(img_msg)
 
     def destroy_node(self):
         try:
