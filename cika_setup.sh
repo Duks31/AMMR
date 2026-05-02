@@ -37,7 +37,6 @@ sudo apt install -y \
   ros-humble-compressed-image-transport \
   ros-humble-cv-bridge \
   ros-humble-vision-opencv \
-  ros-humble-micro-ros-agent \
   python3-serial
 
 echo "[4/7] Installing RPLIDAR driver..."
