@@ -1,0 +1,13 @@
+<library path="cika_drive_interface">
+    <class
+        name="cika_hardware/CikaDriveInterface"
+        type="cika_hardware::CikaDriveInterface"
+        base_class_type="hardware_interface::SystemInterface">
+        <description>
+            Drive base hardware interface for cika.
+            Subscribes to /cika/odom (nav_msgs/Odometry) from the ESP32.
+            Publishes /cika/drive/wheel_vel_cmd (std_msgs/Float32MultiArray)
+            with layout [vel_lf, vel_lb, vel_rf, vel_rb] in rad/s.
+        </description>
+    </class>
+</library>
