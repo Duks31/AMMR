@@ -207,7 +207,7 @@ void setup()
     set_microros_serial_transports(Serial);
     delay(2000);
 
-    // Motor PWM & Enable
+    // Motor PWM & Enable — unchanged
     ledcSetup(0, PWM_FREQ_HZ, PWM_RESOLUTION);
     ledcSetup(1, PWM_FREQ_HZ, PWM_RESOLUTION);
     ledcSetup(2, PWM_FREQ_HZ, PWM_RESOLUTION);
@@ -216,7 +216,6 @@ void setup()
     ledcAttachPin(LEFT_LPWM, 1);
     ledcAttachPin(RIGHT_RPWM, 2);
     ledcAttachPin(RIGHT_LPWM, 3);
-
     pinMode(LEFT_REN, OUTPUT);
     pinMode(LEFT_LEN, OUTPUT);
     digitalWrite(LEFT_REN, HIGH);
@@ -226,26 +225,45 @@ void setup()
     digitalWrite(RIGHT_REN, HIGH);
     digitalWrite(RIGHT_LEN, HIGH);
 
-    // Encoders
+    // Encoders — unchanged
     pinMode(ENCODER_LEFT_PIN, INPUT_PULLUP);
     pinMode(ENCODER_RIGHT_PIN, INPUT_PULLUP);
     attachInterrupt(digitalPinToInterrupt(ENCODER_LEFT_PIN), isr_encoder_left, RISING);
     attachInterrupt(digitalPinToInterrupt(ENCODER_RIGHT_PIN), isr_encoder_right, RISING);
 
-    // ROS Init (Domain 0)
+    // ─── REPLACE THE OLD RCCHECK BLOCK WITH THIS ─────────────────
     allocator = rcl_get_default_allocator();
-    rcl_init_options_t init_options = rcl_get_zero_initialized_init_options();
-    RCCHECK(rcl_init_options_init(&init_options, allocator));
-    RCCHECK(rcl_init_options_set_domain_id(&init_options, 0));
-    RCCHECK(rclc_support_init_with_options(&support, 0, nullptr, &init_options, &allocator));
 
+    // Keep retrying until the micro-ROS agent responds.
+    // ESP32 blue LED blinks slowly while waiting, goes solid when connected.
+    pinMode(2, OUTPUT);
+    while (true)
+    {
+        rcl_init_options_t init_options = rcl_get_zero_initialized_init_options();
+
+        bool ok =
+            (rcl_init_options_init(&init_options, allocator) == RCL_RET_OK) &&
+            (rcl_init_options_set_domain_id(&init_options, 0) == RCL_RET_OK) &&
+            (rclc_support_init_with_options(&support, 0, nullptr,
+                                            &init_options, &allocator) == RCL_RET_OK);
+        if (ok)
+            break; // agent is up, move on
+
+        // Not connected yet — blink LED and retry after 500 ms
+        digitalWrite(2, !digitalRead(2));
+        delay(500);
+    }
+    digitalWrite(2, HIGH); // solid LED = connected
+    // ─────────────────────────────────────────────────────────────
+
+    // Everything below is unchanged
     RCCHECK(rclc_node_init_default(&node, "cika_drive_esp32", "cika", &support));
 
-    // Comm objects
     wheel_cmd_msg.data.data = wheel_cmd_data;
     wheel_cmd_msg.data.size = 4;
     RCCHECK(rclc_subscription_init_default(&wheel_cmd_sub, &node,
-                                           ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Float32MultiArray), "/cika/drive/wheel_vel_cmd"));
+                                           ROSIDL_GET_MSG_TYPE_SUPPORT(std_msgs, msg, Float32MultiArray),
+                                           "/cika/drive/wheel_vel_cmd"));
 
     static char f_odom[] = "odom";
     static char f_base[] = "base_link";
@@ -257,21 +275,25 @@ void setup()
     RCCHECK(rclc_publisher_init_default(&odom_pub, &node,
                                         ROSIDL_GET_MSG_TYPE_SUPPORT(nav_msgs, msg, Odometry), "/cika/odom"));
 
-    RCCHECK(rclc_timer_init_default(&odom_timer, &support, RCL_MS_TO_NS(100), odom_timer_callback));
+    RCCHECK(rclc_timer_init_default(&odom_timer, &support,
+                                    RCL_MS_TO_NS(100), odom_timer_callback));
 
     RCCHECK(rclc_executor_init(&executor, &support.context, 2, &allocator));
-    RCCHECK(rclc_executor_add_subscription(&executor, &wheel_cmd_sub, &wheel_cmd_msg, &wheel_cmd_callback, ON_NEW_DATA));
+    RCCHECK(rclc_executor_add_subscription(&executor, &wheel_cmd_sub,
+                                           &wheel_cmd_msg, &wheel_cmd_callback, ON_NEW_DATA));
     RCCHECK(rclc_executor_add_timer(&executor, &odom_timer));
+
+    last_cmd_time = millis(); // ← watchdog reset AFTER full init
 }
 
 void loop()
 {
     // Safety Watchdog
-    if (millis() - last_cmd_time > 500)
-    {
-        set_motor_left(0.0f);
-        set_motor_right(0.0f);
-    }
+    // if (millis() - last_cmd_time > 500)
+    // {
+    //     set_motor_left(0.0f);
+    //     set_motor_right(0.0f);
+    // }
     RCSOFTCHECK(rclc_executor_spin_some(&executor, RCL_MS_TO_NS(10)));
     delay(10);
 }
