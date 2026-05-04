@@ -39,7 +39,7 @@ def generate_launch_description():
     cika_description_dir = get_package_share_directory("cika_description")
     cika_bringup_dir     = get_package_share_directory("cika_bringup")
 
-    controllers_yaml = os.path.join(cika_description_dir, "config", "controllers.yaml")
+    controllers_yaml = os.path.join(cika_description_dir, "config", "controllers_real.yaml")
     joy_ps5_params   = os.path.join(cika_bringup_dir, "config", "joy_ps5.yaml")
 
     # ── Launch arguments ────────────────────────────────────────────────────

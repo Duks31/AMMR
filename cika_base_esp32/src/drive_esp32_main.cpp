@@ -82,17 +82,22 @@ static constexpr float TICKS_TO_RAD = (2.0f * 3.14159265f) / ENCODER_CPR;
 //   RPWM  = forward PWM
 //   LPWM  = reverse PWM
 // ─────────────────────────────────────────────────────────────────────────────
-#define LEFT_EN 25
-#define LEFT_RPWM 26
-#define LEFT_LPWM 27
-#define RIGHT_EN 14
-#define RIGHT_RPWM 12
-#define RIGHT_LPWM 13
+// LEFT BTS7960
+#define LEFT_RPWM   27
+#define LEFT_LPWM   14
+#define LEFT_REN    23
+#define LEFT_LEN    26
+
+// RIGHT BTS7960
+#define RIGHT_RPWM  32
+#define RIGHT_LPWM  33
+#define RIGHT_REN   25
+#define RIGHT_LEN   21
 
 // TODO_PINS: Hall encoder input pins — use input-only GPIOs (34, 35, 36, 39)
 // for noise immunity; connect encoder A channel only (single-channel counting)
 #define ENCODER_LEFT_PIN 34
-#define ENCODER_RIGHT_PIN 35
+#define ENCODER_RIGHT_PIN 4
 
 // PWM config (ESP32 LEDC peripheral)
 #define PWM_FREQ_HZ 5000
@@ -141,33 +146,46 @@ float heading = 0.0f;
 // For a single-channel (no direction) hall encoder, count every RISING edge.
 // Direction is inferred from the sign of the velocity command.
 // ─────────────────────────────────────────────────────────────────────────────
-// void IRAM_ATTR isr_encoder_left()  { enc_ticks_left++;  }
-// void IRAM_ATTR isr_encoder_right() { enc_ticks_right++; }
+void IRAM_ATTR isr_encoder_left()  { enc_ticks_left++;  }
+void IRAM_ATTR isr_encoder_right() { enc_ticks_right++; }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Motor helpers
 // ─────────────────────────────────────────────────────────────────────────────
+// Improved motor control with deadband
+
 void set_motor_left(float vel_rad_s)
 {
-    // TODO_PWM: replace the linear scale with your calibrated mapping
+    const float DEADZONE = 0.15f;           // rad/s
+    if (fabsf(vel_rad_s) < DEADZONE) {
+        vel_rad_s = 0.0f;
+    }
+
     int pwm = (int)(fabsf(vel_rad_s) / MAX_WHEEL_SPEED_RAD_S * 255.0f);
     pwm = constrain(pwm, 0, 255);
+
     if (vel_rad_s >= 0.0f)
     {
-        ledcWrite(0, pwm); // forward
+        ledcWrite(0, pwm);   // LEFT forward
         ledcWrite(1, 0);
     }
     else
     {
         ledcWrite(0, 0);
-        ledcWrite(1, pwm); // reverse
+        ledcWrite(1, pwm);   // LEFT reverse
     }
 }
 
 void set_motor_right(float vel_rad_s)
 {
+    const float DEADZONE = 0.15f;
+    if (fabsf(vel_rad_s) < DEADZONE) {
+        vel_rad_s = 0.0f;
+    }
+
     int pwm = (int)(fabsf(vel_rad_s) / MAX_WHEEL_SPEED_RAD_S * 255.0f);
     pwm = constrain(pwm, 0, 255);
+
     if (vel_rad_s >= 0.0f)
     {
         ledcWrite(2, pwm);
@@ -285,10 +303,10 @@ void setup()
     digitalWrite(RIGHT_EN, HIGH);
 
     // TODO_ISR: Uncomment once encoder wires are connected
-    // pinMode(ENCODER_LEFT_PIN,  INPUT_PULLUP);
-    // pinMode(ENCODER_RIGHT_PIN, INPUT_PULLUP);
-    // attachInterrupt(digitalPinToInterrupt(ENCODER_LEFT_PIN),  isr_encoder_left,  RISING);
-    // attachInterrupt(digitalPinToInterrupt(ENCODER_RIGHT_PIN), isr_encoder_right, RISING);
+    pinMode(ENCODER_LEFT_PIN,  INPUT_PULLUP);
+    pinMode(ENCODER_RIGHT_PIN, INPUT_PULLUP);
+    attachInterrupt(digitalPinToInterrupt(ENCODER_LEFT_PIN),  isr_encoder_left,  RISING);
+    attachInterrupt(digitalPinToInterrupt(ENCODER_RIGHT_PIN), isr_encoder_right, RISING);
 
     // ── micro-ROS init — same pattern as your test sketch ────────────────────
     allocator = rcl_get_default_allocator();
