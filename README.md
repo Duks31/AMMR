@@ -98,3 +98,21 @@ Current task state is published on `/cika/task_state` at 1 Hz, useful for RViz o
 > The stub simulates a 3-second pick and returns to IDLE automatically.
 > Swap the stub by building `cika_manipulator` with a `pick_and_dispose` action server.
 
+## Visualization (Foxglove Studio)
+
+Foxglove Studio is installed system-wide via apt and launched standalone — no ROS2 launch file is needed.
+
+```bash
+# Launch Foxglove Studio
+foxglove-studio
+```
+
+Once open, connect to your running ROS2 stack via the **Foxglove WebSocket** bridge:
+
+```bash
+# Start the bridge (run this alongside your other nodes)
+ros2 launch foxglove_bridge foxglove_bridge_launch.xml
+```
+
+Then in Foxglove Studio, select **Open Connection → Foxglove WebSocket** and enter:
+ws://localhost:8765
