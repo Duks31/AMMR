@@ -36,14 +36,11 @@ unsigned long last_telem_time = 0;
 
 // ── Interrupt Service Routines (IRAM_ATTR keeps them fast in RAM) ─────────────
 // Note: If a wheel reports negative velocity when driving forward, swap the ++ and --
-// Change the left side to subtract on HIGH and add on LOW
-void IRAM_ATTR isr_lf() { if (digitalRead(ENC_LF_B)) ticks_lf = ticks_lf - 1; else ticks_lf = ticks_lf + 1; }
-void IRAM_ATTR isr_lb() { if (digitalRead(ENC_LB_B)) ticks_lb = ticks_lb - 1; else ticks_lb = ticks_lb + 1; }
+void IRAM_ATTR isr_lf() { if (digitalRead(ENC_LF_B)) ticks_lf = ticks_lf + 1; else ticks_lf = ticks_lf - 1; }
+void IRAM_ATTR isr_lb() { if (digitalRead(ENC_LB_B)) ticks_lb = ticks_lb + 1; else ticks_lb = ticks_lb - 1; }
 
-// Leave the right side alone for now until you test it on the new pins
-void IRAM_ATTR isr_rf() { if (digitalRead(ENC_RF_B)) ticks_rf = ticks_rf + 1; else ticks_rf = ticks_rf - 1; }
-void IRAM_ATTR isr_rb() { if (digitalRead(ENC_RB_B)) ticks_rb = ticks_rb + 1; else ticks_rb = ticks_rb - 1; }
-
+void IRAM_ATTR isr_rf() { if (digitalRead(ENC_RF_B)) ticks_rf = ticks_rf - 1; else ticks_rf = ticks_rf + 1; }
+void IRAM_ATTR isr_rb() { if (digitalRead(ENC_RB_B)) ticks_rb = ticks_rb - 1; else ticks_rb = ticks_rb + 1; }
 
 // ── Motor Control Helpers ─────────────────────────────────────────────────────
 static void drive(int pwm_l, bool fwd_l, int pwm_r, bool fwd_r)
