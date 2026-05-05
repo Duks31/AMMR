@@ -5,35 +5,16 @@
     <xacro:include filename="$(find cika_description)/urdf/cika.gazebo" />
     <xacro:arg name="use_sim" default="true" />
 
-    <!--
-    ============================================================
-    FIX EXPLANATION
-    ============================================================
-    Fusion360 exports STL meshes in Y-up assembly coordinates.
-    Every link's visual/collision <origin xyz> is the negative of
-    its joint xyz, so the mesh renders at its assembly position.
-
-    The base_link mesh needs rpy="pi/2 0 0" to convert Y-up -> Z-up.
-    Previously only base_link had this rpy, so the chassis rotated
-    visually but ALL other meshes stayed in Y-up orientation -> mismatch.
-
-    FIX: Apply rpy="pi/2 0 0" to the visual and collision <origin>
-    of EVERY link. This rotates all STL meshes consistently.
-
-    The joint xyz values and the TF tree are NOT changed — they are
-    already in correct ROS (X-forward, Y-left, Z-up) coordinates.
-    ============================================================
-    -->
-
     <!-- ==================== BASE LINK ==================== -->
     <link name="base_link">
         <inertial>
-            <origin xyz="-0.33260926446179306 0.15120963934333517 0.1740750380233756" rpy="0 0 0" />
-            <mass value="30.109135104763638" />
-            <inertia ixx="0.935033" iyy="1.442245" izz="1.317153"
-                ixy="-0.016969" iyz="-0.001673" ixz="0.3152" />
+            <origin xyz="-0.332609 0.151210 0.174075" rpy="0 0 0" />
+            <mass value="30.109" />
+            <inertia ixx="0.935033" iyy="1.442245" izz="1.317153" ixy="-0.016969" iyz="-0.001673"
+                ixz="0.3152" />
         </inertial>
         <visual>
+            <!-- Base mesh usually centered at 0,0,0 in export -->
             <origin xyz="0 0 0" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/base_link.stl"
@@ -51,16 +32,11 @@
     </link>
 
     <!-- ==================== WHEELS ==================== -->
+    <!-- Logic: xyz="OldX -OldZ OldY" -->
+
     <link name="left_front_wheel_1">
-        <inertial>
-            <origin xyz="6.338714178544258e-07 0.06491939586512047 3.96591748746955e-08" rpy="0 0 0" />
-            <mass value="1.7279014792962415" />
-            <inertia ixx="0.004301" iyy="0.007189" izz="0.0043"
-                ixy="-0.0" iyz="0.0" ixz="-0.0" />
-        </inertial>
         <visual>
-            <!-- FIXED: added rpy="pi/2 0 0" to match base_link mesh orientation -->
-            <origin xyz="0.100089 -0.332003 -0.0962" rpy="${pi/2} 0 0" />
+            <origin xyz="0.100089 0.0962 -0.332003" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/left_front_wheel_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -68,7 +44,7 @@
             <material name="black" />
         </visual>
         <collision>
-            <origin xyz="0.100089 -0.332003 -0.0962" rpy="${pi/2} 0 0" />
+            <origin xyz="0.100089 0.0962 -0.332003" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/left_front_wheel_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -77,16 +53,8 @@
     </link>
 
     <link name="left_back_wheel_1">
-        <inertial>
-            <origin xyz="-4.926971846064276e-07 0.06491939586511769 -6.76128510235241e-07"
-                rpy="0 0 0" />
-            <mass value="1.7279014792962415" />
-            <inertia ixx="0.0043" iyy="0.007189" izz="0.004301"
-                ixy="0.0" iyz="0.0" ixz="0.0" />
-        </inertial>
         <visual>
-            <!-- FIXED: added rpy="pi/2 0 0" -->
-            <origin xyz="0.47736 -0.332003 -0.0962" rpy="${pi/2} 0 0" />
+            <origin xyz="0.47736 0.0962 -0.332003" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/left_back_wheel_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -94,7 +62,7 @@
             <material name="black" />
         </visual>
         <collision>
-            <origin xyz="0.47736 -0.332003 -0.0962" rpy="${pi/2} 0 0" />
+            <origin xyz="0.47736 0.0962 -0.332003" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/left_back_wheel_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -103,16 +71,8 @@
     </link>
 
     <link name="right_front_wheel_1">
-        <inertial>
-            <origin xyz="6.50511300104295e-07 -0.06491983576316293 8.338073121116896e-07"
-                rpy="0 0 0" />
-            <mass value="1.7278807706707637" />
-            <inertia ixx="0.0043" iyy="0.007189" izz="0.0043"
-                ixy="0.0" iyz="0.0" ixz="0.0" />
-        </inertial>
         <visual>
-            <!-- FIXED: added rpy="pi/2 0 0" -->
-            <origin xyz="0.099911 0.031017 -0.0962" rpy="${pi/2} 0 0" />
+            <origin xyz="0.099911 0.0962 0.031017" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/right_front_wheel_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -120,7 +80,7 @@
             <material name="black" />
         </visual>
         <collision>
-            <origin xyz="0.099911 0.031017 -0.0962" rpy="${pi/2} 0 0" />
+            <origin xyz="0.099911 0.0962 0.031017" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/right_front_wheel_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -129,16 +89,8 @@
     </link>
 
     <link name="right_back_wheel_1">
-        <inertial>
-            <origin xyz="-5.185954176090135e-07 -0.06491983576315802 -2.1179218925859722e-07"
-                rpy="0 0 0" />
-            <mass value="1.7278807706707027" />
-            <inertia ixx="0.0043" iyy="0.007189" izz="0.0043"
-                ixy="-0.0" iyz="-0.0" ixz="0.0" />
-        </inertial>
         <visual>
-            <!-- FIXED: added rpy="pi/2 0 0" -->
-            <origin xyz="0.47736 0.030997 -0.0962" rpy="${pi/2} 0 0" />
+            <origin xyz="0.47736 0.0962 0.030997" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/right_back_wheel_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -146,7 +98,7 @@
             <material name="black" />
         </visual>
         <collision>
-            <origin xyz="0.47736 0.030997 -0.0962" rpy="${pi/2} 0 0" />
+            <origin xyz="0.47736 0.0962 0.030997" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/right_back_wheel_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -156,16 +108,8 @@
 
     <!-- ==================== SENSORS ==================== -->
     <link name="lidar_1">
-        <inertial>
-            <origin xyz="-7.788860805083703e-05 1.0901727409695638e-08 0.018461743261943914"
-                rpy="0 0 0" />
-            <mass value="0.13019242629948757" />
-            <inertia ixx="4.5e-05" iyy="4.5e-05" izz="5.5e-05"
-                ixy="-0.0" iyz="0.0" ixz="-0.0" />
-        </inertial>
         <visual>
-            <!-- FIXED: added rpy="pi/2 0 0" -->
-            <origin xyz="0.038004 -0.265503 -0.193866" rpy="${pi/2} 0 0" />
+            <origin xyz="0.038004 0.193866 -0.265503" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/lidar_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -173,7 +117,7 @@
             <material name="ash" />
         </visual>
         <collision>
-            <origin xyz="0.038004 -0.265503 -0.193866" rpy="${pi/2} 0 0" />
+            <origin xyz="0.038004 0.193866 -0.265503" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/lidar_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -182,16 +126,8 @@
     </link>
 
     <link name="OAKDcamera_1">
-        <inertial>
-            <origin xyz="0.008627287459209043 0.000208170161947685 0.00010063024921169728"
-                rpy="0 0 0" />
-            <mass value="0.1469212855023488" />
-            <inertia ixx="0.000116" iyy="1.5e-05" izz="0.00011"
-                ixy="0.0" iyz="0.0" ixz="0.0" />
-        </inertial>
         <visual>
-            <!-- FIXED: added rpy="pi/2 0 0" -->
-            <origin xyz="0.517714 -0.150503 -0.657116" rpy="${pi/2} 0 0" />
+            <origin xyz="0.517714 0.657116 -0.150503" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/OAKDcamera_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -199,7 +135,7 @@
             <material name="ash" />
         </visual>
         <collision>
-            <origin xyz="0.517714 -0.150503 -0.657116" rpy="${pi/2} 0 0" />
+            <origin xyz="0.517714 0.657116 -0.150503" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/OAKDcamera_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -207,30 +143,10 @@
         </collision>
     </link>
 
-    <link name="OAKDcamera_1_optical">
-        <visual>
-            <origin xyz="0 0 0" rpy="0 0 0" />
-            <geometry>
-                <box size="0.001 0.001 0.001" />
-            </geometry>
-            <material name="transparent">
-                <color rgba="0 0 0 0" />
-            </material>
-        </visual>
-    </link>
-
     <!-- ==================== ARM LINKS ==================== -->
     <link name="arm_bottom_1">
-        <inertial>
-            <origin xyz="-0.054909370312956396 -0.0007071460484354419 0.03829370665229939"
-                rpy="0 0 0" />
-            <mass value="0.8582742343668851" />
-            <inertia ixx="0.002214" iyy="0.002209" izz="0.003262"
-                ixy="-5e-06" iyz="-4e-06" ixz="1e-06" />
-        </inertial>
         <visual>
-            <!-- FIXED: added rpy="pi/2 0 0" -->
-            <origin xyz="0.069976 -0.15041 -0.149616" rpy="${pi/2} 0 0" />
+            <origin xyz="0.069976 0.149616 -0.15041" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/arm_bottom_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -238,7 +154,7 @@
             <material name="dark_grey" />
         </visual>
         <collision>
-            <origin xyz="0.069976 -0.15041 -0.149616" rpy="${pi/2} 0 0" />
+            <origin xyz="0.069976 0.149616 -0.15041" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/arm_bottom_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -247,16 +163,8 @@
     </link>
 
     <link name="turntable_1">
-        <inertial>
-            <origin xyz="0.0001872362428069485 0.00027238134309487405 0.030410920566191824"
-                rpy="0 0 0" />
-            <mass value="0.5193886148387532" />
-            <inertia ixx="0.001399" iyy="0.000986" izz="0.001632"
-                ixy="1e-06" iyz="-4e-06" ixz="-0.0" />
-        </inertial>
         <visual>
-            <!-- FIXED: added rpy="pi/2 0 0" -->
-            <origin xyz="0.124976 -0.15041 -0.229171" rpy="${pi/2} 0 0" />
+            <origin xyz="0.124976 0.229171 -0.15041" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/turntable_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -264,7 +172,7 @@
             <material name="dark_grey" />
         </visual>
         <collision>
-            <origin xyz="0.124976 -0.15041 -0.229171" rpy="${pi/2} 0 0" />
+            <origin xyz="0.124976 0.229171 -0.15041" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/turntable_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -273,16 +181,8 @@
     </link>
 
     <link name="lower_arm_1">
-        <inertial>
-            <origin xyz="-0.09815269472471186 0.034884892502197146 -0.013436087195066948"
-                rpy="0 0 0" />
-            <mass value="0.6297893688817031" />
-            <inertia ixx="0.000792" iyy="0.002646" izz="0.002968"
-                ixy="0.000116" iyz="1.6e-05" ixz="-0.000303" />
-        </inertial>
         <visual>
-            <!-- FIXED: added rpy="pi/2 0 0" -->
-            <origin xyz="0.124726 -0.11861 -0.294671" rpy="${pi/2} 0 0" />
+            <origin xyz="0.124726 0.294671 -0.11861" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/lower_arm_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -290,7 +190,7 @@
             <material name="light_grey" />
         </visual>
         <collision>
-            <origin xyz="0.124726 -0.11861 -0.294671" rpy="${pi/2} 0 0" />
+            <origin xyz="0.124726 0.294671 -0.11861" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/lower_arm_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -299,16 +199,8 @@
     </link>
 
     <link name="center_arm_1">
-        <inertial>
-            <origin xyz="-0.022216695907628425 -0.022792061476347353 0.054595767734493705"
-                rpy="0 0 0" />
-            <mass value="0.3101540991150054" />
-            <inertia ixx="0.000639" iyy="0.000774" izz="0.000187"
-                ixy="3e-06" iyz="-6e-06" ixz="0.000223" />
-        </inertial>
         <visual>
-            <!-- FIXED: added rpy="pi/2 0 0" -->
-            <origin xyz="0.308014 -0.17411 -0.269563" rpy="${pi/2} 0 0" />
+            <origin xyz="0.308014 0.269563 -0.17411" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/center_arm_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -316,7 +208,7 @@
             <material name="dark_grey" />
         </visual>
         <collision>
-            <origin xyz="0.308014 -0.17411 -0.269563" rpy="${pi/2} 0 0" />
+            <origin xyz="0.308014 0.269563 -0.17411" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/center_arm_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -325,15 +217,8 @@
     </link>
 
     <link name="upper_arm_1">
-        <inertial>
-            <origin xyz="0.03416739959858034 -0.025827383064131765 -0.00858731456153955" rpy="0 0 0" />
-            <mass value="0.34058866178884734" />
-            <inertia ixx="0.000398" iyy="0.000385" izz="0.000585"
-                ixy="3.6e-05" iyz="-8e-06" ixz="4.3e-05" />
-        </inertial>
         <visual>
-            <!-- FIXED: added rpy="pi/2 0 0" -->
-            <origin xyz="0.353547 -0.18061 -0.377882" rpy="${pi/2} 0 0" />
+            <origin xyz="0.353547 0.377882 -0.18061" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/upper_arm_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -341,7 +226,7 @@
             <material name="light_grey" />
         </visual>
         <collision>
-            <origin xyz="0.353547 -0.18061 -0.377882" rpy="${pi/2} 0 0" />
+            <origin xyz="0.353547 0.377882 -0.18061" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/upper_arm_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -350,15 +235,8 @@
     </link>
 
     <link name="gripper_mount_1">
-        <inertial>
-            <origin xyz="0.03518522031420046 4.947466888538532e-05 -0.02649281738910253" rpy="0 0 0" />
-            <mass value="0.11840999912096761" />
-            <inertia ixx="6.5e-05" iyy="0.00012" izz="7.2e-05"
-                ixy="0.0" iyz="0.0" ixz="3e-06" />
-        </inertial>
         <visual>
-            <!-- FIXED: added rpy="pi/2 0 0" -->
-            <origin xyz="0.272519 -0.15066 -0.373681" rpy="${pi/2} 0 0" />
+            <origin xyz="0.272519 0.373681 -0.15066" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/gripper_mount_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -366,7 +244,7 @@
             <material name="dark_grey" />
         </visual>
         <collision>
-            <origin xyz="0.272519 -0.15066 -0.373681" rpy="${pi/2} 0 0" />
+            <origin xyz="0.272519 0.373681 -0.15066" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/gripper_mount_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -375,16 +253,8 @@
     </link>
 
     <link name="left_gripper_1">
-        <inertial>
-            <origin xyz="0.00925802340474019 0.018173289845735685 -0.0056566853453800525"
-                rpy="0 0 0" />
-            <mass value="0.037519098370183246" />
-            <inertia ixx="1.3e-05" iyy="4.8e-05" izz="5.5e-05"
-                ixy="-5e-06" iyz="1e-06" ixz="1e-05" />
-        </inertial>
         <visual>
-            <!-- FIXED: added rpy="pi/2 0 0" -->
-            <origin xyz="0.200041 -0.15066 -0.35166" rpy="${pi/2} 0 0" />
+            <origin xyz="0.200041 0.35166 -0.15066" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/left_gripper_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -392,7 +262,7 @@
             <material name="light_grey" />
         </visual>
         <collision>
-            <origin xyz="0.200041 -0.15066 -0.35166" rpy="${pi/2} 0 0" />
+            <origin xyz="0.200041 0.35166 -0.15066" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/left_gripper_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -401,16 +271,8 @@
     </link>
 
     <link name="right_gripper_1">
-        <inertial>
-            <origin xyz="0.020334687343400326 -0.017687094901279954 -0.0035351840699497927"
-                rpy="0 0 0" />
-            <mass value="0.029955795985461164" />
-            <inertia ixx="7e-06" iyy="2.3e-05" izz="2.3e-05"
-                ixy="2e-06" iyz="-1e-06" ixz="8e-06" />
-        </inertial>
         <visual>
-            <!-- FIXED: added rpy="pi/2 0 0" -->
-            <origin xyz="0.200041 -0.15066 -0.35166" rpy="${pi/2} 0 0" />
+            <origin xyz="0.200041 0.35166 -0.15066" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/right_gripper_1.stl"
                     scale="0.001 0.001 0.001" />
@@ -418,13 +280,14 @@
             <material name="light_grey" />
         </visual>
         <collision>
-            <origin xyz="0.200041 -0.15066 -0.35166" rpy="${pi/2} 0 0" />
+            <origin xyz="0.200041 0.35166 -0.15066" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/right_gripper_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
         </collision>
     </link>
+
 
     <!-- ==================== WHEEL JOINTS ==================== -->
     <!-- Joint xyz values are UNCHANGED — they are already in ROS coordinates -->
