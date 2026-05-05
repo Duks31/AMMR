@@ -6,15 +6,14 @@
     <xacro:arg name="use_sim" default="true" />
     <link name="base_link">
         <inertial>
-            <!-- Keep your inertial values exactly as they are -->
             <origin xyz="-0.33260926446179306 0.15120963934333517 0.1740750380233756" rpy="0 0 0" />
             <mass value="30.109135104763638" />
             <inertia ixx="0.935033" iyy="1.442245" izz="1.317153" ixy="-0.016969" iyz="-0.001673"
                 ixz="0.3152" />
         </inertial>
         <visual>
-            <!-- Change rpy to rotate the mesh upright -->
-            <origin xyz="0 0 0" rpy="1.5708 0 0" />
+            <!-- This rotates the visual mesh 90 degrees to stand upright -->
+            <origin xyz="0 0 0" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/base_link.stl"
                     scale="0.001 0.001 0.001" />
@@ -22,8 +21,8 @@
             <material name="military_green" />
         </visual>
         <collision>
-            <!-- Change rpy here too so physics matches visualization -->
-            <origin xyz="0 0 0" rpy="1.5708 0 0" />
+            <!-- Match the collision to the visual -->
+            <origin xyz="0 0 0" rpy="${pi/2} 0 0" />
             <geometry>
                 <mesh filename="package://cika_description/meshes/base_link.stl"
                     scale="0.001 0.001 0.001" />
