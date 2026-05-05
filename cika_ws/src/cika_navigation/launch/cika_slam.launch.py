@@ -9,9 +9,6 @@ import os
 def generate_launch_description():
 
     use_sim_time = LaunchConfiguration("use_sim_time", default="true")
-    ekf_config_path = os.path.join(
-        get_package_share_directory("cika_navigation"), "config", "ekf.yaml"
-    )
 
     # ── Shared parameters ────────────────────────────────────────────────────
     rtabmap_params = [
@@ -115,20 +112,11 @@ def generate_launch_description():
         remappings=rtabmap_remappings,
     )
 
-    ekf_node = Node(
-        package="robot_localization",
-        executable="ekf_node",
-        name="ekf_filter_node",
-        output="screen",
-        parameters=[ekf_config_path, {"use_sim_time": use_sim_time}],
-    )
-
     return LaunchDescription(
         [
             DeclareLaunchArgument(
                 "use_sim_time", default_value="true", description="Use simulation clock"
             ),
-            ekf_node,
             rtabmap_node,
             rtabmap_viz_node,
         ]

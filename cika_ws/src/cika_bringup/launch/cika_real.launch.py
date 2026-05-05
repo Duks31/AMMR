@@ -25,6 +25,7 @@ def generate_launch_description():
 
     controllers_yaml = os.path.join(cika_description_dir, "config", "controllers_real.yaml")
     joy_ps5_params   = os.path.join(cika_bringup_dir, "config", "joy_ps5.yaml")
+    ekf_config_path = os.path.join(cika_bringup_dir, "config", "ekf.yaml")
 
     # ── Launch arguments ────────────────────────────────────────────────────
     serial_port_arg = DeclareLaunchArgument(
@@ -113,6 +114,14 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration("teleop")),
     )
 
+    ekf_node = Node(
+        package="robot_localization",
+        executable="ekf_node",
+        name="ekf_filter_node",
+        output="screen",
+        parameters=[ekf_config_path, {"use_sim_time": False}],
+    )
+
     # ── Foxglove Bridge ──────────────────────────────────────────────────────
     foxglove_bridge = IncludeLaunchDescription(
         AnyLaunchDescriptionSource(
@@ -147,6 +156,7 @@ def generate_launch_description():
 
         joy_node,
         teleop_node,
+        ekf_node,
         
         # Add the bridge to the returned LaunchDescription
         foxglove_bridge,
