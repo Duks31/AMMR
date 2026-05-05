@@ -8,7 +8,7 @@ Starts:
   - ros2_control_node      (controller_manager — owns controller lifecycle)
   - joint_state_broadcaster
   - skid_steer_controller  (diff_drive_controller)
-  - micro-ROS agent        (serial bridge to drive ESP32)
+#   - micro-ROS agent        (serial bridge to drive ESP32)
   - PS5 joystick teleop    (optional, enabled by default)
 
 Usage:
@@ -96,16 +96,16 @@ def generate_launch_description():
     # NOTE: microros_ws must be sourced before calling this launch file.
     # Run: source ~/code/ws/AMMR/microros_ws/install/setup.bash
     # Or add it to your ~/.bashrc alongside the cika_ws source line.
-    micro_ros_agent = ExecuteProcess(
-        cmd=[
-            "ros2", "run", "micro_ros_agent", "micro_ros_agent",
-            "serial",
-            "--dev", LaunchConfiguration("serial_port"),
-            "-b", "115200",
-        ],
-        output="screen",
-        name="micro_ros_agent",
-    )
+    # micro_ros_agent = ExecuteProcess(
+    #     cmd=[
+    #         "ros2", "run", "micro_ros_agent", "micro_ros_agent",
+    #         "serial",
+    #         "--dev", LaunchConfiguration("serial_port"),
+    #         "-b", "115200",
+    #     ],
+    #     output="screen",
+    #     name="micro_ros_agent",
+    # )
 
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
@@ -174,7 +174,7 @@ def generate_launch_description():
         teleop_arg,
 
         # Start micro-ROS agent first so the ESP32 can connect
-        micro_ros_agent,
+        # micro_ros_agent,
 
         robot_state_publisher_node,
         ros2_control_node,

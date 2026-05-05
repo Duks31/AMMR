@@ -1,7 +1,10 @@
 #include "cika_hardware/cika_drive_interface.hpp"
 
 #include <cmath>
-#include <thread>
+#include <cstring>
+#include <fcntl.h>   // POSIX File control definitions
+#include <termios.h> // POSIX Terminal control definitions
+#include <unistd.h>  // UNIX Standard function definitions
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "pluginlib/class_list_macros.hpp"
 
@@ -9,8 +12,6 @@ namespace cika_hardware
 {
 
     // ── on_init ──────────────────────────────────────────────────────────────────
-    // Validates the URDF ros2_control block and reads any <param> overrides.
-    // The controller_manager calls this once when the plugin is loaded.
     hardware_interface::CallbackReturn CikaDriveInterface::on_init(
         const hardware_interface::HardwareInfo &info)
     {
@@ -20,10 +21,6 @@ namespace cika_hardware
             return hardware_interface::CallbackReturn::ERROR;
         }
 
-        // We only handle the 4 drive joints. The arm/gripper joints declared in the
-        // same ros2_control block are managed by GazeboSimSystem in sim and will get
-        // their own CikaArmInterface plugin in Phase 2. For now we validate that we
-        // have at least 4 joints and that the first 4 are the wheel joints.
         if (info_.joints.size() < 4)
         {
             RCLCPP_ERROR(
@@ -32,7 +29,6 @@ namespace cika_hardware
             return hardware_interface::CallbackReturn::ERROR;
         }
 
-        // Validate the 4 drive joints — each must have velocity command + pos/vel state
         const std::array<std::string, 4> expected_joints = {
             "left_front_wheel_1_joint",
             "left_back_wheel_1_joint",
@@ -45,66 +41,23 @@ namespace cika_hardware
             {
                 RCLCPP_ERROR(
                     rclcpp::get_logger("CikaDriveInterface"),
-                    "Joint[%zu] expected '%s', got '%s'. Check URDF joint order.",
+                    "Joint[%zu] expected '%s', got '%s'.",
                     i, expected_joints[i].c_str(), info_.joints[i].name.c_str());
                 return hardware_interface::CallbackReturn::ERROR;
             }
-            if (info_.joints[i].command_interfaces.size() != 1 ||
-                info_.joints[i].command_interfaces[0].name !=
-                    hardware_interface::HW_IF_VELOCITY)
-            {
-                RCLCPP_ERROR(
-                    rclcpp::get_logger("CikaDriveInterface"),
-                    "Joint '%s' must have exactly one velocity command interface.",
-                    info_.joints[i].name.c_str());
-                return hardware_interface::CallbackReturn::ERROR;
-            }
         }
 
-        // Read optional URDF <param> overrides
-        auto it = info_.hardware_parameters.find("wheel_separation");
-        if (it != info_.hardware_parameters.end())
-        {
-            wheel_separation_ = std::stod(it->second);
-        }
-        it = info_.hardware_parameters.find("wheel_radius");
-        if (it != info_.hardware_parameters.end())
-        {
-            wheel_radius_ = std::stod(it->second);
-        }
-        it = info_.hardware_parameters.find("odom_topic");
-        if (it != info_.hardware_parameters.end())
-        {
-            odom_topic_ = it->second;
-        }
-        it = info_.hardware_parameters.find("cmd_topic");
-        if (it != info_.hardware_parameters.end())
-        {
-            cmd_topic_ = it->second;
-        }
-
-        RCLCPP_INFO(
-            rclcpp::get_logger("CikaDriveInterface"),
-            "Initialized — wheel_separation=%.4f m  wheel_radius=%.4f m",
-            wheel_separation_, wheel_radius_);
-        RCLCPP_INFO(
-            rclcpp::get_logger("CikaDriveInterface"),
-            "odom_topic='%s'  cmd_topic='%s'",
-            odom_topic_.c_str(), cmd_topic_.c_str());
+        RCLCPP_INFO(rclcpp::get_logger("CikaDriveInterface"), "Initialized Cika Drive Interface (Raw Serial Mode)");
 
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 
     // ── export_state_interfaces ───────────────────────────────────────────────────
-    // Exports position+velocity state for all 11 joints in the ros2_control block.
-    // Joints 0-3: real drive wheel interfaces backed by odometry.
-    // Joints 4-10: dummy arm/gripper interfaces (zero) until CikaArmInterface.
     std::vector<hardware_interface::StateInterface>
     CikaDriveInterface::export_state_interfaces()
     {
         std::vector<hardware_interface::StateInterface> interfaces;
 
-        // Drive wheels (joints 0-3)
         for (std::size_t i = 0; i < 4; ++i)
         {
             interfaces.emplace_back(
@@ -117,7 +70,6 @@ namespace cika_hardware
                 &hw_states_[i * 2 + 1]);
         }
 
-        // Arm + gripper joints (joints 4-10) — dummy zeros
         for (std::size_t i = 4; i < info_.joints.size(); ++i)
         {
             const std::size_t idx = i - 4;
@@ -135,13 +87,11 @@ namespace cika_hardware
     }
 
     // ── export_command_interfaces ─────────────────────────────────────────────────
-    // Exports velocity commands for drive joints, position commands for arm/gripper.
     std::vector<hardware_interface::CommandInterface>
     CikaDriveInterface::export_command_interfaces()
     {
         std::vector<hardware_interface::CommandInterface> interfaces;
 
-        // Drive wheels — velocity commands (joints 0-3)
         for (std::size_t i = 0; i < 4; ++i)
         {
             interfaces.emplace_back(
@@ -150,7 +100,6 @@ namespace cika_hardware
                 &hw_commands_[i]);
         }
 
-        // Arm + gripper — position commands (joints 4-10) — dummy zeros
         for (std::size_t i = 4; i < info_.joints.size(); ++i)
         {
             interfaces.emplace_back(
@@ -163,9 +112,6 @@ namespace cika_hardware
     }
 
     // ── on_activate ───────────────────────────────────────────────────────────────
-    // Creates the internal ROS2 node, publisher, subscriber, and a dedicated
-    // background thread to spin the executor. This avoids calling spin_some()
-    // inside read() which blocks the controller_manager at 1000 Hz.
     hardware_interface::CallbackReturn CikaDriveInterface::on_activate(
         const rclcpp_lifecycle::State &)
     {
@@ -173,34 +119,35 @@ namespace cika_hardware
         hw_commands_.fill(0.0);
         hw_arm_states_.fill(0.0);
         hw_arm_commands_.fill(0.0);
-        latest_linear_vel_ = 0.0;
-        latest_angular_vel_ = 0.0;
 
-        node_ = std::make_shared<rclcpp::Node>("cika_drive_hw_node");
+        // Open the raw serial port to the ESP32
+        serial_fd_ = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY);
+        if (serial_fd_ == -1)
+        {
+            RCLCPP_ERROR(rclcpp::get_logger("CikaDriveInterface"), "Failed to open /dev/ttyUSB0");
+            return hardware_interface::CallbackReturn::ERROR;
+        }
 
-        // Publisher: [vel_lf, vel_lb, vel_rf, vel_rb] rad/s → ESP32
-        wheel_cmd_pub_ =
-            node_->create_publisher<std_msgs::msg::Float32MultiArray>(
-                cmd_topic_, rclcpp::QoS(10));
+        // Configure serial port for 115200 baud, 8N1
+        struct termios options;
+        tcgetattr(serial_fd_, &options);
+        cfsetispeed(&options, B115200);
+        cfsetospeed(&options, B115200);
 
-        // Subscriber: nav_msgs/Odometry ← ESP32
-        odom_sub_ =
-            node_->create_subscription<nav_msgs::msg::Odometry>(
-                odom_topic_,
-                rclcpp::QoS(10),
-                std::bind(&CikaDriveInterface::odom_callback, this, std::placeholders::_1));
+        options.c_cflag |= (CLOCAL | CREAD); // Enable receiver, ignore modem control lines
+        options.c_cflag &= ~PARENB;          // No parity
+        options.c_cflag &= ~CSTOPB;          // 1 stop bit
+        options.c_cflag &= ~CSIZE;           // Mask character size bits
+        options.c_cflag |= CS8;              // 8 data bits
 
-        // Spin the node on a dedicated background thread so read() and write()
-        // are never blocked waiting for callbacks
-        executor_ = std::make_shared<rclcpp::executors::SingleThreadedExecutor>();
-        executor_->add_node(node_);
-        spin_thread_ = std::thread([this]()
-                                   { executor_->spin(); });
+        // Raw mode (no canonical processing, no echo, no signals)
+        options.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+        options.c_iflag &= ~(IXON | IXOFF | IXANY); // Disable software flow control
+        options.c_oflag &= ~OPOST;                  // Raw output
 
-        RCLCPP_INFO(
-            rclcpp::get_logger("CikaDriveInterface"),
-            "Activated. Listening on '%s', commanding on '%s'.",
-            odom_topic_.c_str(), cmd_topic_.c_str());
+        tcsetattr(serial_fd_, TCSANOW, &options);
+
+        RCLCPP_INFO(rclcpp::get_logger("CikaDriveInterface"), "Activated Raw UART Bridge on /dev/ttyUSB0.");
 
         return hardware_interface::CallbackReturn::SUCCESS;
     }
@@ -209,94 +156,88 @@ namespace cika_hardware
     hardware_interface::CallbackReturn CikaDriveInterface::on_deactivate(
         const rclcpp_lifecycle::State &)
     {
-        if (executor_)
+        // Close the serial port safely
+        if (serial_fd_ != -1)
         {
-            executor_->cancel();
+            close(serial_fd_);
+            serial_fd_ = -1;
         }
-        if (spin_thread_.joinable())
-        {
-            spin_thread_.join();
-        }
-        executor_.reset();
-        node_.reset();
+
         RCLCPP_INFO(rclcpp::get_logger("CikaDriveInterface"), "Deactivated.");
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 
     // ── read ──────────────────────────────────────────────────────────────────────
-    // Called every control cycle (1000 Hz). Reads latest odom data written by
-    // the background executor thread and converts to per-wheel velocities.
-    // No spin_some here — that was the cause of the controller_manager blockage.
     hardware_interface::return_type CikaDriveInterface::read(
         const rclcpp::Time &,
         const rclcpp::Duration &period)
     {
+        if (serial_fd_ == -1)
+            return hardware_interface::return_type::ERROR;
 
-        double vel_left = 0.0, vel_right = 0.0;
+        char buf[256];
+        // Read available bytes non-blocking
+        int n = ::read(serial_fd_, buf, sizeof(buf) - 1);
+
+        if (n > 0)
         {
-            std::lock_guard<std::mutex> lock(odom_mutex_);
-            odom_to_wheel_velocities(
-                latest_linear_vel_, latest_angular_vel_,
-                vel_left, vel_right);
+            buf[n] = '\0';
+            serial_buffer_ += buf; // Append to our persistent string buffer
+
+            // Process all complete lines found in the buffer
+            size_t pos;
+            while ((pos = serial_buffer_.find('\n')) != std::string::npos)
+            {
+                std::string line = serial_buffer_.substr(0, pos);
+                serial_buffer_.erase(0, pos + 1); // Remove processed line
+
+                // Check if it's an Encoder (E:) message from the ESP32
+                if (line.rfind("E:", 0) == 0)
+                {
+                    double p_lf, p_lb, p_rf, p_rb;
+
+                    if (sscanf(line.c_str(), "E:%lf,%lf,%lf,%lf", &p_lf, &p_lb, &p_rf, &p_rb) == 4)
+                    {
+                        // Calculate velocity = (new_position - old_position) / dt
+                        double dt = period.seconds();
+                        if (dt > 0.0)
+                        {
+                            hw_states_[1] = (p_lf - hw_states_[0]) / dt; // vel_lf
+                            hw_states_[3] = (p_lb - hw_states_[2]) / dt; // vel_lb
+                            hw_states_[5] = (p_rf - hw_states_[4]) / dt; // vel_rf
+                            hw_states_[7] = (p_rb - hw_states_[6]) / dt; // vel_rb
+                        }
+
+                        // Update current position states
+                        hw_states_[0] = p_lf; // pos_lf
+                        hw_states_[2] = p_lb; // pos_lb
+                        hw_states_[4] = p_rf; // pos_rf
+                        hw_states_[6] = p_rb; // pos_rb
+                    }
+                }
+            }
         }
-
-        const double dt = period.seconds();
-
-        // left_front
-        hw_states_[0] += vel_left * dt; // position (integrated)
-        hw_states_[1] = vel_left;       // velocity
-
-        // left_back
-        hw_states_[2] += vel_left * dt;
-        hw_states_[3] = vel_left;
-
-        // right_front
-        hw_states_[4] += vel_right * dt;
-        hw_states_[5] = vel_right;
-
-        // right_back
-        hw_states_[6] += vel_right * dt;
-        hw_states_[7] = vel_right;
 
         return hardware_interface::return_type::OK;
     }
 
     // ── write ─────────────────────────────────────────────────────────────────────
-    // Called every control cycle after read().
-    // Publishes the velocity commands placed into hw_commands_ by skid_steer_controller.
     hardware_interface::return_type CikaDriveInterface::write(
         const rclcpp::Time &,
         const rclcpp::Duration &)
     {
-        std_msgs::msg::Float32MultiArray msg;
-        msg.data.resize(4);
-        msg.data[0] = static_cast<float>(hw_commands_[0]); // left_front
-        msg.data[1] = static_cast<float>(hw_commands_[1]); // left_back
-        msg.data[2] = static_cast<float>(hw_commands_[2]); // right_front
-        msg.data[3] = static_cast<float>(hw_commands_[3]); // right_back
-        wheel_cmd_pub_->publish(msg);
+        if (serial_fd_ != -1)
+        {
+            char buffer[64];
+            // Format: <vel_lf, vel_lb, vel_rf, vel_rb>\n
+            snprintf(buffer, sizeof(buffer), "<%.3f,%.3f,%.3f,%.3f>\n",
+                     hw_commands_[0], hw_commands_[1], hw_commands_[2], hw_commands_[3]);
+
+            // Send string to the ESP32
+            ::write(serial_fd_, buffer, strlen(buffer));
+        }
 
         return hardware_interface::return_type::OK;
-    }
-
-    // ── odom_callback (private) ───────────────────────────────────────────────────
-    void CikaDriveInterface::odom_callback(
-        const nav_msgs::msg::Odometry::SharedPtr msg)
-    {
-        std::lock_guard<std::mutex> lock(odom_mutex_);
-        latest_linear_vel_ = msg->twist.twist.linear.x;
-        latest_angular_vel_ = msg->twist.twist.angular.z;
-    }
-
-    // ── odom_to_wheel_velocities (private) ───────────────────────────────────────
-    // Inverse skid-steer kinematics: robot linear/angular → wheel rad/s
-    void CikaDriveInterface::odom_to_wheel_velocities(
-        double linear_x, double angular_z,
-        double &vel_left, double &vel_right)
-    {
-        const double half_sep = wheel_separation_ / 2.0;
-        vel_left = (linear_x - angular_z * half_sep) / wheel_radius_;
-        vel_right = (linear_x + angular_z * half_sep) / wheel_radius_;
     }
 
 } // namespace cika_hardware
