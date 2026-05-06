@@ -204,3 +204,4 @@ def generate_launch_description():
             # rtabmap_viz_node, # Saving CPU by not launching the viz
         ]
     )
+

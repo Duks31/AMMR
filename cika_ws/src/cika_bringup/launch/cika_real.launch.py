@@ -10,8 +10,11 @@ from launch.actions import (
 )
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import Command, LaunchConfiguration
+from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.conditions import IfCondition
-from launch.launch_description_sources import AnyLaunchDescriptionSource # Added for the bridge
+from launch.launch_description_sources import (
+    AnyLaunchDescriptionSource,
+)  # Added for the bridge
 
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
@@ -19,12 +22,14 @@ from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
     cika_description_dir = get_package_share_directory("cika_description")
-    cika_bringup_dir     = get_package_share_directory("cika_bringup")
+    cika_bringup_dir = get_package_share_directory("cika_bringup")
     # Locate the foxglove_bridge share directory
-    foxglove_bridge_dir  = get_package_share_directory("foxglove_bridge")
+    foxglove_bridge_dir = get_package_share_directory("foxglove_bridge")
 
-    controllers_yaml = os.path.join(cika_description_dir, "config", "controllers_real.yaml")
-    joy_ps5_params   = os.path.join(cika_bringup_dir, "config", "joy_ps5.yaml")
+    controllers_yaml = os.path.join(
+        cika_description_dir, "config", "controllers_real.yaml"
+    )
+    joy_ps5_params = os.path.join(cika_bringup_dir, "config", "joy_ps5.yaml")
     ekf_config_path = os.path.join(cika_bringup_dir, "config", "ekf.yaml")
 
     # ── Launch arguments ────────────────────────────────────────────────────
@@ -43,11 +48,13 @@ def generate_launch_description():
 
     # ── Robot description — xacro with use_sim:=false ───────────────────────
     robot_description_content = ParameterValue(
-        Command([
-            "xacro ",
-            os.path.join(cika_description_dir, "urdf", "cika.xacro"),
-            " use_sim:=false",
-        ]),
+        Command(
+            [
+                "xacro ",
+                os.path.join(cika_description_dir, "urdf", "cika.xacro"),
+                " use_sim:=false",
+            ]
+        ),
         value_type=str,
     )
 
@@ -57,10 +64,12 @@ def generate_launch_description():
         package="robot_state_publisher",
         executable="robot_state_publisher",
         output="screen",
-        parameters=[{
-            "robot_description": robot_description_content,
-            "use_sim_time": False,
-        }],
+        parameters=[
+            {
+                "robot_description": robot_description_content,
+                "use_sim_time": False,
+            }
+        ],
     )
 
     ros2_control_node = Node(
@@ -74,13 +83,55 @@ def generate_launch_description():
         ],
     )
 
+    lidar_node = Node(
+        package="sllidar_ros2",
+        executable="sllidar_node",
+        name="sllidar_node",
+        parameters=[
+            {
+                "serial_port": "/dev/ttyUSB0",  # Verify this port!
+                "frame_id": "laser_frame",
+                "angle_compensate": True,
+                "scan_mode": "Standard",
+            }
+        ],
+        remappings=[("/scan", "/scan_raw")],  # Remap for your polygon filter
+    )
+
+    laser_filter_node = Node(
+        package="laser_filters",
+        executable="scan_to_scan_filter_chain",
+        parameters=[os.path.join(cika_description_dir, "config", "laser_filter.yaml")],
+    )
+
+    oak_node = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            [
+                os.path.join(
+                    get_package_share_directory("depthai_ros_driver"),
+                    "launch",
+                    "camera.launch.py",
+                )
+            ]
+        ),
+        launch_arguments={
+            "name": "oak",
+            "parent_frame": "base_link",
+            "cam_pos_z": "0.1",  # Adjust to your mount height
+            "align_depth": "true",
+            "stereo_fps": "15",  # LOWER THIS to save Pi CPU
+        }.items(),
+    )
+
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=[
             "joint_state_broadcaster",
-            "--controller-manager", "/controller_manager",
-            "--controller-manager-timeout", "30",
+            "--controller-manager",
+            "/controller_manager",
+            "--controller-manager-timeout",
+            "30",
         ],
         output="screen",
     )
@@ -90,8 +141,10 @@ def generate_launch_description():
         executable="spawner",
         arguments=[
             "skid_steer_controller",
-            "--controller-manager", "/controller_manager",
-            "--controller-manager-timeout", "30",
+            "--controller-manager",
+            "/controller_manager",
+            "--controller-manager-timeout",
+            "30",
         ],
         output="screen",
         remappings=[
@@ -144,20 +197,20 @@ def generate_launch_description():
         )
     )
 
-    return LaunchDescription([
-        serial_port_arg,
-        teleop_arg,
-
-        robot_state_publisher_node,
-        ros2_control_node,
-
-        delayed_jsb,
-        delayed_skid_steer,
-
-        joy_node,
-        teleop_node,
-        ekf_node,
-        
-        # Add the bridge to the returned LaunchDescription
-        foxglove_bridge,
-    ])
+    return LaunchDescription(
+        [
+            serial_port_arg,
+            teleop_arg,
+            robot_state_publisher_node,
+            ros2_control_node,
+            lidar_node,
+            laser_filter_node,
+            oak_node,
+            delayed_jsb,
+            delayed_skid_steer,
+            joy_node,
+            teleop_node,
+            ekf_node,
+            foxglove_bridge,
+        ]
+    )
