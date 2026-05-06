@@ -22,8 +22,10 @@ def generate_launch_description():
     nav2_bringup = get_package_share_directory("nav2_bringup")
 
     # ── Paths ─────────────────────────────────────────────────────────────────
+    # Change EKF for real hardware testing! This one is tuned for sim with perfect odometry and 0 drift.
     nav2_params_path = os.path.join(cika_navigation, "config", "nav2_params.yaml")
     map_yaml_path = os.path.join(cika_navigation, "maps", "cika_map.yaml")
+    ekf_config_path = os.path.join(cika_navigation, "config", "ekf_sim.yaml")
     rtabmap_db_path = os.path.join(cika_navigation, "maps", "cika_warehouse.db")
 
     # ── Arguments ─────────────────────────────────────────────────────────────
@@ -47,6 +49,15 @@ def generate_launch_description():
 
     # ── Global sim time parameter ─────────────────────────────────────────────
     set_sim_time = SetParameter(name="use_sim_time", value=use_sim_time)
+
+    # ── EKF node (runs in both modes) ─────────────────────────────────────────
+    ekf_node = Node(
+        package="robot_localization",
+        executable="ekf_node",
+        name="ekf_filter_node",
+        output="screen",
+        parameters=[ekf_config_path, {"use_sim_time": use_sim_time}],
+    )
 
     # ─────────────────────────────────────────────────────────────────────────
     # SLAM MODE — RTAB-Map builds the map, no Nav2
@@ -186,6 +197,7 @@ def generate_launch_description():
             mode_arg,
             use_sim_time_arg,
             set_sim_time,
+            ekf_node,
             rtabmap_slam_node,
             rtabmap_localization_node,
             nav2_navigation_launch,

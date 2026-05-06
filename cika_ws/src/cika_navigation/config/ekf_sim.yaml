@@ -21,8 +21,8 @@
                     false, false, false]
       odom0_relative: true
 
-      2. IMU (BNO055 Simulation)
-      We trust the Orientation (Yaw) and Angular Velocity
+      # 2. IMU (BNO055 Simulation)
+      # We trust the Orientation (Yaw) and Angular Velocity
       imu0: /imu/data
       imu0_config: [false, false, false,
                     false, false, true,   # Yaw (Orientation)
@@ -32,8 +32,8 @@
       imu0_relative: false
       imu0_remove_gravitational_acceleration: true
 
-      3. Visual Odometry (from RTAB-Map)
-      We trust the absolute pose (x, y, yaw)
+      # 3. Visual Odometry (from RTAB-Map)
+      # We trust the absolute pose (x, y, yaw)
       odom1: /vo
       odom1_config: [true,  true,  false, # x, y
                      false, false, true,  # yaw

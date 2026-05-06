@@ -8,7 +8,11 @@ import os
 
 def generate_launch_description():
 
+    ### Change EKF for real hardware testing! This one is tuned for sim with perfect odometry and 0 drift.
     use_sim_time = LaunchConfiguration("use_sim_time", default="true")
+    ekf_config_path = os.path.join(
+        get_package_share_directory("cika_navigation"), "config", "ekf_sim.yaml"
+    )
 
     # ── Shared parameters ────────────────────────────────────────────────────
     rtabmap_params = [
@@ -69,7 +73,7 @@ def generate_launch_description():
             "Vis/MinInliers": "15",
         }
     ]
-
+	
     rtabmap_remappings = [
         ("rgb/image", "/oak/rgb/image_raw"),
         ("depth/image", "/oak/stereo/image_raw"),
@@ -112,11 +116,20 @@ def generate_launch_description():
         remappings=rtabmap_remappings,
     )
 
+    ekf_node = Node(
+        package="robot_localization",
+        executable="ekf_node",
+        name="ekf_filter_node",
+        output="screen",
+        parameters=[ekf_config_path, {"use_sim_time": use_sim_time}],
+    )
+
     return LaunchDescription(
         [
             DeclareLaunchArgument(
                 "use_sim_time", default_value="true", description="Use simulation clock"
             ),
+            ekf_node,
             rtabmap_node,
             rtabmap_viz_node,
         ]
