@@ -1,0 +1,22 @@
+teleop_twist_joy_node:
+  ros__parameters:
+    # Forward/Backward on Left Stick (Vertical)
+    axis_linear:
+      x: 1
+
+    # Left/Right on Right Stick (Horizontal)
+    axis_angular:
+      yaw: 3
+
+    # Match these to the 0.12 m/s physical limit
+    scale_linear: 0.10 # Full stick forward = 0.12 m/s
+    scale_angular: 0.50 # Full stick side = 0.66 rad/s 
+
+    # Turbo Settings
+    scale_linear_turbo: 0.12
+    scale_angular_turbo: 0.66
+
+    enable_button: 5 # R1
+    enable_turbo_button: 4 # L1
+
+    publish_stamped_twist: false

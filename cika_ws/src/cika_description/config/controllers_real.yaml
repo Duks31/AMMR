@@ -44,15 +44,15 @@ skid_steer_controller:
     linear:
       x:
         has_velocity_limits: true
-        max_velocity: 2.0
+        max_velocity: 0.12
         has_acceleration_limits: true
-        max_acceleration: 20.0
+        max_acceleration: 0.5
     angular:
       z:
         has_velocity_limits: true
-        max_velocity: 4.0
+        max_velocity: 0.66
         has_acceleration_limits: true
-        max_acceleration: 25.0
+        max_acceleration: 1.0
 
 arm_controller:
   ros__parameters:

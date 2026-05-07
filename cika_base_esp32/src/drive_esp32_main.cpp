@@ -23,9 +23,9 @@
 #define ENC_RB_B 16
 
 // ── Kinematics ────────────────────────────────────────────────────────────────
-static constexpr float MAX_RAD_S = 5.0f;
-static constexpr int MIN_PWM = 80;
-static constexpr float TICKS_TO_RAD = 0.0009584f;
+static constexpr float MAX_RAD_S = 1.36f; // Updated for 13rpm ~ 0.12m/s
+static constexpr int MIN_PWM = 30; // TODO: To be Tested
+static constexpr float TICKS_TO_RAD = 0.0009584f; 
 
 // ── Calibration Offsets ───────────────────────────────────────────────────────
 const float accel_x_offset = 0.0103f;
