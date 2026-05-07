@@ -1,4 +1,8 @@
 #!/usr/bin/env python3
+
+# add the dai.node.StereoDepth block to this pipeline so you can map those 2D bounding boxes to 3D spatial coordinates when arm is ready.
+
+import os
 import numpy as np
 import rclpy
 import cv2
@@ -6,16 +10,19 @@ from rclpy.node import Node
 import depthai as dai
 from sensor_msgs.msg import CompressedImage
 from std_srvs.srv import SetBool
+from ament_index_python.packages import get_package_share_directory
 
 from cika_perception.msg import WasteDetectionArray, WasteDetection
 from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 
-BLOB_PATH   = "/cika_ws/src/cika_perception/models/300_epoch_best.blob"
+package_share_directory = get_package_share_directory("cika_perception")
+
+BLOB_PATH   = os.path.join(package_share_directory, 'models', 'taco_2class_300epoch.blob')
 INPUT_W     = 640
 INPUT_H     = 640
 CONF_THRESH = 0.5
 IOU_THRESH  = 0.45
-CLASSES     = ["plastic", "paper", "metal"]
+CLASSES     = ["plastic", "paper"]
 NC          = len(CLASSES)
 
 qos = QoSProfile(
@@ -168,7 +175,7 @@ class InferenceNode(Node):
         if img_packet is None:
             return
         frame = img_packet.getCvFrame()
-        _, buf = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 50])
+        _, buf = cv2.imencode('.pg', frame, [cv2.IMWRITE_JPEG_QUALITY, 50])
         img_msg             = CompressedImage()
         img_msg.header.stamp    = self.get_clock().now().to_msg()
         img_msg.header.frame_id = "oak_rgb_camera_optical_frame"
