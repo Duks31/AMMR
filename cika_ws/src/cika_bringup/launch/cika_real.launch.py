@@ -30,7 +30,7 @@ def generate_launch_description():
         cika_description_dir, "config", "controllers_real.yaml"
     )
     joy_ps5_params = os.path.join(cika_bringup_dir, "config", "joy_ps5.yaml")
-    ekf_config_path = os.path.join(cika_bringup_dir, "config", "ekf.yaml")
+    ekf_config_path = os.path.join(cika_bringup_dir, "config", "ekf_real.yaml")
 
     # ── Launch arguments ────────────────────────────────────────────────────
     serial_port_arg = DeclareLaunchArgument(
@@ -104,23 +104,50 @@ def generate_launch_description():
         parameters=[os.path.join(cika_description_dir, "config", "laser_filter.yaml")],
     )
 
-    oak_node = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            [
-                os.path.join(
-                    get_package_share_directory("depthai_ros_driver"),
-                    "launch",
-                    "camera.launch.py",
-                )
-            ]
-        ),
-        launch_arguments={
-            "name": "oak",
-            "parent_frame": "base_link",
-            "cam_pos_z": "0.1",  # Adjust to your mount height
-            "align_depth": "true",
-            "stereo_fps": "15",  # LOWER THIS to save Pi CPU
-        }.items(),
+    # oak_node = IncludeLaunchDescription(
+    #     PythonLaunchDescriptionSource(
+    #         [
+    #             os.path.join(
+    #                 get_package_share_directory("depthai_ros_driver"),
+    #                 "launch",
+    #                 "camera.launch.py",
+    #             )
+    #         ]
+    #     ),
+    #     launch_arguments={
+    #         "name": "oak",
+    #         "parent_frame": "base_link",
+    #         "cam_pos_z": "0.1",  # Adjust to your mount height
+    #         "align_depth": "true",
+    #         "stereo_fps": "15",  # LOWER THIS to save Pi CPU
+    #     }.items(),
+    # )
+
+    serial_bridge_node = Node(
+        package="cika_bringup",
+        executable="serial_bridge",
+        name="serial_bridge",
+        parameters=[{"serial_port": "/dev/ttyUSB1", "baud_rate": 115200}],
+        output="screen",
+    )
+
+    madgwick_node = Node(
+        package="imu_filter_madgwick",
+        executable="imu_filter_madgwick_node",
+        name="imu_filter_madgwick",
+        parameters=[
+            {
+                "use_mag": True,
+                "gain": 0.1,
+                "publish_tf": False,
+                "world_frame": "enu",
+            }
+        ],
+        remappings=[
+            ("/imu/data/raw", "/imu/raw"),
+            ("/imu/data", "/imu/filtered"),
+        ],
+        output="screen",
     )
 
     joint_state_broadcaster_spawner = Node(
@@ -203,9 +230,11 @@ def generate_launch_description():
             teleop_arg,
             robot_state_publisher_node,
             ros2_control_node,
-            lidar_node,
-            laser_filter_node,
-            oak_node,
+            # lidar_node,
+            # laser_filter_node,
+            # oak_node,
+            serial_bridge_node,
+            madgwick_node,
             delayed_jsb,
             delayed_skid_steer,
             joy_node,

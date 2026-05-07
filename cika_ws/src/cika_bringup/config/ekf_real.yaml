@@ -1,0 +1,41 @@
+ekf_filter_node:
+  ros__parameters:
+    use_sim_time: false
+    frequency: 20.0          # match ESP IMU rate
+    sensor_timeout: 0.1
+    two_d_mode: true
+    publish_tf: true
+
+    map_frame: map
+    odom_frame: odom
+    base_link_frame: base_link
+    world_frame: odom
+
+    # 1. Wheel odometry from ros2_control — velocity only
+    odom0: /skid_steer_controller/odom
+    odom0_config: [false, false, false,
+                   false, false, false,
+                   true,  false, false,   # vx
+                   false, false, true,    # vyaw
+                   false, false, false]
+    odom0_relative: true
+
+    # 2. IMU from Madgwick — orientation + angular velocity + linear accel
+    imu0: /imu/filtered
+    imu0_config: [false, false, false,
+                  false, false, true,     # yaw
+                  false, false, false,
+                  false, false, true,     # vyaw
+                  true,  false, false]    # ax
+    imu0_relative: true
+    imu0_remove_gravitational_acceleration: true
+
+      # 3. Visual Odometry (from RTAB-Map)
+      # We trust the absolute pose (x, y, yaw)
+      # odom1: /vo
+      # odom1_config: [true,  true,  false, # x, y
+      #                false, false, true,  # yaw
+      #                false, false, false,
+      #                false, false, false,
+      #                false, false, false]
+      # odom1_relative: false
