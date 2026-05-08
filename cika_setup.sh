@@ -18,7 +18,7 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-a
 sudo apt update
 sudo apt install -y ros-humble-ros-base python3-colcon-common-extensions python3-rosdep
 
-echo "[3/8] Installing Nav2, RTAB-Map, SLAM deps..."
+echo "[3/8] Installing Nav2, RTAB-Map, SLAM & Launch Dependencies..."
 sudo apt install -y \
   ros-humble-nav2-bringup \
   ros-humble-nav2-msgs \
@@ -37,6 +37,8 @@ sudo apt install -y \
   ros-humble-compressed-image-transport \
   ros-humble-cv-bridge \
   ros-humble-vision-opencv \
+  ros-humble-laser-filters \
+  ros-humble-foxglove-bridge \
   python3-serial
 
 echo "[4/8] Installing RPLIDAR driver..."
@@ -44,7 +46,7 @@ sudo apt install -y ros-humble-rplidar-ros
 
 echo "[5/8] Installing depthai..."
 sudo apt install -y libusb-1.0-0-dev
-pip3 install depthai --break-system-packages
+pip3 install depthai==2.24.0 --break-system-packages
 echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="03e7", MODE="0666"' \
   | sudo tee /etc/udev/rules.d/80-movidius.rules
 sudo udevadm control --reload-rules && sudo udevadm trigger

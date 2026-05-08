@@ -90,7 +90,8 @@ def generate_launch_description():
         parameters=[
             {
                 "serial_port": "/dev/ttyUSB0",  # Verify this port!
-                "frame_id": "laser_frame",
+                "serial_baudrate": 460800,      # Required for RPLIDAR C1
+                "frame_id": "lidar_1",
                 "angle_compensate": True,
                 "scan_mode": "Standard",
             }
@@ -101,27 +102,19 @@ def generate_launch_description():
     laser_filter_node = Node(
         package="laser_filters",
         executable="scan_to_scan_filter_chain",
-        parameters=[os.path.join(cika_description_dir, "config", "laser_filter.yaml")],
+        parameters=[os.path.join(cika_bringup_dir, "config", "laser_filter.yaml")],
+        remappings=[
+            ("/scan", "/scan_raw"),           # Listen to the raw data from the LiDAR
+            ("/scan_filtered", "/scan")       # Broadcast the clean data for Nav2
+        ],
     )
 
-    # oak_node = IncludeLaunchDescription(
-    #     PythonLaunchDescriptionSource(
-    #         [
-    #             os.path.join(
-    #                 get_package_share_directory("depthai_ros_driver"),
-    #                 "launch",
-    #                 "camera.launch.py",
-    #             )
-    #         ]
-    #     ),
-    #     launch_arguments={
-    #         "name": "oak",
-    #         "parent_frame": "base_link",
-    #         "cam_pos_z": "0.1",  # Adjust to your mount height
-    #         "align_depth": "true",
-    #         "stereo_fps": "15",  # LOWER THIS to save Pi CPU
-    #     }.items(),
-    # )
+    inference_node = Node(
+        package="cika_perception",
+        executable="inference_node.py",
+        name="inference_node",
+        output="screen"
+    )
 
     serial_bridge_node = Node(
         package="cika_bringup",
@@ -226,20 +219,20 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            serial_port_arg,
-            teleop_arg,
+            # serial_port_arg,
+            # teleop_arg,
             robot_state_publisher_node,
-            ros2_control_node,
-            # lidar_node,
-            # laser_filter_node,
-            # oak_node,
-            serial_bridge_node,
-            madgwick_node,
-            delayed_jsb,
-            delayed_skid_steer,
-            joy_node,
-            teleop_node,
-            ekf_node,
+            # ros2_control_node,
+            lidar_node,
+            laser_filter_node,
+            # inference_node,
+            # serial_bridge_node,
+            # madgwick_node,
+            # delayed_jsb,
+            # delayed_skid_steer,
+            # joy_node,
+            # teleop_node,
+            # ekf_node,
             foxglove_bridge,
         ]
     )

@@ -18,7 +18,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/WasteDetectionArray.msg"
   DEPENDENCIES std_msgs geometry_msgs
 )
- 
+    
 # ── Python package ────────────────────────────────────────────────────────────
 ament_python_install_package(scripts)
 
