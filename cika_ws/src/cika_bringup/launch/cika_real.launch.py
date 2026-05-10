@@ -219,20 +219,20 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            # serial_port_arg,
-            # teleop_arg,
+            serial_port_arg,
+            teleop_arg,
             robot_state_publisher_node,
-            # ros2_control_node,
+            ros2_control_node,
             lidar_node,
             laser_filter_node,
-            # inference_node,
-            # serial_bridge_node,
-            # madgwick_node,
-            # delayed_jsb,
-            # delayed_skid_steer,
-            # joy_node,
-            # teleop_node,
-            # ekf_node,
+            inference_node,
+            serial_bridge_node,
+            madgwick_node,
+            delayed_jsb,
+            delayed_skid_steer,
+            joy_node,
+            teleop_node,
+            ekf_node,
             foxglove_bridge,
         ]
     )
