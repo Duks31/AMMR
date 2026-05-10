@@ -42,7 +42,12 @@ sudo apt install -y \
   python3-serial
 
 echo "[4/8] Installing RPLIDAR driver..."
-sudo apt install -y ros-humble-rplidar-ros
+# sudo apt install -y ros-humble-rplidar-ros
+# The sllidar_ros2 package is cloned directly into the workspace instead of using apt.
+# Just installing the required udev rules for the LiDAR here:
+wget https://raw.githubusercontent.com/Slamtec/sllidar_ros2/ros2/scripts/create_udev_rules.sh
+sudo bash create_udev_rules.sh
+rm create_udev_rules.sh
 
 echo "[5/8] Installing depthai..."
 sudo apt install -y libusb-1.0-0-dev
