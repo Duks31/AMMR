@@ -22,8 +22,6 @@ setup(
     license="TODO: License declaration",
     tests_require=["pytest"],
     entry_points={
-        "console_scripts": [
-            'serial_bridge = cika_bringup.serial_bridge:main',
-        ],
+        "console_scripts": [],
     },
 )

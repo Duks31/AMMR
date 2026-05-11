@@ -89,7 +89,7 @@ def generate_launch_description():
         name="sllidar_node",
         parameters=[
             {
-                "serial_port": "/dev/ttyUSB0",  # Verify this port!
+                "serial_port": "/dev/ttyUSB1", 
                 "serial_baudrate": 460800,      # Required for RPLIDAR C1
                 "frame_id": "lidar_1",
                 "angle_compensate": True,
@@ -116,14 +116,6 @@ def generate_launch_description():
         output="screen"
     )
 
-    serial_bridge_node = Node(
-        package="cika_bringup",
-        executable="serial_bridge",
-        name="serial_bridge",
-        parameters=[{"serial_port": "/dev/ttyUSB1", "baud_rate": 115200}],
-        output="screen",
-    )
-
     madgwick_node = Node(
         package="imu_filter_madgwick",
         executable="imu_filter_madgwick_node",
@@ -137,7 +129,7 @@ def generate_launch_description():
             }
         ],
         remappings=[
-            ("/imu/data/raw", "/imu/raw"),
+            ("/imu/data_raw", "/imu/raw"),
             ("/imu/data", "/imu/filtered"),
         ],
         output="screen",
@@ -226,7 +218,6 @@ def generate_launch_description():
             lidar_node,
             laser_filter_node,
             inference_node,
-            serial_bridge_node,
             madgwick_node,
             delayed_jsb,
             delayed_skid_steer,

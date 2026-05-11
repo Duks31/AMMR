@@ -12,6 +12,9 @@
 #include "hardware_interface/types/hardware_interface_return_values.hpp"
 #include "rclcpp/rclcpp.hpp"
 #include "rclcpp_lifecycle/state.hpp"
+#include "sensor_msgs/msg/imu.hpp"
+#include "sensor_msgs/msg/magnetic_field.hpp"
+#include "tf2_ros/static_transform_broadcaster.h"
 
 namespace cika_hardware
 {
@@ -37,7 +40,7 @@ namespace cika_hardware
         hardware_interface::CallbackReturn on_deactivate(
             const rclcpp_lifecycle::State &previous_state) override;
 
-        // Control loop — called at update_rate (1000 Hz per controllers.yaml)
+        // Control loop — called at update_rate (100 Hz per controllers.yaml)
         hardware_interface::return_type read(
             const rclcpp::Time &time,
             const rclcpp::Duration &period) override;
@@ -47,9 +50,16 @@ namespace cika_hardware
             const rclcpp::Duration &period) override;
 
     private:
-        // ── Raw Serial Bridge Variables ───────────────────────────────────────────────
+        // ── Raw Serial Bridge ─────────────────────────────────────────────────────────
         int serial_fd_{-1};
         std::string serial_buffer_;
+
+        // ── ROS2 node handle + publishers ─────────────────────────────────────────────
+        // get_node_base_interface() gives us access to the lifecycle node's clock
+        rclcpp::Node::SharedPtr node_;
+        rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imu_pub_;
+        rclcpp::Publisher<sensor_msgs::msg::MagneticField>::SharedPtr mag_pub_;
+        std::shared_ptr<tf2_ros::StaticTransformBroadcaster> tf_static_;
 
         // ── Drive joint state/command storage ─────────────────────────────────────────
         // hw_states_ layout (8 doubles):
@@ -77,7 +87,6 @@ namespace cika_hardware
         std::array<double, 7> hw_arm_commands_{}; // [pos_j] × 7
 
         // ── Robot geometry ────────────────────────────────────────────────────────────
-        // Defaults match controllers.yaml, overridable via URDF <param>
         double wheel_separation_{0.363};
         double wheel_radius_{0.0885};
     };

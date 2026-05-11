@@ -13,6 +13,8 @@ find_package(rclcpp_lifecycle REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
+find_package(tf2_ros REQUIRED)
 
 add_library(cika_drive_interface SHARED
   src/cika_drive_interface.cpp
@@ -31,6 +33,8 @@ ament_target_dependencies(cika_drive_interface
   nav_msgs
   std_msgs
   geometry_msgs
+  sensor_msgs
+  tf2_ros 
 )
 
 pluginlib_export_plugin_description_file(hardware_interface cika_hardware_plugins.xml)

@@ -235,9 +235,10 @@ void loop()
     }
 
     // 3. IMU telemetry at 20Hz (every 50ms)
-    if (now - last_imu_time >= 50)
+    unsigned long now2 = millis();
+    if (now2 - last_imu_time >= 51)
     {
-        last_imu_time = now;
+        last_imu_time = now2;
 
         int16_t ax_raw, ay_raw, az_raw, gx_raw, gy_raw, gz_raw;
         mpu.getMotion6(&ax_raw, &ay_raw, &az_raw, &gx_raw, &gy_raw, &gz_raw);
