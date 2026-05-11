@@ -129,22 +129,25 @@ sudo apt-get install -y -q \
   ros-${ROS_DISTRO}-foxglove-bridge
 
 # ══════════════════════════════════════════════════════════
-# 4. RPLIDAR C1 udev rules
+# 4. RPLIDAR C1 + ESP32 udev rules
 # ══════════════════════════════════════════════════════════
-step "Installing RPLIDAR C1 udev rules"
+step "Installing RPLIDAR C1 + ESP32 udev rules"
 
-# The sllidar_ros2 create_udev_rules.sh download URL is broken (404).
-# We write the rule directly instead — same result, no external dependency.
-# Vendor/product IDs are for the CP2102 USB-UART bridge used by the RPLIDAR C1.
-RPLIDAR_RULES_FILE=/etc/udev/rules.d/rplidar.rules
-RPLIDAR_RULE='KERNEL=="ttyUSB*", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", MODE:="0777", SYMLINK+="rplidar"'
+SERIAL_RULES_FILE=/etc/udev/rules.d/99-cika-serial.rules
 
-if ! grep -qF "rplidar" "$RPLIDAR_RULES_FILE" 2>/dev/null; then
-  echo "$RPLIDAR_RULE" | sudo tee "$RPLIDAR_RULES_FILE" > /dev/null
+if [[ ! -f "$SERIAL_RULES_FILE" ]]; then
+  sudo tee "$SERIAL_RULES_FILE" > /dev/null << 'EOF'
+# RPLIDAR C1 — CP2102N, unique serial
+KERNEL=="ttyUSB*", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ATTRS{serial}=="8a7648b4aed5ef119414694b49d2c684", MODE:="0666", SYMLINK+="rplidar"
+
+# ESP32 #1 (micro-ROS bridge) — CP2102 clone, serial 0001
+# NOTE: if ESP32 #2 also has serial 0001, switch to KERNELS== port-path matching
+KERNEL=="ttyUSB*", ATTRS{idVendor}=="10c4", ATTRS{idProduct}=="ea60", ATTRS{serial}=="0001", MODE:="0666", SYMLINK+="esp32"
+EOF
   sudo udevadm control --reload-rules && sudo udevadm trigger
-  echo "RPLIDAR udev rule installed. Device will appear at /dev/rplidar"
+  echo "cika serial udev rules installed → /dev/rplidar, /dev/esp32"
 else
-  echo "RPLIDAR udev rule already present — skipping."
+  echo "cika serial udev rules already present — skipping."
 fi
 
 # ══════════════════════════════════════════════════════════
