@@ -21,14 +21,14 @@ ekf_filter_node:
     odom0_relative: true
 
     # 2. IMU from Madgwick — orientation + angular velocity + linear accel
-    # imu0: /imu/filtered
-    # imu0_config: [false, false, false,
-    #               false, false, true,     # yaw
-    #               false, false, false,
-    #               false, false, true,     # vyaw
-    #               true,  false, false]    # ax
-    # imu0_relative: true
-    # imu0_remove_gravitational_acceleration: true
+    imu0: /imu/filtered
+    imu0_config: [false, false, false,
+                  false, false, true,     # yaw
+                  false, false, false,
+                  false, false, true,     # vyaw
+                  true,  false, false]    # ax
+    imu0_relative: true
+    imu0_remove_gravitational_acceleration: true
 
     # 3. Visual Odometry
     odom1: /vo
