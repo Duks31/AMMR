@@ -129,13 +129,11 @@ namespace cika_hardware
         hw_arm_states_.fill(0.0);
         hw_arm_commands_.fill(0.0);
 
-        serial_fd_ = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NDELAY);
+        serial_fd_ = open("/dev/esp32", O_RDWR | O_NOCTTY | O_NDELAY);
         if (serial_fd_ == -1)
         {
             RCLCPP_ERROR(rclcpp::get_logger("CikaDriveInterface"),
-                         "Failed to open /dev/ttyUSB0");
-            return hardware_interface::CallbackReturn::ERROR;
-        }
+                        "Failed to open /dev/esp32");
 
         struct termios options;
         tcgetattr(serial_fd_, &options);
@@ -152,7 +150,7 @@ namespace cika_hardware
         tcsetattr(serial_fd_, TCSANOW, &options);
 
         RCLCPP_INFO(rclcpp::get_logger("CikaDriveInterface"),
-                    "Activated Raw UART Bridge on /dev/ttyUSB0.");
+                    "Activated Raw UART Bridge on /dev/esp32.");
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 

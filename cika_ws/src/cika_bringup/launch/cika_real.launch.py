@@ -32,12 +32,12 @@ def generate_launch_description():
     joy_ps5_params = os.path.join(cika_bringup_dir, "config", "joy_ps5_real.yaml")
     ekf_config_path = os.path.join(cika_bringup_dir, "config", "ekf_real.yaml")
 
-    # ── Launch arguments ────────────────────────────────────────────────────
-    serial_port_arg = DeclareLaunchArgument(
-        name="serial_port",
-        default_value="/dev/ttyUSB0",
-        description="Serial port for the micro-ROS agent (drive ESP32)",
-    )
+    # # ── Launch arguments ────────────────────────────────────────────────────
+    # serial_port_arg = DeclareLaunchArgument(
+    #     name="serial_port",
+    #     default_value="/dev/esp32",
+    #     description="Serial port for the micro-ROS agent (drive ESP32)",
+    # )
 
     teleop_arg = DeclareLaunchArgument(
         name="teleop",
@@ -89,7 +89,7 @@ def generate_launch_description():
         name="sllidar_node",
         parameters=[
             {
-                "serial_port": "/dev/ttyUSB1", 
+                "serial_port": "/dev/rplidar", 
                 "serial_baudrate": 460800,      # Required for RPLIDAR C1
                 "frame_id": "lidar_1",
                 "angle_compensate": True,
@@ -211,7 +211,7 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            serial_port_arg,
+            # serial_port_arg,
             teleop_arg,
             robot_state_publisher_node,
             ros2_control_node,
