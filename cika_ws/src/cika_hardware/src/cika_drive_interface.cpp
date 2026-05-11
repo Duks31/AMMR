@@ -133,7 +133,8 @@ namespace cika_hardware
         if (serial_fd_ == -1)
         {
             RCLCPP_ERROR(rclcpp::get_logger("CikaDriveInterface"),
-                        "Failed to open /dev/esp32");
+                         "Failed to open /dev/esp32");
+        }
 
         struct termios options;
         tcgetattr(serial_fd_, &options);
@@ -150,7 +151,7 @@ namespace cika_hardware
         tcsetattr(serial_fd_, TCSANOW, &options);
 
         RCLCPP_INFO(rclcpp::get_logger("CikaDriveInterface"),
-                    "Activated Raw UART Bridge on /dev/esp32.");
+                    "Activated Raw UART Bridge on /dev/ttyUSB0.");
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 
