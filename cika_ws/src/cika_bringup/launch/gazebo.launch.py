@@ -230,9 +230,9 @@ def generate_launch_description():
         event_handler=OnProcessExit(
             target_action=joint_state_broadcaster_spawner,
             on_exit=[
-                TimerAction(period=8.0, actions=[arm_controller_spawner]),
-                TimerAction(period=20.0, actions=[skid_steer_controller_spawner]),
-                TimerAction(period=20.0, actions=[gripper_controller_spawner]),
+                TimerAction(period=50.0, actions=[arm_controller_spawner]),
+                TimerAction(period=100.0, actions=[skid_steer_controller_spawner]),
+                TimerAction(period=150.0, actions=[gripper_controller_spawner]),
             ],
         )
     )

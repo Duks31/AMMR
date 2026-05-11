@@ -35,7 +35,7 @@ private:
     
     simple_msg.header = msg->header;
     simple_msg.name = msg->joint_names;
-    simple_msg.position = msg->reference.positions;
+    simple_msg.position = msg->desired.positions;
 
     target_pub_->publish(simple_msg);
   }
