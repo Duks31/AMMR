@@ -450,7 +450,7 @@
         <parent link="lower_arm_1" />
         <child link="center_arm_1" />
         <axis xyz="0.0 -1.0 -0.0" />
-        <limit upper="2.793" lower="-0.349066" effort="100" velocity="100" />
+        <limit upper="3.14159" lower="0" effort="100" velocity="100" />
     </joint>
 
     <joint name="upper_arm_1_joint" type="revolute">
@@ -458,7 +458,7 @@
         <parent link="center_arm_1" />
         <child link="upper_arm_1" />
         <axis xyz="-0.0 1.0 0.0" />
-        <limit upper="1.0476" lower="-2.094395" effort="100" velocity="100" />
+        <limit upper="0" lower="-3.142" effort="100" velocity="100" />
     </joint>
 
     <joint name="gripper_mount_1_joint" type="revolute">
@@ -466,7 +466,7 @@
         <parent link="upper_arm_1" />
         <child link="gripper_mount_1" />
         <axis xyz="0.956814 -0.0 -0.290702" />
-        <limit upper="2.3567" lower="-0.785398" effort="100" velocity="100" />
+        <limit upper="3.142" lower="0" effort="100" velocity="100" />
     </joint>
 
     <!-- GRIPPER -->
@@ -493,6 +493,7 @@
         <origin xyz="0 0 0" rpy="-1.5708 0 -1.5708" />
     </joint>
 
+    <!-- DRIVE SYSTEM -->
     <ros2_control name="CikaSystem" type="system">
         <hardware>
             <xacro:if value="$(arg use_sim)">
@@ -507,7 +508,6 @@
             </xacro:unless>
         </hardware>
 
-        <!-- Drive joints — velocity controlled -->
         <joint name="left_front_wheel_1_joint">
             <command_interface name="velocity" />
             <state_interface name="position" />
@@ -528,8 +528,22 @@
             <state_interface name="position" />
             <state_interface name="velocity" />
         </joint>
+    </ros2_control>  <!-- ← closes CikaSystem -->
 
-        <!-- Arm joints — position controlled (CikaArmInterface in Phase 2) -->
+
+    <!-- ARM SYSTEM -->
+    <ros2_control name="CikaArmSystem" type="system">
+        <hardware>
+            <xacro:if value="$(arg use_sim)">
+                <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+            </xacro:if>
+            <xacro:unless value="$(arg use_sim)">
+                <plugin>cika_hardware_arm/CikaHardware</plugin>
+                <param name="serial_port">/dev/ttyUSB0</param>
+                <param name="baud_rate">115200</param>
+            </xacro:unless>
+        </hardware>
+
         <joint name="turntable_1_joint">
             <command_interface name="position" />
             <state_interface name="position" />
@@ -555,8 +569,6 @@
             <state_interface name="position" />
             <state_interface name="velocity" />
         </joint>
-
-        <!-- Gripper joints -->
         <joint name="left_gripper_1_joint">
             <command_interface name="position" />
             <state_interface name="position" />
@@ -567,6 +579,6 @@
             <state_interface name="position" />
             <state_interface name="velocity" />
         </joint>
-    </ros2_control>
+    </ros2_control>  <!-- ← closes CikaArmSystem -->
 
 </robot>
