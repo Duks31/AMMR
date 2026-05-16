@@ -69,6 +69,17 @@ def generate_launch_description():
         output="screen",
     )
 
+    gripper_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=[
+            "gripper_controller",
+            "--controller-manager", "/controller_manager",
+            "--controller-manager-timeout", "30",
+        ],
+        output="screen",
+    )
+
     # ── Sequencing ───────────────────────────────────────────────────────────
 
     # Wait 10s for hardware to activate before spawning joint_state_broadcaster
@@ -87,9 +98,20 @@ def generate_launch_description():
         )
     )
 
+    # Spawn gripper_controller only after arm_controller exits successfully
+    delayed_gripper = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=arm_controller_spawner,
+            on_exit=[
+                TimerAction(period=10.0, actions=[gripper_controller_spawner]),
+            ],
+        )
+    )
+
     return LaunchDescription([
         robot_state_publisher_node,
         ros2_control_node,
         delayed_jsb,
         delayed_arm,
+        delayed_gripper,
     ])
