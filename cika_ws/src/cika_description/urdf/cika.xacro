@@ -528,7 +528,7 @@
             <state_interface name="position" />
             <state_interface name="velocity" />
         </joint>
-    </ros2_control>  <!-- ← closes CikaSystem -->
+    </ros2_control>  ← closes CikaSystem
 
 
     <!-- ARM SYSTEM -->
@@ -570,11 +570,6 @@
             <state_interface name="velocity" />
         </joint>
         <joint name="left_gripper_1_joint">
-            <command_interface name="position" />
-            <state_interface name="position" />
-            <state_interface name="velocity" />
-        </joint>
-        <joint name="right_gripper_1_joint">
             <command_interface name="position" />
             <state_interface name="position" />
             <state_interface name="velocity" />
