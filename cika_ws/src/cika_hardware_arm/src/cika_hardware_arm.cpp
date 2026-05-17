@@ -234,16 +234,20 @@ namespace cika_hardware_arm
             // 1. Convert radians to degrees
             double degrees_float = (hw_commands_[i] * 180.0 / M_PI);
 
-            // 2. Exception handling for the base servo (-180 to 0 rad range)
-            if (i == 0) {
-                degrees_float += 180.0; 
-            }
+            
+
+            // 2. Exception handling for the upper arm servo (-180 to 0 rad range)
+            // upside down mount, flip direction
+            if (i == 3) degrees_float = -degrees_float;
 
             // 3. Round to nearest integer
             int degrees = static_cast<int>(std::round(degrees_float));
 
             // 4. Clamp to safe servo range (0 to 180)
-            degrees = std::max(0, std::min(180, degrees));
+            if (i != 0) 
+            {
+                degrees = std::max(0, std::min(180, degrees));
+            }
 
             // 5. Append to command string
             cmd += "S" + std::to_string(i) + ":" + std::to_string(degrees);
