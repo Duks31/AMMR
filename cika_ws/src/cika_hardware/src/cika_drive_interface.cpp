@@ -201,13 +201,13 @@ namespace cika_hardware
                         {
                             hw_states_[1] = (-p_lf - hw_states_[0]) / dt;
                             hw_states_[3] = (-p_lb - hw_states_[2]) / dt;
-                            hw_states_[5] = (p_rf - hw_states_[4]) / dt;
-                            hw_states_[7] = (p_rb - hw_states_[6]) / dt;
+                            hw_states_[5] = (-p_rf - hw_states_[4]) / dt;
+                            hw_states_[7] = (-p_rb - hw_states_[6]) / dt;
                         }
                         hw_states_[0] = -p_lf;
                         hw_states_[2] = -p_lb;
-                        hw_states_[4] = p_rf;
-                        hw_states_[6] = p_rb;
+                        hw_states_[4] = -p_rf;
+                        hw_states_[6] = -p_rb;
                     }
                 }
                 // ── IMU line ──────────────────────────────────────────────────
