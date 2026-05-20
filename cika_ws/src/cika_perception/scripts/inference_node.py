@@ -30,7 +30,7 @@ DEPTH_MAX_MM = 8000
 
 # ── Hardware profile ──────────────────────────────────────────────────────────
 # Set to True when running on Raspberry Pi 4B, False for laptop testing
-ON_PI = False
+ON_PI = True
 
 # ── Camera settings (auto-configured by profile) ──────────────────────────────
 CAM_FPS = 30 if not ON_PI else 10
