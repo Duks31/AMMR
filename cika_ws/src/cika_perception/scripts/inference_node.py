@@ -17,8 +17,8 @@ from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 package_share_directory = get_package_share_directory("cika_perception")
 
 BLOB_PATH = os.path.join(package_share_directory, "models", "300_epoch_best.blob")
-INPUT_W = 640
-INPUT_H = 640
+INPUT_W = 320
+INPUT_H = 320
 CONF_THRESH = 0.5
 IOU_THRESH = 0.45
 CLASSES = ["plastic", "paper"]
@@ -33,10 +33,10 @@ DEPTH_MAX_MM = 8000
 ON_PI = True
 
 # ── Camera settings (auto-configured by profile) ──────────────────────────────
-CAM_FPS = 30 if not ON_PI else 10
+CAM_FPS = 30 if not ON_PI else 5
 MONO_RES = dai.MonoCameraProperties.SensorResolution.THE_400_P
 LRC_ENABLED = True
-USB_SPEED = dai.UsbSpeed.HIGH if not ON_PI else dai.UsbSpeed.SUPER
+USB_SPEED = dai.UsbSpeed.HIGH
 
 qos = QoSProfile(
     reliability=ReliabilityPolicy.RELIABLE, history=HistoryPolicy.KEEP_LAST, depth=1
@@ -150,12 +150,12 @@ class InferenceNode(Node):
         mono_right.setResolution(MONO_RES)
         mono_right.setBoardSocket(dai.CameraBoardSocket.CAM_C)
 
-        mono_left.setFps(5)
-        mono_right.setFps(5)
+        mono_left.setFps(3)
+        mono_right.setFps(3)
 
         # ── StereoDepth ───────────────────────────────────────────────────────
         stereo = pipeline.create(dai.node.StereoDepth)
-        stereo.setDefaultProfilePreset(dai.node.StereoDepth.PresetMode.HIGH_DENSITY)
+        stereo.setDefaultProfilePreset(dai.node.StereoDepth.PresetMode.HIGH_ACCURACY)
         # Align depth map to the RGB camera frame so pixel coords match
         stereo.setDepthAlign(dai.CameraBoardSocket.CAM_A)
         stereo.setOutputSize(INPUT_W, INPUT_H)
@@ -337,29 +337,30 @@ class InferenceNode(Node):
         # ─── DEPTH PUBLISHING (HEATMAP) ───────────────────────────────────────
         if getattr(self, "_depth_queue", None) is not None:
             # tryGetAll() grabs every frame currently waiting in the "traffic jam"
-            depth_packets = self._depth_queue.tryGetAll()
-            
-            if depth_packets:
-                # [-1] means "take the very last (newest) item" and discard the rest
-                depth_packet = depth_packets[-1]
+            if self.depth_pub.get_subscription_count() > 0:
+                depth_packets = self._depth_queue.tryGetAll()
                 
-                depth_frame = depth_packet.getFrame()  # Raw 16-bit mm data
+                if depth_packets:
+                    # [-1] means "take the very last (newest) item" and discard the rest
+                    depth_packet = depth_packets[-1]
+                    
+                    depth_frame = depth_packet.getFrame()  # Raw 16-bit mm data
 
-                # Faster normalization using OpenCV
-                depth_norm = cv2.normalize(
-                    depth_frame, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U
-                )
-                depth_color = cv2.applyColorMap(depth_norm, cv2.COLORMAP_JET)
+                    # Faster normalization using OpenCV
+                    depth_norm = cv2.normalize(
+                        depth_frame, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U
+                    )
+                    depth_color = cv2.applyColorMap(depth_norm, cv2.COLORMAP_JET)
 
-                _, depth_buf = cv2.imencode(
-                    ".jpg", depth_color, [cv2.IMWRITE_JPEG_QUALITY, 50]
-                )
-                depth_msg = CompressedImage()
-                depth_msg.header.stamp = self.get_clock().now().to_msg()
-                depth_msg.header.frame_id = "oak_rgb_camera_optical_frame"
-                depth_msg.format = "jpeg"
-                depth_msg.data = depth_buf.tobytes()
-                self.depth_pub.publish(depth_msg)
+                    _, depth_buf = cv2.imencode(
+                        ".jpg", depth_color, [cv2.IMWRITE_JPEG_QUALITY, 50]
+                    )
+                    depth_msg = CompressedImage()
+                    depth_msg.header.stamp = self.get_clock().now().to_msg()
+                    depth_msg.header.frame_id = "oak_rgb_camera_optical_frame"
+                    depth_msg.format = "jpeg"
+                    depth_msg.data = depth_buf.tobytes()
+                    self.depth_pub.publish(depth_msg)
 
     def destroy_node(self):
         try:
