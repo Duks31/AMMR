@@ -17,8 +17,8 @@ from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 package_share_directory = get_package_share_directory("cika_perception")
 
 BLOB_PATH = os.path.join(package_share_directory, "models", "300_epoch_best.blob")
-INPUT_W = 320
-INPUT_H = 320
+INPUT_W = 640
+INPUT_H = 640
 CONF_THRESH = 0.5
 IOU_THRESH = 0.45
 CLASSES = ["plastic", "paper"]
@@ -136,7 +136,7 @@ class InferenceNode(Node):
         # ── RGB camera ────────────────────────────────────────────────────────
         cam = pipeline.create(dai.node.ColorCamera)
         cam.setPreviewSize(INPUT_W, INPUT_H)
-        cam.setVideoSize(INPUT_W, INPUT_H)
+        cam.setVideoSize(320, 320)
         cam.setInterleaved(False)
         cam.setColorOrder(dai.ColorCameraProperties.ColorOrder.BGR)
         cam.setFps(CAM_FPS)
