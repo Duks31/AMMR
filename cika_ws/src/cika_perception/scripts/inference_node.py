@@ -136,7 +136,7 @@ class InferenceNode(Node):
         # ── RGB camera ────────────────────────────────────────────────────────
         cam = pipeline.create(dai.node.ColorCamera)
         cam.setPreviewSize(INPUT_W, INPUT_H)
-        cam.setVideoSize(320, 320)
+        cam.setVideoSize(INPUT_W, INPUT_H)
         cam.setInterleaved(False)
         cam.setColorOrder(dai.ColorCameraProperties.ColorOrder.BGR)
         cam.setFps(CAM_FPS)
@@ -308,6 +308,7 @@ class InferenceNode(Node):
             if img_packets:
                 img_packet = img_packets[-1]          # Keep only the newest one
                 frame = img_packet.getCvFrame()
+                frame = cv2.resize(frame, (320, 320))
 
                 # Draw detections on the image for visualization in Foxglove Studio
                 if hasattr(self, "_latest_detections"):
@@ -326,7 +327,7 @@ class InferenceNode(Node):
                             2,
                         )
 
-                _, buf = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
+                _, buf = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 60])
                 img_msg = CompressedImage()
                 img_msg.header.stamp = self.get_clock().now().to_msg()
                 img_msg.header.frame_id = "oak_rgb_camera_optical_frame"
