@@ -158,7 +158,7 @@ class InferenceNode(Node):
         stereo.setDefaultProfilePreset(dai.node.StereoDepth.PresetMode.HIGH_ACCURACY)
         # Align depth map to the RGB camera frame so pixel coords match
         stereo.setDepthAlign(dai.CameraBoardSocket.CAM_A)
-        stereo.setOutputSize(INPUT_W, INPUT_H)
+        stereo.setOutputSize(320,240)
         stereo.setLeftRightCheck(LRC_ENABLED)
         stereo.setSubpixel(False)
         mono_left.out.link(stereo.left)
@@ -173,7 +173,7 @@ class InferenceNode(Node):
         # ── NeuralNetwork ─────────────────────────────────────────────────────
         nn = pipeline.create(dai.node.NeuralNetwork)
         nn.setBlobPath(BLOB_PATH)
-        nn.setNumInferenceThreads(2)
+        nn.setNumInferenceThreads(1)
         cam.preview.link(nn.input)
 
         # ── XLinkOut: NN results ──────────────────────────────────────────────
