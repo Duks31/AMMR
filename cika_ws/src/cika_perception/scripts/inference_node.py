@@ -138,7 +138,7 @@ class InferenceNode(Node):
         cam.setPreviewSize(INPUT_W, INPUT_H)
         cam.setVideoSize(INPUT_W, INPUT_H)
         cam.setInterleaved(False)
-        cam.setColorOrder(dai.ColorCameraProperties.ColorOrder.BGR)
+        cam.setColorOrder(dai.ColorCameraProperties.ColorOrder.RGB)
         cam.setFps(CAM_FPS)
 
         # ── Mono cameras (left/right for stereo) ──────────────────────────────
