@@ -136,7 +136,7 @@ class InferenceNode(Node):
         # ── RGB camera ────────────────────────────────────────────────────────
         cam = pipeline.create(dai.node.ColorCamera)
         cam.setPreviewSize(INPUT_W, INPUT_H)
-        cam.setVideoSize(INPUT_W, INPUT_H)
+        # cam.setVideoSize(INPUT_W, INPUT_H)
         cam.setInterleaved(False)
         cam.setColorOrder(dai.ColorCameraProperties.ColorOrder.BGR)
         cam.setFps(CAM_FPS)
@@ -184,7 +184,7 @@ class InferenceNode(Node):
         # ── XLinkOut: RGB video ───────────────────────────────────────────────
         img_out = pipeline.create(dai.node.XLinkOut)
         img_out.setStreamName("rgb")
-        cam.video.link(img_out.input)
+        cam.preview.link(img_out.input)
 
         # --- ADD THESE 3 LINES ---
         depth_out = pipeline.create(dai.node.XLinkOut)
