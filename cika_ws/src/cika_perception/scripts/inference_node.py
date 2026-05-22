@@ -33,10 +33,10 @@ DEPTH_MAX_MM = 8000
 ON_PI = True
 
 # ── Camera settings (auto-configured by profile) ──────────────────────────────
-CAM_FPS = 30 if not ON_PI else 5
+CAM_FPS = 30 if not ON_PI else 10
 MONO_RES = dai.MonoCameraProperties.SensorResolution.THE_400_P
 LRC_ENABLED = True
-USB_SPEED = dai.UsbSpeed.HIGH
+USB_SPEED = dai.UsbSpeed.HIGH if not ON_PI else dai.UsbSpeed.SUPER
 
 qos = QoSProfile(
     reliability=ReliabilityPolicy.RELIABLE, history=HistoryPolicy.KEEP_LAST, depth=1
@@ -138,7 +138,7 @@ class InferenceNode(Node):
         cam.setPreviewSize(INPUT_W, INPUT_H)
         cam.setVideoSize(INPUT_W, INPUT_H)
         cam.setInterleaved(False)
-        cam.setColorOrder(dai.ColorCameraProperties.ColorOrder.RGB)
+        cam.setColorOrder(dai.ColorCameraProperties.ColorOrder.BGR)
         cam.setFps(CAM_FPS)
 
         # ── Mono cameras (left/right for stereo) ──────────────────────────────
@@ -150,15 +150,15 @@ class InferenceNode(Node):
         mono_right.setResolution(MONO_RES)
         mono_right.setBoardSocket(dai.CameraBoardSocket.CAM_C)
 
-        mono_left.setFps(3)
-        mono_right.setFps(3)
+        mono_left.setFps(5)
+        mono_right.setFps(5)
 
         # ── StereoDepth ───────────────────────────────────────────────────────
         stereo = pipeline.create(dai.node.StereoDepth)
-        stereo.setDefaultProfilePreset(dai.node.StereoDepth.PresetMode.HIGH_ACCURACY)
+        stereo.setDefaultProfilePreset(dai.node.StereoDepth.PresetMode.HIGH_DENSITY)
         # Align depth map to the RGB camera frame so pixel coords match
         stereo.setDepthAlign(dai.CameraBoardSocket.CAM_A)
-        stereo.setOutputSize(320,240)
+        stereo.setOutputSize(INPUT_W, INPUT_H)
         stereo.setLeftRightCheck(LRC_ENABLED)
         stereo.setSubpixel(False)
         mono_left.out.link(stereo.left)
@@ -173,7 +173,7 @@ class InferenceNode(Node):
         # ── NeuralNetwork ─────────────────────────────────────────────────────
         nn = pipeline.create(dai.node.NeuralNetwork)
         nn.setBlobPath(BLOB_PATH)
-        nn.setNumInferenceThreads(1)
+        nn.setNumInferenceThreads(2)
         cam.preview.link(nn.input)
 
         # ── XLinkOut: NN results ──────────────────────────────────────────────
@@ -308,7 +308,6 @@ class InferenceNode(Node):
             if img_packets:
                 img_packet = img_packets[-1]          # Keep only the newest one
                 frame = img_packet.getCvFrame()
-                frame = cv2.resize(frame, (320, 320))
 
                 # Draw detections on the image for visualization in Foxglove Studio
                 if hasattr(self, "_latest_detections"):
@@ -327,7 +326,7 @@ class InferenceNode(Node):
                             2,
                         )
 
-                _, buf = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 60])
+                _, buf = cv2.imencode(".jpg", frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
                 img_msg = CompressedImage()
                 img_msg.header.stamp = self.get_clock().now().to_msg()
                 img_msg.header.frame_id = "oak_rgb_camera_optical_frame"
@@ -338,30 +337,29 @@ class InferenceNode(Node):
         # ─── DEPTH PUBLISHING (HEATMAP) ───────────────────────────────────────
         if getattr(self, "_depth_queue", None) is not None:
             # tryGetAll() grabs every frame currently waiting in the "traffic jam"
-            if self.depth_pub.get_subscription_count() > 0:
-                depth_packets = self._depth_queue.tryGetAll()
+            depth_packets = self._depth_queue.tryGetAll()
+            
+            if depth_packets:
+                # [-1] means "take the very last (newest) item" and discard the rest
+                depth_packet = depth_packets[-1]
                 
-                if depth_packets:
-                    # [-1] means "take the very last (newest) item" and discard the rest
-                    depth_packet = depth_packets[-1]
-                    
-                    depth_frame = depth_packet.getFrame()  # Raw 16-bit mm data
+                depth_frame = depth_packet.getFrame()  # Raw 16-bit mm data
 
-                    # Faster normalization using OpenCV
-                    depth_norm = cv2.normalize(
-                        depth_frame, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U
-                    )
-                    depth_color = cv2.applyColorMap(depth_norm, cv2.COLORMAP_JET)
+                # Faster normalization using OpenCV
+                depth_norm = cv2.normalize(
+                    depth_frame, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U
+                )
+                depth_color = cv2.applyColorMap(depth_norm, cv2.COLORMAP_JET)
 
-                    _, depth_buf = cv2.imencode(
-                        ".jpg", depth_color, [cv2.IMWRITE_JPEG_QUALITY, 50]
-                    )
-                    depth_msg = CompressedImage()
-                    depth_msg.header.stamp = self.get_clock().now().to_msg()
-                    depth_msg.header.frame_id = "oak_rgb_camera_optical_frame"
-                    depth_msg.format = "jpeg"
-                    depth_msg.data = depth_buf.tobytes()
-                    self.depth_pub.publish(depth_msg)
+                _, depth_buf = cv2.imencode(
+                    ".jpg", depth_color, [cv2.IMWRITE_JPEG_QUALITY, 50]
+                )
+                depth_msg = CompressedImage()
+                depth_msg.header.stamp = self.get_clock().now().to_msg()
+                depth_msg.header.frame_id = "oak_rgb_camera_optical_frame"
+                depth_msg.format = "jpeg"
+                depth_msg.data = depth_buf.tobytes()
+                self.depth_pub.publish(depth_msg)
 
     def destroy_node(self):
         try:
