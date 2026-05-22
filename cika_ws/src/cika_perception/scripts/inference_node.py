@@ -110,8 +110,8 @@ class InferenceNode(Node):
         self._spatial_calc_out_queue = None  # device → host: 3D locations
         self._inference_active = False
         self._start_pipeline()
-        self.create_timer(0.033, self._poll)
-        self.create_timer(0.033, self._publish_image)
+        self.create_timer(0.1, self._poll)
+        self.create_timer(0.1, self._publish_image)
         self.create_service(
             SetBool, "/cika/perception/set_inference_active", self._enable_cb
         )
@@ -254,6 +254,11 @@ class InferenceNode(Node):
 
     def _poll(self):
         if self._nn_queue is None:
+            return
+        try:
+            packet = self._nn_queue.tryGet()
+        except RuntimeError as e:
+            self.get_logger().error(f"XLink error: {e}", throttle_duration_sec=5.0)
             return
         packet = self._nn_queue.tryGet()
         if packet is None:
