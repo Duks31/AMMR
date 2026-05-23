@@ -36,7 +36,7 @@ ON_PI = True
 CAM_FPS = 30 if not ON_PI else 10
 MONO_RES = dai.MonoCameraProperties.SensorResolution.THE_400_P
 LRC_ENABLED = True
-USB_SPEED = dai.UsbSpeed.HIGH
+USB_SPEED = dai.UsbSpeed.HIGH if not ON_PI else dai.UsbSpeed.SUPER
 
 qos = QoSProfile(
     reliability=ReliabilityPolicy.RELIABLE, history=HistoryPolicy.KEEP_LAST, depth=1
@@ -315,8 +315,12 @@ class InferenceNode(Node):
             img_packets = self._img_queue.tryGetAll() # Grab all waiting frames
             if img_packets:
                 img_packet = img_packets[-1]          # Keep only the newest one
-                # frame = img_packet.getCvFrame()
-                frame = np.ascontiguousarray(img_packet.getCvFrame())
+                
+                # --- REPLACED getCvFrame() WITH MANUAL BYTE UNPACKING ---
+                raw_data = img_packet.getData()
+                planar_frame = np.array(raw_data).reshape(3, INPUT_H, INPUT_W)
+                frame = np.ascontiguousarray(planar_frame.transpose(1, 2, 0))
+                # --------------------------------------------------------
 
                 # Draw detections on the image for visualization in Foxglove Studio
                 if hasattr(self, "_latest_detections"):
