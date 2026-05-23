@@ -167,7 +167,7 @@ class InferenceNode(Node):
         # ── SpatialLocationCalculator ─────────────────────────────────────────
         # Accepts ROI configs from host, returns x/y/z in mm for each ROI
         spatial_calc = pipeline.create(dai.node.SpatialLocationCalculator)
-        spatial_calc.inputConfig.setWaitForMessage(True)
+        spatial_calc.inputConfig.setWaitForMessage(False)
         stereo.depth.link(spatial_calc.inputDepth)
 
         # ── NeuralNetwork ─────────────────────────────────────────────────────
