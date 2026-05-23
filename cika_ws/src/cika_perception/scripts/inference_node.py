@@ -187,9 +187,9 @@ class InferenceNode(Node):
         cam.preview.link(img_out.input)
 
         # --- ADD THESE 3 LINES ---
-        depth_out = pipeline.create(dai.node.XLinkOut)
-        depth_out.setStreamName("depth")
-        stereo.depth.link(depth_out.input)
+        # depth_out = pipeline.create(dai.node.XLinkOut)
+        # depth_out.setStreamName("depth")
+        # stereo.depth.link(depth_out.input)
 
         # ── XLinkOut: spatial locations ───────────────────────────────────────
         spatial_out = pipeline.create(dai.node.XLinkOut)
@@ -205,9 +205,9 @@ class InferenceNode(Node):
         self._device = dai.Device(pipeline, USB_SPEED)
         self._nn_queue = self._device.getOutputQueue("nn", maxSize=1, blocking=False)
         self._img_queue = self._device.getOutputQueue("rgb", maxSize=1, blocking=False)
-        self._depth_queue = self._device.getOutputQueue(
-            "depth", maxSize=1, blocking=False
-        )
+        # self._depth_queue = self._device.getOutputQueue(
+        #     "depth", maxSize=1, blocking=False
+        # )
         self._spatial_calc_out_queue = self._device.getOutputQueue(
             "spatial_data", maxSize=8, blocking=False
         )
@@ -339,31 +339,31 @@ class InferenceNode(Node):
                 self.image_pub.publish(img_msg)
 
         # ─── DEPTH PUBLISHING (HEATMAP) ───────────────────────────────────────
-        if getattr(self, "_depth_queue", None) is not None:
-            # tryGetAll() grabs every frame currently waiting in the "traffic jam"
-            depth_packets = self._depth_queue.tryGetAll()
+        # if getattr(self, "_depth_queue", None) is not None:
+        #     # tryGetAll() grabs every frame currently waiting in the "traffic jam"
+        #     depth_packets = self._depth_queue.tryGetAll()
             
-            if depth_packets:
-                # [-1] means "take the very last (newest) item" and discard the rest
-                depth_packet = depth_packets[-1]
+        #     if depth_packets:
+        #         # [-1] means "take the very last (newest) item" and discard the rest
+        #         depth_packet = depth_packets[-1]
                 
-                depth_frame = depth_packet.getFrame()  # Raw 16-bit mm data
+        #         depth_frame = depth_packet.getFrame()  # Raw 16-bit mm data
 
-                # Faster normalization using OpenCV
-                depth_norm = cv2.normalize(
-                    depth_frame, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U
-                )
-                depth_color = cv2.applyColorMap(depth_norm, cv2.COLORMAP_JET)
+        #         # Faster normalization using OpenCV
+        #         depth_norm = cv2.normalize(
+        #             depth_frame, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U
+        #         )
+        #         depth_color = cv2.applyColorMap(depth_norm, cv2.COLORMAP_JET)
 
-                _, depth_buf = cv2.imencode(
-                    ".jpg", depth_color, [cv2.IMWRITE_JPEG_QUALITY, 50]
-                )
-                depth_msg = CompressedImage()
-                depth_msg.header.stamp = self.get_clock().now().to_msg()
-                depth_msg.header.frame_id = "oak_rgb_camera_optical_frame"
-                depth_msg.format = "jpeg"
-                depth_msg.data = depth_buf.tobytes()
-                self.depth_pub.publish(depth_msg)
+        #         _, depth_buf = cv2.imencode(
+        #             ".jpg", depth_color, [cv2.IMWRITE_JPEG_QUALITY, 50]
+        #         )
+        #         depth_msg = CompressedImage()
+        #         depth_msg.header.stamp = self.get_clock().now().to_msg()
+        #         depth_msg.header.frame_id = "oak_rgb_camera_optical_frame"
+        #         depth_msg.format = "jpeg"
+        #         depth_msg.data = depth_buf.tobytes()
+        #         self.depth_pub.publish(depth_msg)
 
     def destroy_node(self):
         try:
