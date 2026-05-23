@@ -185,10 +185,6 @@ class InferenceNode(Node):
         img_out = pipeline.create(dai.node.XLinkOut)
         img_out.setStreamName("rgb")
         cam.preview.link(img_out.input)
-
-        img_out = pipeline.create(dai.node.XLinkOut)
-        img_out.setStreamName("rgb")
-        video_enc.bitstream.link(img_out.input)
         # img_out = pipeline.create(dai.node.XLinkOut)
         # img_out.setStreamName("rgb")
         # cam.preview.link(img_out.input)
