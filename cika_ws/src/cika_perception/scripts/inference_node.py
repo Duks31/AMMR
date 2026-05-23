@@ -182,9 +182,16 @@ class InferenceNode(Node):
         nn.out.link(nn_out.input)
 
         # ── XLinkOut: RGB video ───────────────────────────────────────────────
+        video_enc = pipeline.create(dai.node.VideoEncoder)
+        video_enc.setDefaultProfilePreset(CAM_FPS, dai.VideoEncoderProperties.Profile.MJPEG)
+        cam.video.link(video_enc.input)
+
         img_out = pipeline.create(dai.node.XLinkOut)
         img_out.setStreamName("rgb")
-        cam.preview.link(img_out.input)
+        video_enc.bitstream.link(img_out.input)
+        # img_out = pipeline.create(dai.node.XLinkOut)
+        # img_out.setStreamName("rgb")
+        # cam.preview.link(img_out.input)
         # nn.passthrough.link(img_out.input)  # Get RGB frames synchronized with NN results
 
         # --- ADD THESE 3 LINES ---
@@ -316,12 +323,20 @@ class InferenceNode(Node):
             if img_packets:
                 img_packet = img_packets[-1]          # Keep only the newest one
                 
-                # --- REPLACED getCvFrame() WITH MANUAL BYTE UNPACKING ---
-                # raw_data = img_packet.getData()
-                # planar_frame = np.array(raw_data).reshape(3, INPUT_H, INPUT_W)
-                # frame = np.ascontiguousarray(planar_frame.transpose(1, 2, 0))
-                frame = np.ascontiguousarray(img_packet.getCvFrame())
-                # --------------------------------------------------------
+                # # --- REPLACED getCvFrame() WITH MANUAL BYTE UNPACKING ---
+                # # raw_data = img_packet.getData()
+                # # planar_frame = np.array(raw_data).reshape(3, INPUT_H, INPUT_W)
+                # # frame = np.ascontiguousarray(planar_frame.transpose(1, 2, 0))
+                # frame = np.ascontiguousarray(img_packet.getCvFrame())
+                # # --------------------------------------------------------
+                
+                # --- NEW DECODING LOGIC FOR HARDWARE JPEG ---
+                # The camera now sends a compressed JPEG byte array directly
+                jpeg_bytes = np.array(img_packet.getData(), dtype=np.uint8)
+                
+                # Decode it so OpenCV can draw the bounding boxes on it
+                frame = cv2.imdecode(jpeg_bytes, cv2.IMREAD_COLOR)
+                # --------------------------------------------
 
                 # Draw detections on the image for visualization in Foxglove Studio
                 if hasattr(self, "_latest_detections"):
