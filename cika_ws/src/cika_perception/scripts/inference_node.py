@@ -260,7 +260,6 @@ class InferenceNode(Node):
         except RuntimeError as e:
             self.get_logger().error(f"XLink error: {e}", throttle_duration_sec=5.0)
             return
-        packet = self._nn_queue.tryGet()
         if packet is None:
             return
 
