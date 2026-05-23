@@ -16,7 +16,7 @@ from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 
 package_share_directory = get_package_share_directory("cika_perception")
 
-BLOB_PATH = os.path.join(package_share_directory, "models", "300_epoch_best.blob")
+BLOB_PATH = os.path.join(package_share_directory, "models", "taco_2class_300_epoch.blob")
 INPUT_W = 640
 INPUT_H = 640
 CONF_THRESH = 0.5
