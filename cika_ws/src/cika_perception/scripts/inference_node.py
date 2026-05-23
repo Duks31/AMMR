@@ -36,7 +36,7 @@ ON_PI = True
 CAM_FPS = 30 if not ON_PI else 10
 MONO_RES = dai.MonoCameraProperties.SensorResolution.THE_400_P
 LRC_ENABLED = True
-USB_SPEED = dai.UsbSpeed.HIGH if not ON_PI else dai.UsbSpeed.SUPER
+USB_SPEED = dai.UsbSpeed.HIGH
 
 qos = QoSProfile(
     reliability=ReliabilityPolicy.RELIABLE, history=HistoryPolicy.KEEP_LAST, depth=1
@@ -180,11 +180,11 @@ class InferenceNode(Node):
         nn_out = pipeline.create(dai.node.XLinkOut)
         nn_out.setStreamName("nn")
         nn.out.link(nn_out.input)
-
+        
         # ── XLinkOut: RGB video ───────────────────────────────────────────────
-        video_enc = pipeline.create(dai.node.VideoEncoder)
-        video_enc.setDefaultProfilePreset(CAM_FPS, dai.VideoEncoderProperties.Profile.MJPEG)
-        cam.video.link(video_enc.input)
+        img_out = pipeline.create(dai.node.XLinkOut)
+        img_out.setStreamName("rgb")
+        cam.preview.link(img_out.input)
 
         img_out = pipeline.create(dai.node.XLinkOut)
         img_out.setStreamName("rgb")
@@ -322,24 +322,10 @@ class InferenceNode(Node):
             img_packets = self._img_queue.tryGetAll() # Grab all waiting frames
             if img_packets:
                 img_packet = img_packets[-1]          # Keep only the newest one
-                
-                # # --- REPLACED getCvFrame() WITH MANUAL BYTE UNPACKING ---
-                # # raw_data = img_packet.getData()
-                # # planar_frame = np.array(raw_data).reshape(3, INPUT_H, INPUT_W)
-                # # frame = np.ascontiguousarray(planar_frame.transpose(1, 2, 0))
-                # frame = np.ascontiguousarray(img_packet.getCvFrame())
-                # # --------------------------------------------------------
 
-                # --- NEW DECODING LOGIC FOR HARDWARE JPEG ---
-                # The camera now sends a compressed JPEG byte array directly
-                jpeg_bytes = np.array(img_packet.getData(), dtype=np.uint8)
-                
                 # Decode it so OpenCV can draw the bounding boxes on it
-                frame = cv2.imdecode(jpeg_bytes, cv2.IMREAD_COLOR)
+                frame = np.ascontiguousarray(img_packet.getCvFrame())
                 # --------------------------------------------
-
-                if frame is None:
-                    return
 
                 # Draw detections on the image for visualization in Foxglove Studio
                 if hasattr(self, "_latest_detections"):
