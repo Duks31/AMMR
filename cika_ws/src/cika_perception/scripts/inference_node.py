@@ -36,7 +36,7 @@ ON_PI = True
 CAM_FPS = 30 if not ON_PI else 10
 MONO_RES = dai.MonoCameraProperties.SensorResolution.THE_400_P
 LRC_ENABLED = True
-USB_SPEED = dai.UsbSpeed.HIGH if not ON_PI else dai.UsbSpeed.SUPER
+USB_SPEED = dai.UsbSpeed.HIGH
 
 qos = QoSProfile(
     reliability=ReliabilityPolicy.RELIABLE, history=HistoryPolicy.KEEP_LAST, depth=1
