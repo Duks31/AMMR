@@ -329,7 +329,7 @@ class InferenceNode(Node):
                 # # frame = np.ascontiguousarray(planar_frame.transpose(1, 2, 0))
                 # frame = np.ascontiguousarray(img_packet.getCvFrame())
                 # # --------------------------------------------------------
-                
+
                 # --- NEW DECODING LOGIC FOR HARDWARE JPEG ---
                 # The camera now sends a compressed JPEG byte array directly
                 jpeg_bytes = np.array(img_packet.getData(), dtype=np.uint8)
@@ -337,6 +337,9 @@ class InferenceNode(Node):
                 # Decode it so OpenCV can draw the bounding boxes on it
                 frame = cv2.imdecode(jpeg_bytes, cv2.IMREAD_COLOR)
                 # --------------------------------------------
+
+                if frame is None:
+                    return
 
                 # Draw detections on the image for visualization in Foxglove Studio
                 if hasattr(self, "_latest_detections"):
