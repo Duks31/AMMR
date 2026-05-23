@@ -255,6 +255,9 @@ class InferenceNode(Node):
     def _poll(self):
         if self._nn_queue is None:
             return
+        
+        self._spatial_calc_out_queue.tryGetAll()
+
         try:
             packet = self._nn_queue.tryGet()
         except RuntimeError as e:
