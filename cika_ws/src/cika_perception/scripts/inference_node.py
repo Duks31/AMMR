@@ -184,8 +184,8 @@ class InferenceNode(Node):
         # ── XLinkOut: RGB video ───────────────────────────────────────────────
         img_out = pipeline.create(dai.node.XLinkOut)
         img_out.setStreamName("rgb")
-        # cam.preview.link(img_out.input)
-        nn.passthrough.link(img_out.input)  # Get RGB frames synchronized with NN results
+        cam.preview.link(img_out.input)
+        # nn.passthrough.link(img_out.input)  # Get RGB frames synchronized with NN results
 
         # --- ADD THESE 3 LINES ---
         # depth_out = pipeline.create(dai.node.XLinkOut)
@@ -317,9 +317,10 @@ class InferenceNode(Node):
                 img_packet = img_packets[-1]          # Keep only the newest one
                 
                 # --- REPLACED getCvFrame() WITH MANUAL BYTE UNPACKING ---
-                raw_data = img_packet.getData()
-                planar_frame = np.array(raw_data).reshape(3, INPUT_H, INPUT_W)
-                frame = np.ascontiguousarray(planar_frame.transpose(1, 2, 0))
+                # raw_data = img_packet.getData()
+                # planar_frame = np.array(raw_data).reshape(3, INPUT_H, INPUT_W)
+                # frame = np.ascontiguousarray(planar_frame.transpose(1, 2, 0))
+                frame = np.ascontiguousarray(img_packet.getCvFrame())
                 # --------------------------------------------------------
 
                 # Draw detections on the image for visualization in Foxglove Studio
