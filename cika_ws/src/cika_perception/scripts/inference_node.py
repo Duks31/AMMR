@@ -184,7 +184,8 @@ class InferenceNode(Node):
         # ── XLinkOut: RGB video ───────────────────────────────────────────────
         img_out = pipeline.create(dai.node.XLinkOut)
         img_out.setStreamName("rgb")
-        cam.preview.link(img_out.input)
+        # cam.preview.link(img_out.input)
+        nn.passthrough.link(img_out.input)  # Get RGB frames synchronized with NN results
 
         # --- ADD THESE 3 LINES ---
         # depth_out = pipeline.create(dai.node.XLinkOut)
@@ -314,7 +315,8 @@ class InferenceNode(Node):
             img_packets = self._img_queue.tryGetAll() # Grab all waiting frames
             if img_packets:
                 img_packet = img_packets[-1]          # Keep only the newest one
-                frame = img_packet.getCvFrame()
+                # frame = img_packet.getCvFrame()
+                frame = np.ascontiguousarray(img_packet.getCvFrame())
 
                 # Draw detections on the image for visualization in Foxglove Studio
                 if hasattr(self, "_latest_detections"):
