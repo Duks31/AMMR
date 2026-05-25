@@ -30,6 +30,18 @@ def generate_launch_description():
         .to_moveit_configs()
     )
 
+    task_server_node = Node(
+        package="cika_manipulator",
+        executable="task_server",
+        name="task_server",
+        output="screen",
+        # The Server NEEDS these parameters to understand the robot's physical limits
+        parameters=[
+            moveit_config.to_dict(),
+            {"use_sim_time": is_sim}
+        ]
+    )
+
     move_group_node = Node(
         package="moveit_ros_move_group",
         executable="move_group",
@@ -66,6 +78,7 @@ def generate_launch_description():
         [
             is_sim_arg,
             move_group_node, 
-            rviz_node
+            rviz_node,
+            task_server_node
         ]
     )

@@ -116,3 +116,56 @@ ros2 launch foxglove_bridge foxglove_bridge_launch.xml
 
 Then in Foxglove Studio, select **Open Connection → Foxglove WebSocket** and enter:
 ws://localhost:8765
+
+
+# Cika Hardware Arm — How to Run
+
+## 1. Upload Firmware to ESP32
+- Open `cika_arm_esp32.ino` in Arduino IDE
+- Board: `ESP32 Dev Module` | Port: `/dev/ttyUSB1`
+- Click Upload, then press EN/RESET on ESP32
+
+## 2. Give Port Permission
+```bash
+sudo chmod a+rw /dev/ttyUSB1
+```
+
+## 3. Build
+```bash
+cd ~/AMMR/cika_ws
+colcon build --packages-select cika_hardware_arm
+source install/setup.bash
+```
+
+## 4. Launch
+```bash
+ros2 launch cika_bringup real_arm_test.launch.py
+```
+```bash
+ros2 launch cika_manipulator moveit.launch.py
+```
+
+## 5. Verify
+```bash
+ros2 control list_controllers
+```
+Expected:
+```
+joint_state_broadcaster   active
+arm_controller            active
+```
+
+## 6. Monitor ESP32 (optional)
+```bash
+screen /dev/ttyUSB1 115200
+# Close with: Ctrl+A then K → y
+```
+
+---
+
+## If Something Goes Wrong
+| Problem | Fix |
+|---|---|
+| Port busy | Close Arduino Serial Monitor or screen |
+| Controllers fail | Unplug and replug ESP32, relaunch |
+| Wrong port | Change `ttyUSB1` to `ttyUSB0` in `cika_hardware_arm.cpp` and rebuild |
