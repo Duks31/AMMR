@@ -9,8 +9,8 @@ controller_manager:
     joint_state_broadcaster:
       type: joint_state_broadcaster/JointStateBroadcaster
 
-    # skid_steer_controller:
-    #   type: diff_drive_controller/DiffDriveController
+    skid_steer_controller:
+      type: diff_drive_controller/DiffDriveController
 
     arm_controller:
       type: joint_trajectory_controller/JointTrajectoryController

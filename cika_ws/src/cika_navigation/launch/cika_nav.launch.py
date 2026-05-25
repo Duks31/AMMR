@@ -22,7 +22,7 @@ def generate_launch_description():
     # ── Default paths (sim) ───────────────────────────────────────────────────
     default_nav2_params = os.path.join(cika_navigation, "config", "nav2_params.yaml")
     default_ekf_config  = os.path.join(cika_bringup,    "config", "ekf_sim.yaml")
-    default_rtabmap_db  = os.path.join(cika_navigation, "maps",   "cika_map.db")
+    default_rtabmap_db  = "/mnt/cika_data/maps/cika_map.db"
 
     # ── Arguments ─────────────────────────────────────────────────────────────
     mode_arg = DeclareLaunchArgument(
