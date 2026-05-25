@@ -115,4 +115,15 @@ ros2 launch foxglove_bridge foxglove_bridge_launch.xml
 ```
 
 Then in Foxglove Studio, select **Open Connection → Foxglove WebSocket** and enter:
-ws://localhost:8765
+ws://<_ip_address_>:8765
+
+## Physical Robot 
+
+#### Teleop only (default)
+ros2 launch cika_bringup cika_real.launch.py
+
+#### SLAM — build a map
+ros2 launch cika_bringup cika_real.launch.py nav:=true mode:=slam
+
+#### Navigation — autonomous with saved map
+ros2 launch cika_bringup cika_real.launch.py nav:=true mode:=navigation

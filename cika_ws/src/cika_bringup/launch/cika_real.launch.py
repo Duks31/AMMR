@@ -10,11 +10,8 @@ from launch.actions import (
 )
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import Command, LaunchConfiguration
-from launch.launch_description_sources import PythonLaunchDescriptionSource
+from launch.launch_description_sources import PythonLaunchDescriptionSource, AnyLaunchDescriptionSource
 from launch.conditions import IfCondition
-from launch.launch_description_sources import (
-    AnyLaunchDescriptionSource,
-)  # Added for the bridge
 
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
@@ -22,23 +19,17 @@ from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
     cika_description_dir = get_package_share_directory("cika_description")
-    cika_bringup_dir = get_package_share_directory("cika_bringup")
-    # Locate the foxglove_bridge share directory
-    foxglove_bridge_dir = get_package_share_directory("foxglove_bridge")
+    cika_bringup_dir     = get_package_share_directory("cika_bringup")
+    cika_navigation_dir  = get_package_share_directory("cika_navigation")
+    foxglove_bridge_dir  = get_package_share_directory("foxglove_bridge")
 
-    controllers_yaml = os.path.join(
-        cika_description_dir, "config", "controllers_real.yaml"
-    )
-    joy_ps5_params = os.path.join(cika_bringup_dir, "config", "joy_ps5_real.yaml")
-    ekf_config_path = os.path.join(cika_bringup_dir, "config", "ekf_real.yaml")
+    controllers_yaml = os.path.join(cika_description_dir, "config", "controllers_real.yaml")
+    joy_ps5_params   = os.path.join(cika_bringup_dir,     "config", "joy_ps5_real.yaml")
+    ekf_real_path    = os.path.join(cika_bringup_dir,     "config", "ekf_real.yaml")
+    nav2_hw_path     = os.path.join(cika_bringup_dir,     "config", "nav2_params_real.yaml")
+    rtabmap_db_path  = os.path.join(cika_navigation_dir,  "maps",   "cika_map.db")
 
-    # # ── Launch arguments ────────────────────────────────────────────────────
-    # serial_port_arg = DeclareLaunchArgument(
-    #     name="serial_port",
-    #     default_value="/dev/esp32",
-    #     description="Serial port for the micro-ROS agent (drive ESP32)",
-    # )
-
+    # ── Arguments ─────────────────────────────────────────────────────────────
     teleop_arg = DeclareLaunchArgument(
         name="teleop",
         default_value="true",
@@ -46,30 +37,39 @@ def generate_launch_description():
         description="Start PS5 joystick teleop",
     )
 
-    # ── Robot description — xacro with use_sim:=false ───────────────────────
+    nav_arg = DeclareLaunchArgument(
+        name="nav",
+        default_value="false",
+        choices=["true", "false"],
+        description="Launch RTAB-Map + Nav2 after bringup (requires a saved map for navigation mode)",
+    )
+
+    mode_arg = DeclareLaunchArgument(
+        name="mode",
+        default_value="navigation",
+        choices=["slam", "navigation"],
+        description="slam = build map, navigation = localize + Nav2",
+    )
+
+    # ── Robot description ─────────────────────────────────────────────────────
     robot_description_content = ParameterValue(
-        Command(
-            [
-                "xacro ",
-                os.path.join(cika_description_dir, "urdf", "cika.xacro"),
-                " use_sim:=false",
-            ]
-        ),
+        Command([
+            "xacro ",
+            os.path.join(cika_description_dir, "urdf", "cika.xacro"),
+            " use_sim:=false",
+        ]),
         value_type=str,
     )
 
-    # ── Nodes ────────────────────────────────────────────────────────────────
-
+    # ── Core nodes ────────────────────────────────────────────────────────────
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
         executable="robot_state_publisher",
         output="screen",
-        parameters=[
-            {
-                "robot_description": robot_description_content,
-                "use_sim_time": False,
-            }
-        ],
+        parameters=[{
+            "robot_description": robot_description_content,
+            "use_sim_time": False,
+        }],
     )
 
     ros2_control_node = Node(
@@ -87,16 +87,14 @@ def generate_launch_description():
         package="sllidar_ros2",
         executable="sllidar_node",
         name="sllidar_node",
-        parameters=[
-            {
-                "serial_port": "/dev/rplidar", 
-                "serial_baudrate": 460800,      # Required for RPLIDAR C1
-                "frame_id": "lidar_1",
-                "angle_compensate": True,
-                "scan_mode": "Standard",
-            }
-        ],
-        remappings=[("/scan", "/scan_raw")],  # Remap for your polygon filter
+        parameters=[{
+            "serial_port": "/dev/rplidar",
+            "serial_baudrate": 460800,
+            "frame_id": "lidar_1",
+            "angle_compensate": True,
+            "scan_mode": "Standard",
+        }],
+        remappings=[("/scan", "/scan_raw")],
     )
 
     laser_filter_node = Node(
@@ -104,8 +102,8 @@ def generate_launch_description():
         executable="scan_to_scan_filter_chain",
         parameters=[os.path.join(cika_bringup_dir, "config", "laser_filter.yaml")],
         remappings=[
-            ("/scan", "/scan_raw"),           # Listen to the raw data from the LiDAR
-            ("/scan_filtered", "/scan")       # Broadcast the clean data for Nav2
+            ("/scan",          "/scan_raw"),
+            ("/scan_filtered", "/scan"),
         ],
     )
 
@@ -113,37 +111,42 @@ def generate_launch_description():
         package="cika_perception",
         executable="inference_node.py",
         name="inference_node",
-        output="screen"
+        output="screen",
     )
 
     madgwick_node = Node(
         package="imu_filter_madgwick",
         executable="imu_filter_madgwick_node",
         name="imu_filter_madgwick",
-        parameters=[
-            {
-                "use_mag": False, # this is to avoid magnetic interference
-                "gain": 0.1,
-                "publish_tf": False,
-                "world_frame": "enu",
-            }
-        ],
+        parameters=[{
+            "use_mag": False,
+            "gain": 0.1,
+            "publish_tf": False,
+            "world_frame": "enu",
+        }],
         remappings=[
             ("/imu/data_raw", "/imu/raw"),
-            ("/imu/data", "/imu/filtered"),
+            ("/imu/data",     "/imu/filtered"),
         ],
         output="screen",
     )
 
+    ekf_node = Node(
+        package="robot_localization",
+        executable="ekf_node",
+        name="ekf_filter_node",
+        output="screen",
+        parameters=[ekf_real_path, {"use_sim_time": False}],
+    )
+
+    # ── Controller spawning (sequenced) ───────────────────────────────────────
     joint_state_broadcaster_spawner = Node(
         package="controller_manager",
         executable="spawner",
         arguments=[
             "joint_state_broadcaster",
-            "--controller-manager",
-            "/controller_manager",
-            "--controller-manager-timeout",
-            "30",
+            "--controller-manager", "/controller_manager",
+            "--controller-manager-timeout", "30",
         ],
         output="screen",
     )
@@ -153,17 +156,14 @@ def generate_launch_description():
         executable="spawner",
         arguments=[
             "skid_steer_controller",
-            "--controller-manager",
-            "/controller_manager",
-            "--controller-manager-timeout",
-            "30",
+            "--controller-manager", "/controller_manager",
+            "--controller-manager-timeout", "30",
         ],
         output="screen",
-        remappings=[
-            ("/cmd_vel", "/skid_steer_controller/cmd_vel_unstamped"),
-        ],
+        remappings=[("/cmd_vel", "/skid_steer_controller/cmd_vel_unstamped")],
     )
 
+    # ── Teleop ────────────────────────────────────────────────────────────────
     joy_node = Node(
         package="joy",
         executable="joy_node",
@@ -179,22 +179,33 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration("teleop")),
     )
 
-    ekf_node = Node(
-        package="robot_localization",
-        executable="ekf_node",
-        name="ekf_filter_node",
-        output="screen",
-        parameters=[ekf_config_path, {"use_sim_time": False}],
-    )
-
-    # ── Foxglove Bridge ──────────────────────────────────────────────────────
+    # ── Foxglove bridge ───────────────────────────────────────────────────────
     foxglove_bridge = IncludeLaunchDescription(
         AnyLaunchDescriptionSource(
             os.path.join(foxglove_bridge_dir, "launch", "foxglove_bridge_launch.xml")
         )
     )
 
-    # ── Sequencing ───────────────────────────────────────────────────────────
+    # ── Nav stack (optional, delayed until controllers are up) ────────────────
+    # Delay of 15s gives ros2_control + controller spawners time to fully settle.
+    # Increase to 20s if you see RTAB-Map failing to find /odometry/filtered on boot.
+    nav_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(cika_navigation_dir, "launch", "cika_nav.launch.py")
+        ),
+        launch_arguments={
+            "use_sim_time": "false",
+            "mode":         LaunchConfiguration("mode"),
+            "ekf_config":   ekf_real_path,
+            "nav2_params":  nav2_hw_path,
+            "rtabmap_db":   rtabmap_db_path,
+        }.items(),
+        condition=IfCondition(LaunchConfiguration("nav")),
+    )
+
+    delayed_nav = TimerAction(period=15.0, actions=[nav_launch])
+
+    # ── Sequencing ────────────────────────────────────────────────────────────
     delayed_jsb = TimerAction(
         period=10.0,
         actions=[joint_state_broadcaster_spawner],
@@ -209,21 +220,21 @@ def generate_launch_description():
         )
     )
 
-    return LaunchDescription(
-        [
-            # serial_port_arg,
-            teleop_arg,
-            robot_state_publisher_node,
-            ros2_control_node,
-            lidar_node,
-            laser_filter_node,
-            inference_node,
-            madgwick_node,
-            delayed_jsb,
-            delayed_skid_steer,
-            joy_node,
-            teleop_node,
-            ekf_node,
-            foxglove_bridge,
-        ]
-    )
+    return LaunchDescription([
+        teleop_arg,
+        nav_arg,
+        mode_arg,
+        robot_state_publisher_node,
+        ros2_control_node,
+        lidar_node,
+        laser_filter_node,
+        inference_node,
+        madgwick_node,
+        ekf_node,
+        delayed_jsb,
+        delayed_skid_steer,
+        joy_node,
+        teleop_node,
+        foxglove_bridge,
+        delayed_nav,
+    ])

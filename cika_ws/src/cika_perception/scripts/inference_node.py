@@ -20,15 +20,16 @@ class BasicCameraNode(Node):
         pipeline = dai.Pipeline()
 
         cam = pipeline.create(dai.node.ColorCamera)
-        cam.setPreviewSize(640, 640)
+        cam.setVideoSize(640, 640)
         # Setting Interleaved to True formats it perfectly for OpenCV
-        cam.setInterleaved(True) 
+        cam.setPreviewSize(300, 300)
+        cam.setInterleaved(False) 
         cam.setColorOrder(dai.ColorCameraProperties.ColorOrder.BGR)
         cam.setFps(10)
 
         xout = pipeline.create(dai.node.XLinkOut)
         xout.setStreamName("rgb")
-        cam.preview.link(xout.input)
+        cam.video.link(xout.input)
 
         # ─── 2. HARDCODE USB 2.0 ───────────────────────────────
         self.get_logger().info("Starting OAK-D on USB 2.0...")
@@ -43,18 +44,25 @@ class BasicCameraNode(Node):
         in_rgb = self.q_rgb.tryGet()
         
         if in_rgb is not None:
-            # Because Interleaved=True, this will work perfectly on the Pi
-            frame = in_rgb.getCvFrame() 
+            frame = in_rgb.getCvFrame()
+            
+            # Debug: check if frame is actually black
+            mean_val = frame.mean()
+            if mean_val < 2.0:
+                self.get_logger().warn(
+                    f"Frame is black (mean={mean_val:.2f}) — USB bandwidth or ISP issue",
+                    throttle_duration_sec=3.0
+                )
+                return   # don't publish garbage
             
             _, buf = cv2.imencode('.jpg', frame, [cv2.IMWRITE_JPEG_QUALITY, 85])
-            
             msg = CompressedImage()
             msg.header.stamp = self.get_clock().now().to_msg()
             msg.header.frame_id = "oak_rgb_camera_optical_frame"
             msg.format = "jpeg"
             msg.data = buf.tobytes()
-            
             self.image_pub.publish(msg)
+            self.get_logger().info(f"Published frame, mean brightness: {mean_val:.1f}", throttle_duration_sec=2.0)
 
 def main(args=None):
     rclpy.init(args=args)

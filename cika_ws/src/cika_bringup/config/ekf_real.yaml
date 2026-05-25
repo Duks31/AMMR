@@ -47,7 +47,7 @@ ekf_filter_node:
                   false, false, false,
                   false, false, true,     # vyaw
                   true,  false, false]    # ax
-    imu0_relative: true
+    imu0_relative: false
     imu0_remove_gravitational_acceleration: true
 
     # 3. Visual Odometry
@@ -61,4 +61,4 @@ ekf_filter_node:
                    false, false, false]
     
     odom1_relative: false      # Not needed when fusing velocities
-    odom1_differential: false  # Not needed when fusing velocities
+    odom1_differential: true  # Not needed when fusing velocities
