@@ -1,0 +1,9 @@
+<library path="cika_hardware_arm">
+  <class name="cika_hardware_arm/CikaHardware"
+         type="cika_hardware_arm::CikaHardware"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      Hardware interface for the Cika robot arm (MG996R servos via ESP32).
+    </description>
+  </class>
+</library>
