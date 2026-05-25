@@ -15,6 +15,7 @@ find_package(rclcpp_action REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(moveit_ros_planning_interface REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(cika_perception REQUIRED)
 
 # 3. Generate interfaces (Define types first)
 rosidl_generate_interfaces(${PROJECT_NAME}
@@ -36,6 +37,7 @@ add_executable(task_client src/task_client.cpp)
 ament_target_dependencies(task_client 
   rclcpp 
   rclcpp_action 
+  cika_perception
 )
 
 # 5. LINK THE INTERFACES (Now that task_server and task_client exist)

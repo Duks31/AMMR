@@ -117,6 +117,8 @@ sudo apt-get install -y -q \
   ros-${ROS_DISTRO}-ros2-controllers \
   ros-${ROS_DISTRO}-diff-drive-controller \
   ros-${ROS_DISTRO}-joint-state-broadcaster \
+  `# ── Manipulation (MoveIt 2) ─────────────` \
+  ros-${ROS_DISTRO}-moveit \
   `# ── Camera / vision (OAK-D Lite) ────────` \
   ros-${ROS_DISTRO}-image-transport \
   ros-${ROS_DISTRO}-compressed-image-transport \
