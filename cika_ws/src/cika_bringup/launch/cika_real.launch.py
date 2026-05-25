@@ -122,7 +122,7 @@ def generate_launch_description():
         name="imu_filter_madgwick",
         parameters=[
             {
-                "use_mag": True,
+                "use_mag": False, # this is to avoid magnetic interference
                 "gain": 0.1,
                 "publish_tf": False,
                 "world_frame": "enu",

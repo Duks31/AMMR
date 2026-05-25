@@ -221,8 +221,8 @@ void loop()
         }
     }
 
-    // 2. Encoder telemetry at 50Hz (every 20ms) — unchanged
-    if (now - last_enc_time >= 20)
+    // 2. Encoder telemetry at 20Hz (every 50ms)
+    if (now - last_enc_time >= 50)
     {
         last_enc_time = now;
         noInterrupts();
@@ -234,9 +234,9 @@ void loop()
                       rf * TICKS_TO_RAD, rb * TICKS_TO_RAD);
     }
 
-    // 3. IMU telemetry at 20Hz (every 50ms)
+    // 3. IMU telemetry at 10Hz (every 100ms)
     unsigned long now2 = millis();
-    if (now2 - last_imu_time >= 51)
+    if (now2 - last_imu_time >= 100)
     {
         last_imu_time = now2;
 

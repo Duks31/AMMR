@@ -29,37 +29,37 @@ joint_state_broadcaster:
       - gripper_mount_1_joint
       - left_gripper_1_joint
 
-# skid_steer_controller:
-#   ros__parameters:
-#     left_wheel_names: ["left_front_wheel_1_joint", "left_back_wheel_1_joint"]
-#     right_wheel_names: ["right_front_wheel_1_joint", "right_back_wheel_1_joint"]
-#     wheel_separation: 0.363
-#     wheel_radius: 0.0889
-#     wheel_separation_multiplier: 1.0
-#     left_wheel_radius_multiplier: 1.0
-#     right_wheel_radius_multiplier: 1.0
-#     publish_rate: 50.0
-#     odom_frame_id: odom
-#     base_frame_id: base_link
-#     pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
-#     twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
-#     open_loop: false
-#     enable_odom_tf: false #  EKF from robot_localization will publish the odom->base_link transform
-#     cmd_vel_timeout: 0.5
-#     use_stamped_vel: false
-#     use_sim_time: false
-#     linear:
-#       x:
-#         has_velocity_limits: true
-#         max_velocity: 0.12
-#         has_acceleration_limits: true
-#         max_acceleration: 0.5
-#     angular:
-#       z:
-#         has_velocity_limits: true
-#         max_velocity: 0.66
-#         has_acceleration_limits: true
-#         max_acceleration: 1.0
+skid_steer_controller:
+  ros__parameters:
+    left_wheel_names: ["left_front_wheel_1_joint", "left_back_wheel_1_joint"]
+    right_wheel_names: ["right_front_wheel_1_joint", "right_back_wheel_1_joint"]
+    wheel_separation: 0.363
+    wheel_radius: 0.0889
+    wheel_separation_multiplier: 1.0
+    left_wheel_radius_multiplier: 1.0
+    right_wheel_radius_multiplier: 1.0
+    publish_rate: 50.0
+    odom_frame_id: odom
+    base_frame_id: base_link
+    pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
+    twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
+    open_loop: false
+    enable_odom_tf: false #  EKF from robot_localization will publish the odom->base_link transform
+    cmd_vel_timeout: 0.5
+    use_stamped_vel: false
+    use_sim_time: false
+    linear:
+      x:
+        has_velocity_limits: true
+        max_velocity: 0.12
+        has_acceleration_limits: true
+        max_acceleration: 0.5
+    angular:
+      z:
+        has_velocity_limits: true
+        max_velocity: 0.66
+        has_acceleration_limits: true
+        max_acceleration: 1.0
 
 arm_controller:
   ros__parameters:

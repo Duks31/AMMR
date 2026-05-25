@@ -151,7 +151,7 @@ namespace cika_hardware
         tcsetattr(serial_fd_, TCSANOW, &options);
 
         RCLCPP_INFO(rclcpp::get_logger("CikaDriveInterface"),
-                    "Activated Raw UART Bridge on /dev/ttyUSB0.");
+                    "Activated Raw UART Bridge on /dev/esp32.");
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 
@@ -199,15 +199,15 @@ namespace cika_hardware
                         double dt = period.seconds();
                         if (dt > 0.0)
                         {
-                            hw_states_[1] = (p_lf - hw_states_[0]) / dt;
-                            hw_states_[3] = (p_lb - hw_states_[2]) / dt;
-                            hw_states_[5] = (p_rf - hw_states_[4]) / dt;
-                            hw_states_[7] = (p_rb - hw_states_[6]) / dt;
+                            hw_states_[1] = (-p_lf - hw_states_[0]) / dt;
+                            hw_states_[3] = (-p_lb - hw_states_[2]) / dt;
+                            hw_states_[5] = (-p_rf - hw_states_[4]) / dt;
+                            hw_states_[7] = (-p_rb - hw_states_[6]) / dt;
                         }
-                        hw_states_[0] = p_lf;
-                        hw_states_[2] = p_lb;
-                        hw_states_[4] = p_rf;
-                        hw_states_[6] = p_rb;
+                        hw_states_[0] = -p_lf;
+                        hw_states_[2] = -p_lb;
+                        hw_states_[4] = -p_rf;
+                        hw_states_[6] = -p_rb;
                     }
                 }
                 // ── IMU line ──────────────────────────────────────────────────
@@ -253,9 +253,6 @@ namespace cika_hardware
                             mag_msg.magnetic_field_covariance[8] = 1e-6;
                             mag_pub_->publish(mag_msg);
                         }
-
-                        // Spin the node once to flush publisher queues
-                        rclcpp::spin_some(node_);
                     }
                 }
             }
