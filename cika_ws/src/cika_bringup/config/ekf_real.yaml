@@ -46,7 +46,7 @@ ekf_filter_node:
                   false, false, true,     # yaw
                   false, false, false,
                   false, false, true,     # vyaw
-                  true,  false, false]    # ax
+                  false,  false, false]    # ax
     imu0_relative: false
     imu0_remove_gravitational_acceleration: true
 
