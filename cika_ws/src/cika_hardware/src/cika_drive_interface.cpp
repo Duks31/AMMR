@@ -216,10 +216,10 @@ namespace cika_hardware
                         double prev_rf = hw_states_[4];
                         double prev_rb = hw_states_[6];
 
-                        hw_states_[0] = p_lf;
-                        hw_states_[2] = p_lb;
-                        hw_states_[4] = p_rf;
-                        hw_states_[6] = p_rb;
+                        hw_states_[0] = -p_lf;
+                        hw_states_[2] = -p_lb;
+                        hw_states_[4] = -p_rf;
+                        hw_states_[6] = -p_rb;
 
                         // 2. Use the REAL dt for the velocity math
                         if (actual_dt > 0.0)
