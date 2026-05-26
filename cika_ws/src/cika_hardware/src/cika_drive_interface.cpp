@@ -196,6 +196,9 @@ namespace cika_hardware
                     if (sscanf(line.c_str(), "E:%lf,%lf,%lf,%lf",
                                &p_lf, &p_lb, &p_rf, &p_rb) == 4)
                     {
+                        RCLCPP_INFO(rclcpp::get_logger("CikaDriveInterface"),
+                                    "RAW encoders: lf=%.3f lb=%.3f rf=%.3f rb=%.3f",
+                                    p_lf, p_lb, p_rf, p_rb);
                         double dt = period.seconds();
                         if (dt > 0.0)
                         {
