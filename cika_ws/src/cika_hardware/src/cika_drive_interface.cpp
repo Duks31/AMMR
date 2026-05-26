@@ -211,17 +211,24 @@ namespace cika_hardware
                                     "RAW encoders: lf=%.3f lb=%.3f rf=%.3f rb=%.3f",
                                     p_lf, p_lb, p_rf, p_rb);
                         double dt = period.seconds();
-                        if (dt > 0.0)
-                        {
-                            hw_states_[1] = (p_lf - hw_states_[0]) / dt;
-                            hw_states_[3] = (p_lb - hw_states_[2]) / dt;
-                            hw_states_[5] = (p_rf - hw_states_[4]) / dt;
-                            hw_states_[7] = (p_rb - hw_states_[6]) / dt;
-                        }
+
+                        double prev_lf = hw_states_[0];
+                        double prev_lb = hw_states_[2];
+                        double prev_rf = hw_states_[4];
+                        double prev_rb = hw_states_[6];
+
                         hw_states_[0] = p_lf;
                         hw_states_[2] = p_lb;
-                        hw_states_[4] = p_rf;
-                        hw_states_[6] = p_rb;
+                        hw_states_[4] = -p_rf;
+                        hw_states_[6] = -p_rb;
+
+                        if (dt > 0.0)
+                        {
+                            hw_states_[1] = (hw_states_[0] - prev_lf) / dt;
+                            hw_states_[3] = (hw_states_[2] - prev_lb) / dt;
+                            hw_states_[5] = (hw_states_[4] - prev_rf) / dt;
+                            hw_states_[7] = (hw_states_[6] - prev_rb) / dt;
+                        }
                     }
                 }
                 // ── IMU line ──────────────────────────────────────────────────
