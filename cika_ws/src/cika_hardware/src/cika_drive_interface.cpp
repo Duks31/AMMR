@@ -183,7 +183,7 @@ namespace cika_hardware
     // ── read ──────────────────────────────────────────────────────────────────────
     hardware_interface::return_type CikaDriveInterface::read(
         const rclcpp::Time &,
-        const rclcpp::Duration &period)
+        const rclcpp::Duration & /*period*/)
     {
         if (serial_fd_ == -1)
             return hardware_interface::return_type::ERROR;
