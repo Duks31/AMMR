@@ -89,6 +89,8 @@ namespace cika_hardware
         // ── Robot geometry ────────────────────────────────────────────────────────────
         double wheel_separation_{0.363};
         double wheel_radius_{0.0885};
+
+        rclcpp::Time last_enc_time_;
     };
 
 } // namespace cika_hardware

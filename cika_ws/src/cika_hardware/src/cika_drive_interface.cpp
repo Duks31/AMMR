@@ -163,6 +163,7 @@ namespace cika_hardware
 
         RCLCPP_INFO(rclcpp::get_logger("CikaDriveInterface"),
                     "Activated Raw UART Bridge on /dev/esp32.");
+        last_enc_time_ = node_->get_clock()->now();
         return hardware_interface::CallbackReturn::SUCCESS;
     }
 
@@ -204,13 +205,11 @@ namespace cika_hardware
                 if (line.rfind("E:", 0) == 0)
                 {
                     double p_lf, p_lb, p_rf, p_rb;
-                    if (sscanf(line.c_str(), "E:%lf,%lf,%lf,%lf",
-                               &p_lf, &p_lb, &p_rf, &p_rb) == 4)
+                    if (sscanf(line.c_str(), "E:%lf,%lf,%lf,%lf", &p_lf, &p_lb, &p_rf, &p_rb) == 4)
                     {
-                        RCLCPP_INFO(rclcpp::get_logger("CikaDriveInterface"),
-                                    "RAW encoders: lf=%.3f lb=%.3f rf=%.3f rb=%.3f",
-                                    p_lf, p_lb, p_rf, p_rb);
-                        double dt = period.seconds();
+                        // 1. Calculate the REAL time elapsed since the last encoder message
+                        auto current_time = node_->get_clock()->now();
+                        double actual_dt = (current_time - last_enc_time_).seconds();
 
                         double prev_lf = hw_states_[0];
                         double prev_lb = hw_states_[2];
@@ -219,15 +218,26 @@ namespace cika_hardware
 
                         hw_states_[0] = p_lf;
                         hw_states_[2] = p_lb;
-                        hw_states_[4] = -p_rf;
-                        hw_states_[6] = -p_rb;
+                        hw_states_[4] = p_rf;
+                        hw_states_[6] = p_rb;
 
-                        if (dt > 0.0)
+                        // 2. Use the REAL dt for the velocity math
+                        if (actual_dt > 0.0)
                         {
-                            hw_states_[1] = (hw_states_[0] - prev_lf) / dt;
-                            hw_states_[3] = (hw_states_[2] - prev_lb) / dt;
-                            hw_states_[5] = (hw_states_[4] - prev_rf) / dt;
-                            hw_states_[7] = (hw_states_[6] - prev_rb) / dt;
+                            hw_states_[1] = (hw_states_[0] - prev_lf) / actual_dt;
+                            hw_states_[3] = (hw_states_[2] - prev_lb) / actual_dt;
+                            hw_states_[5] = (hw_states_[4] - prev_rf) / actual_dt;
+                            hw_states_[7] = (hw_states_[6] - prev_rb) / actual_dt;
+
+                            // 3. Reset the timer
+                            last_enc_time_ = current_time;
+                        }
+                        if (actual_dt > 0.2)
+                        {
+                            hw_states_[1] = 0.0; // LF vel
+                            hw_states_[3] = 0.0; // LB vel
+                            hw_states_[5] = 0.0; // RF vel
+                            hw_states_[7] = 0.0; // RB vel
                         }
                     }
                 }
