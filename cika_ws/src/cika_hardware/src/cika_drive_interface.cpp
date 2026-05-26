@@ -135,6 +135,17 @@ namespace cika_hardware
             RCLCPP_ERROR(rclcpp::get_logger("CikaDriveInterface"),
                          "Failed to open /dev/esp32");
         }
+        // UNCOMMET AFTER FLASHING ESP32 WITH NEW FIRMWARE: DATE 26/5/2026
+        // else
+        // {
+        //     // existing termios setup ...
+
+        //     // ← ADD THIS after tcsetattr
+        //     usleep(100000); // wait 100ms for serial to settle
+        //     ::write(serial_fd_, "<RESET>\n", 8);
+        //     RCLCPP_INFO(rclcpp::get_logger("CikaDriveInterface"),
+        //                 "Sent encoder reset to ESP32");
+        // }
 
         struct termios options;
         tcgetattr(serial_fd_, &options);
@@ -202,13 +213,13 @@ namespace cika_hardware
                         double dt = period.seconds();
                         if (dt > 0.0)
                         {
-                            hw_states_[1] = (-p_lf - hw_states_[0]) / dt;
-                            hw_states_[3] = (-p_lb - hw_states_[2]) / dt;
+                            hw_states_[1] = (p_lf - hw_states_[0]) / dt;
+                            hw_states_[3] = (p_lb - hw_states_[2]) / dt;
                             hw_states_[5] = (p_rf - hw_states_[4]) / dt;
                             hw_states_[7] = (p_rb - hw_states_[6]) / dt;
                         }
-                        hw_states_[0] = -p_lf;
-                        hw_states_[2] = -p_lb;
+                        hw_states_[0] = p_lf;
+                        hw_states_[2] = p_lb;
                         hw_states_[4] = p_rf;
                         hw_states_[6] = p_rb;
                     }

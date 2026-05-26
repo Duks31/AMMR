@@ -24,8 +24,8 @@
 
 // ── Kinematics ────────────────────────────────────────────────────────────────
 static constexpr float MAX_RAD_S = 1.36f; // Updated for 13rpm ~ 0.12m/s
-static constexpr int MIN_PWM = 30; // TODO: To be Tested
-static constexpr float TICKS_TO_RAD = 0.0009584f; 
+static constexpr int MIN_PWM = 30;        // TODO: To be Tested
+static constexpr float TICKS_TO_RAD = 0.0009584f;
 
 // ── Calibration Offsets ───────────────────────────────────────────────────────
 const float accel_x_offset = 0.0103f;
@@ -183,7 +183,7 @@ void setup()
     Wire.write(0x0A); // Control Register 1
     Wire.write(0xCF); // Continuous mode, 200Hz
     Wire.endTransmission();
-    
+
     if (!mpu.testConnection())
     {
         Serial.println("ERR:MPU6050 not found");
@@ -203,7 +203,13 @@ void loop()
     {
         String incoming = Serial.readStringUntil('\n');
         incoming.trim();
-        if (incoming.startsWith("<") && incoming.endsWith(">"))
+        if (incoming == "<RESET>")
+        {
+            noInterrupts();
+            ticks_lf = ticks_lb = ticks_rf = ticks_rb = 0;
+            interrupts();
+        }
+        else if (incoming.startsWith("<") && incoming.endsWith(">"))
         {
             incoming = incoming.substring(1, incoming.length() - 1);
             float cmds[4];
