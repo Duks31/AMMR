@@ -175,11 +175,11 @@ def generate_launch_description():
 
         # robot_state_publisher_node,
         delayed_lidar,
-        ros2_control_node,
-        # laser_filter_node,
-        # madgwick_node,
-        # ekf_node,
-        # inference_node,
+        # ros2_control_node,
+        laser_filter_node,
+        madgwick_node,
+        ekf_node,
+        inference_node,
 
         # delayed_jsb,
         # delayed_skid_steer,
