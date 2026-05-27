@@ -92,7 +92,7 @@ def generate_launch_description():
     )
 
     delayed_lidar = TimerAction(
-    period=8.0, # Give the system 5 seconds to settle before hitting the LiDAR
+    period=20.0, # Give the system 5 seconds to settle before hitting the LiDAR
     actions=[
         Node(
             package="sllidar_ros2",
