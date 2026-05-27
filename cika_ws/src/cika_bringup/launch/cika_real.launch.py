@@ -7,13 +7,14 @@ from launch.actions import (
     TimerAction,
     RegisterEventHandler,
     IncludeLaunchDescription,
+    GroupAction,
 )
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import Command, LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource, AnyLaunchDescriptionSource
 from launch.conditions import IfCondition
 
-from launch_ros.actions import Node
+from launch_ros.actions import Node, SetRemap
 from launch_ros.parameter_descriptions import ParameterValue
 
 
@@ -104,7 +105,7 @@ def generate_launch_description():
                 "angle_compensate": True,
                 "scan_mode": "Standard",
             }],
-            remappings=[("/scan", "/scan_raw")],
+            remappings=[("scan", "/scan_raw")],
             output="screen",
             )
         ]
@@ -115,8 +116,8 @@ def generate_launch_description():
         executable="scan_to_scan_filter_chain",
         parameters=[os.path.join(cika_bringup_dir, "config", "laser_filter.yaml")],
         remappings=[
-            ("/scan",          "/scan_raw"),
-            ("/scan_filtered", "/scan"),
+            ("scan",          "/scan_raw"),
+            ("scan_filtered", "/scan"),
         ],
     )
 
