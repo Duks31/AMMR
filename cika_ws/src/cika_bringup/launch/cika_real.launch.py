@@ -69,20 +69,9 @@ def generate_launch_description():
                     "serial_port": "/dev/rplidar",
                     "serial_baudrate": "460800",
                     "frame_id": "lidar_1",
-                    "scan_frequency": "8.0",
                     "angle_compensate": "true",
                 }.items(),
             )
-        ]
-    )
-
-    # Motor start attempts
-    delayed_motor = TimerAction(
-        period=18.0,
-        actions=[
-            ExecuteProcess(cmd=['ros2', 'service', 'call', '/start_motor', 'std_srvs/srv/Empty'], output='screen'),
-            TimerAction(period=4.0, actions=[ExecuteProcess(cmd=['ros2', 'service', 'call', '/start_motor', 'std_srvs/srv/Empty'], output='screen')]),
-            TimerAction(period=8.0, actions=[ExecuteProcess(cmd=['ros2', 'service', 'call', '/start_motor', 'std_srvs/srv/Empty'], output='screen')]),
         ]
     )
 
@@ -186,8 +175,7 @@ def generate_launch_description():
 
         # robot_state_publisher_node,
         delayed_lidar,
-        delayed_motor,           # ← Important
-        # ros2_control_node,
+        ros2_control_node,
         # laser_filter_node,
         # madgwick_node,
         # ekf_node,
