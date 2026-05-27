@@ -83,18 +83,24 @@ def generate_launch_description():
         ],
     )
 
-    lidar_node = Node(
-        package="sllidar_ros2",
-        executable="sllidar_node",
-        name="sllidar_node",
-        parameters=[{
-            "serial_port": "/dev/rplidar",
-            "serial_baudrate": 460800,
-            "frame_id": "lidar_1",
-            "angle_compensate": True,
-            "scan_mode": "Standard",
-        }],
-        remappings=[("/scan", "/scan_raw")],
+    delayed_lidar = TimerAction(
+    period=5.0, # Give the system 5 seconds to settle before hitting the LiDAR
+    actions=[
+        Node(
+            package="sllidar_ros2",
+            executable="sllidar_node",
+            name="sllidar_node",
+            parameters=[{
+                "serial_port": "/dev/rplidar",
+                "serial_baudrate": 460800,
+                "frame_id": "lidar_1",
+                "angle_compensate": True,
+                "scan_mode": "Standard",
+            }],
+            remappings=[("/scan", "/scan_raw")],
+            output="screen",
+            )
+        ]
     )
 
     laser_filter_node = Node(
@@ -226,7 +232,7 @@ def generate_launch_description():
         mode_arg,
         robot_state_publisher_node,
         ros2_control_node,
-        lidar_node,
+        delayed_lidar,
         laser_filter_node,
         inference_node,
         madgwick_node,
