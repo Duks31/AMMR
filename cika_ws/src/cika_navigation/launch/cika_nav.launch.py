@@ -89,7 +89,11 @@ def generate_launch_description():
         "subscribe_rgb": False, # Only Lidar slam for now, set to true if you want to use RGBD slam with the OAK-D
         "approx_sync": True,
         "publish_tf": True,
-        "approx_sync_max_interval": 0.05,
+        "approx_sync_max_interval": 0.2,
+        "topic_queue_size": 30,                 # ← Added
+        "sync_queue_size": 30,                  # ← Added
+        "qos_scan": 1,                          # ← RELIABLE (matches your publisher)
+        "qos_odom": 1,                          # ← RELIABLE
         "use_sim_time": use_sim_time,
         # "Mem/SaveDepth16Format": "false", 
         # "Mem/DepthCompressionFormat": ".png",
@@ -135,7 +139,7 @@ def generate_launch_description():
         ("depth/image",      "/oak/stereo/image_raw"),
         ("rgb/camera_info",  "/oak/rgb/camera_info"),
         ("depth/camera_info","/oak/stereo/camera_info"),
-        ("scan",             "/scan"),      # already filtered by laser_filter_node
+        ("scan",             "/scan_raw"),      # bypassing the filter for testing 
         ("odom",             "/odometry/filtered"),
         ("vo",               "/vo"),
     ]
