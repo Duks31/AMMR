@@ -51,6 +51,13 @@ def generate_launch_description():
         description="slam = build map, navigation = localize + Nav2",
     )
 
+    use_perception_arg = DeclareLaunchArgument(
+        name="use_perception",
+        default_value="false",
+        choices=["true", "false"],
+        description="Launch inference node (requires OAK-D)",
+    )
+
     # ── Robot description ─────────────────────────────────────────────────────
     robot_description_content = ParameterValue(
         Command([
@@ -118,6 +125,7 @@ def generate_launch_description():
         executable="inference_node.py",
         name="inference_node",
         output="screen",
+        condition=IfCondition(LaunchConfiguration("use_perception")),
     )
 
     madgwick_node = Node(
@@ -230,6 +238,7 @@ def generate_launch_description():
         teleop_arg,
         nav_arg,
         mode_arg,
+        use_perception_arg,
         robot_state_publisher_node,
         ros2_control_node,
         delayed_lidar,
