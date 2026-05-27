@@ -92,7 +92,7 @@ def generate_launch_description():
     )
 
     delayed_lidar = TimerAction(
-    period=5.0, # Give the system 5 seconds to settle before hitting the LiDAR
+    period=8.0, # Give the system 5 seconds to settle before hitting the LiDAR
     actions=[
         Node(
             package="sllidar_ros2",
@@ -112,14 +112,16 @@ def generate_launch_description():
         ]
     )
 
-    # Auto-start RPLIDAR motor
-    start_motor = ExecuteProcess(
-        cmd=['ros2', 'service', 'call', '/start_motor', 'std_srvs/srv/Empty'],
-        output='screen'
+    delayed_motor_start = TimerAction(
+    period=12.0,   # Give lidar more time
+    actions=[
+        ExecuteProcess(
+            cmd=['ros2', 'service', 'call', '/start_motor', 'std_srvs/srv/Empty'],
+            output='screen',
+            shell=True
+            )
+        ]
     )
-
-    # Delay it a bit after lidar starts
-    delayed_motor = TimerAction(period=6.0, actions=[start_motor])
 
     laser_filter_node = Node(
         package="laser_filters",
@@ -253,7 +255,7 @@ def generate_launch_description():
         robot_state_publisher_node,
         ros2_control_node,
         delayed_lidar,
-        delayed_motor,
+        delayed_motor_start,
         laser_filter_node,
         inference_node,
         madgwick_node,
