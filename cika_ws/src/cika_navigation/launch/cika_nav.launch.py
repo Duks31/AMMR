@@ -109,14 +109,14 @@ def generate_launch_description():
         "RGBD/Enabled": "true",
         # "RGBD/DepthMax": "8.0",
         "RGBD/OptimizeMaxError": "5.0",
-        "Grid/Sensor": "1", # 0=scan, 1=cloud, 2=cloud2
+        "Grid/Sensor": "0", # 0=scan, 1=cloud, 2=cloud2
         "Grid/RangeMin": "0.12",
         "Grid/RangeMax": "12.0",
         "Grid/FootprintRadius": "0.35",
         "Grid/CellSize": "0.05",
         "Grid/3D": "false",
         "Grid/RayTracing": "true",
-        "Grid/DepthDecimation": "4",
+        # "Grid/DepthDecimation": "4", 
         "Grid/MaxObstacleHeight": "2.0",
         "Grid/MinGroundHeight": "0.05",
         # "Grid/DepthMax": "8.0",

@@ -210,7 +210,7 @@ def generate_launch_description():
         launch_arguments={
             "use_sim_time": "false",
             "mode":         LaunchConfiguration("mode"),
-            "ekf_config":   ekf_real_path,
+            # "ekf_config":   ekf_real_path,
             "nav2_params":  nav2_hw_path,
             "rtabmap_db":   rtabmap_db_path,
         }.items(),
