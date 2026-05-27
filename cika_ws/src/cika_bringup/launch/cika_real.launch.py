@@ -253,7 +253,7 @@ def generate_launch_description():
         mode_arg,
         use_perception_arg,
         robot_state_publisher_node,
-        ros2_control_node,
+        # ros2_control_node,
         delayed_lidar,
         delayed_motor_start,
         laser_filter_node,
