@@ -40,7 +40,7 @@ skid_steer_controller:
     right_wheel_radius_multiplier: 1.0
     publish_rate: 50.0
     odom_frame_id: odom
-    base_frame_id: base_link
+    base_frame_id: base_footprint # changed from base_link to base_footprint to match the new URDF
     pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
     twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
     open_loop: false

@@ -79,7 +79,7 @@ def generate_launch_description():
 
     # ── RTAB-Map shared params ────────────────────────────────────────────────
     rtabmap_base_params = {
-        "frame_id": "base_link",
+        "frame_id": "base_footprint", # changed from base_link to base_footprint to match the new URDF
         "odom_frame_id": "odom",
         "camera_frame_id": "OAKDcamera_1_optical",
         "subscribe_depth": True,

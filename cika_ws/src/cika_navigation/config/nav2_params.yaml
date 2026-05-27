@@ -2,7 +2,7 @@ bt_navigator:
   ros__parameters:
     use_sim_time: true
     global_frame: map
-    robot_base_frame: base_link
+    robot_base_frame: base_footprint # changed from base_link to base_footprint to match the new URDF
     odom_topic: /odometry/filtered
     bt_loop_duration: 10
     default_server_timeout: 20

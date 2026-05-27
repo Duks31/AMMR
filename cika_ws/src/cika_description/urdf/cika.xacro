@@ -4,6 +4,16 @@
     <xacro:include filename="$(find cika_description)/urdf/materials.xacro" />
     <xacro:include filename="$(find cika_description)/urdf/cika.gazebo" />
     <xacro:arg name="use_sim" default="true" />
+
+    <link name="base_footprint"/>
+
+    <joint name="base_footprint_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="-0.2887 0.1505 0" rpy="0 0 0"/>
+    </joint>
+
+
     <link name="base_link">
         <inertial>
             <origin xyz="-0.33260926446179306 0.15120963934333517 0.1740750380233756" rpy="0 0 0" />
