@@ -92,36 +92,26 @@ def generate_launch_description():
     )
 
     delayed_lidar = TimerAction(
-    period=8.0, # Give the system 5 seconds to settle before hitting the LiDAR
+    period=6.0,
     actions=[
-        Node(
-            package="sllidar_ros2",
-            executable="sllidar_node",
-            name="sllidar_node",
-            output="screen",
-            parameters=[{
+        IncludeLaunchDescription(
+            PythonLaunchDescriptionSource(
+                os.path.join(
+                    get_package_share_directory("sllidar_ros2"),
+                    "launch",
+                    "sllidar_c1_launch.py"
+                )
+            ),
+            launch_arguments={
                 "serial_port": "/dev/rplidar",
-                "serial_baudrate": 460800,
+                "serial_baudrate": "460800",
                 "frame_id": "lidar_1",
-                "angle_compensate": True,
-                "scan_mode": "Standard",
-                "scan_frequency": 10.0,
-            }],
-            remappings=[("scan", "/scan_raw")],
+                "scan_frequency": "10.0",
+                "angle_compensate": "true",
+            }.items(),
             )
         ]
-    )
-
-    delayed_motor_start = TimerAction(
-    period=12.0,   # Give lidar more time
-    actions=[
-        ExecuteProcess(
-            cmd=['ros2', 'service', 'call', '/start_motor', 'std_srvs/srv/Empty'],
-            output='screen',
-            shell=True
-            )
-        ]
-    )
+    )   
 
     laser_filter_node = Node(
         package="laser_filters",
@@ -253,7 +243,6 @@ def generate_launch_description():
         use_perception_arg,
         robot_state_publisher_node,
         delayed_lidar,
-        delayed_motor_start,
         ros2_control_node,
         laser_filter_node,
         inference_node,
