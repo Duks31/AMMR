@@ -27,7 +27,7 @@ def generate_launch_description():
     joy_ps5_params   = os.path.join(cika_bringup_dir,     "config", "joy_ps5_real.yaml")
     ekf_real_path    = os.path.join(cika_bringup_dir,     "config", "ekf_real.yaml")
     nav2_hw_path     = os.path.join(cika_bringup_dir,     "config", "nav2_params_real.yaml")
-    rtabmap_db_path  = os.path.join(cika_navigation_dir,  "maps",   "cika_map.db")
+    rtabmap_db_path  = os.path.expanduser("~/cika_maps/cika_map.db")
 
     # ── Arguments ─────────────────────────────────────────────────────────────
     teleop_arg = DeclareLaunchArgument(

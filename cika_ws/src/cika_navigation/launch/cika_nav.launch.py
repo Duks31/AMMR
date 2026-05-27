@@ -20,10 +20,10 @@ def generate_launch_description():
     nav2_bringup    = get_package_share_directory("nav2_bringup")
 
     # ── Default paths (sim) ───────────────────────────────────────────────────
-    default_nav2_params = os.path.join(cika_navigation, "config", "nav2_params.yaml")
-    default_ekf_config  = os.path.join(cika_bringup,    "config", "ekf_sim.yaml")
-    default_rtabmap_db  = "/mnt/cika_data/maps/cika_map.db"
-
+    default_nav2_params = os.path.join(cika_bringup, "config", "nav2_params_real.yaml")
+    # default_ekf_config  = os.path.join(cika_bringup,    "config", "ekf_sim.yaml")
+    default_rtabmap_db  = os.path.expanduser("~/cika_maps/cika_map.db")
+    
     # ── Arguments ─────────────────────────────────────────────────────────────
     mode_arg = DeclareLaunchArgument(
         name="mode",
@@ -41,11 +41,12 @@ def generate_launch_description():
     # Callers override these for hardware:
     #   ekf_config:=<path>/ekf_real.yaml
     #   nav2_params:=<path>/nav2_params_hw.yaml
-    ekf_config_arg = DeclareLaunchArgument(
-        name="ekf_config",
-        default_value=default_ekf_config,
-        description="Path to EKF yaml (swap for hardware)",
-    )
+
+    # ekf_config_arg = DeclareLaunchArgument(
+    #     name="ekf_config",
+    #     default_value=default_ekf_config,
+    #     description="Path to EKF yaml (swap for hardware)",
+    # )
 
     nav2_params_arg = DeclareLaunchArgument(
         name="nav2_params",
@@ -61,21 +62,21 @@ def generate_launch_description():
 
     use_sim_time = LaunchConfiguration("use_sim_time")
     mode         = LaunchConfiguration("mode")
-    ekf_config   = LaunchConfiguration("ekf_config")
+    # ekf_config   = LaunchConfiguration("ekf_config")
     nav2_params  = LaunchConfiguration("nav2_params")
     rtabmap_db   = LaunchConfiguration("rtabmap_db")
 
     # ── Global sim time parameter ─────────────────────────────────────────────
     set_sim_time = SetParameter(name="use_sim_time", value=use_sim_time)
 
-    # ── EKF node ──────────────────────────────────────────────────────────────
-    ekf_node = Node(
-        package="robot_localization",
-        executable="ekf_node",
-        name="ekf_filter_node",
-        output="screen",
-        parameters=[ekf_config, {"use_sim_time": use_sim_time}],
-    )
+    # # ── EKF node ──────────────────────────────────────────────────────────────
+    # ekf_node = Node(
+    #     package="robot_localization",
+    #     executable="ekf_node",
+    #     name="ekf_filter_node",
+    #     output="screen",
+    #     parameters=[ekf_config, {"use_sim_time": use_sim_time}],
+    # )
 
     # ── RTAB-Map shared params ────────────────────────────────────────────────
     rtabmap_base_params = {
@@ -191,11 +192,11 @@ def generate_launch_description():
     return LaunchDescription([
         mode_arg,
         use_sim_time_arg,
-        ekf_config_arg,
+        # ekf_config_arg,
         nav2_params_arg,
         rtabmap_db_arg,
         set_sim_time,
-        ekf_node,
+        # ekf_node,
         rtabmap_slam_node,
         rtabmap_localization_node,
         nav2_launch,
