@@ -179,24 +179,24 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        teleop_arg,
-        nav_arg,
-        mode_arg,
-        use_perception_arg,
+        # teleop_arg,
+        # nav_arg,
+        # mode_arg,
+        # use_perception_arg,
 
-        robot_state_publisher_node,
+        # robot_state_publisher_node,
         delayed_lidar,
         delayed_motor,           # ← Important
-        ros2_control_node,
-        laser_filter_node,
-        madgwick_node,
-        ekf_node,
-        inference_node,
+        # ros2_control_node,
+        # laser_filter_node,
+        # madgwick_node,
+        # ekf_node,
+        # inference_node,
 
-        delayed_jsb,
-        delayed_skid_steer,
-        joy_node,
-        teleop_node,
-        foxglove_bridge,
-        delayed_nav,
+        # delayed_jsb,
+        # delayed_skid_steer,
+        # joy_node,
+        # teleop_node,
+        # foxglove_bridge,
+        # delayed_nav,
     ])
