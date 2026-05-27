@@ -255,7 +255,7 @@ def generate_launch_description():
         robot_state_publisher_node,
         ros2_control_node,
         delayed_lidar,
-        # delayed_motor_start,
+        delayed_motor_start,
         laser_filter_node,
         inference_node,
         madgwick_node,
