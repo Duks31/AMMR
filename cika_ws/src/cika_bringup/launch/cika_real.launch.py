@@ -14,6 +14,9 @@ from launch.substitutions import Command, LaunchConfiguration
 from launch.launch_description_sources import PythonLaunchDescriptionSource, AnyLaunchDescriptionSource
 from launch.conditions import IfCondition
 
+from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
+
 
 def generate_launch_description():
     cika_description_dir = get_package_share_directory("cika_description")
@@ -54,7 +57,7 @@ def generate_launch_description():
         parameters=[{"robot_description": robot_description_content}, controllers_yaml, {"use_sim_time": False}],
     )
 
-    # ── RPLIDAR (Official Launch + Motor Start) ───────────────────────────────
+    # ── RPLIDAR ───────────────────────────────────────────────────────────────
     delayed_lidar = TimerAction(
         period=8.0,
         actions=[
@@ -66,14 +69,14 @@ def generate_launch_description():
                     "serial_port": "/dev/rplidar",
                     "serial_baudrate": "460800",
                     "frame_id": "lidar_1",
-                    "scan_frequency": "8.0",      # Lowered a bit for stability
+                    "scan_frequency": "8.0",
                     "angle_compensate": "true",
                 }.items(),
             )
         ]
     )
 
-    # Multiple motor start attempts with delays
+    # Motor start attempts
     delayed_motor = TimerAction(
         period=18.0,
         actions=[
@@ -90,39 +93,108 @@ def generate_launch_description():
         remappings=[("scan", "/scan_raw"), ("scan_filtered", "/scan")],
     )
 
-    # ... (keep your other nodes: inference, madgwick, ekf, etc.)
+    madgwick_node = Node(
+        package="imu_filter_madgwick",
+        executable="imu_filter_madgwick_node",
+        name="imu_filter_madgwick",
+        parameters=[{"use_mag": False, "gain": 0.1, "publish_tf": False, "world_frame": "enu"}],
+        remappings=[("/imu/data_raw", "/imu/raw"), ("/imu/data", "/imu/filtered")],
+        output="screen",
+    )
 
-    inference_node = Node(...)   # your existing one
-    madgwick_node = Node(...)    # your existing one
-    ekf_node = Node(...)         # your existing one
+    ekf_node = Node(
+        package="robot_localization",
+        executable="ekf_node",
+        name="ekf_filter_node",
+        output="screen",
+        parameters=[ekf_real_path, {"use_sim_time": False}],
+    )
 
-    # Controller spawners (keep as is)
-    joint_state_broadcaster_spawner = Node(...)   # your existing
-    skid_steer_controller_spawner = Node(...)     # your existing
+    inference_node = Node(
+        package="cika_perception",
+        executable="inference_node.py",
+        name="inference_node",
+        output="screen",
+        condition=IfCondition(LaunchConfiguration("use_perception")),
+    )
 
-    # Teleop, Foxglove, Nav...
-    joy_node = Node(...) 
-    teleop_node = Node(...)
-    foxglove_bridge = IncludeLaunchDescription(...) 
-    delayed_nav = TimerAction(period=20.0, actions=[your nav_launch])   # increased a bit
+    # Controller spawners
+    joint_state_broadcaster_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["joint_state_broadcaster", "--controller-manager", "/controller_manager", "--controller-manager-timeout", "30"],
+        output="screen",
+    )
+
+    skid_steer_controller_spawner = Node(
+        package="controller_manager",
+        executable="spawner",
+        arguments=["skid_steer_controller", "--controller-manager", "/controller_manager", "--controller-manager-timeout", "30"],
+        output="screen",
+        remappings=[("/cmd_vel", "/skid_steer_controller/cmd_vel_unstamped")],
+    )
+
+    # Teleop
+    joy_node = Node(
+        package="joy",
+        executable="joy_node",
+        parameters=[joy_ps5_params],
+        condition=IfCondition(LaunchConfiguration("teleop")),
+    )
+
+    teleop_node = Node(
+        package="teleop_twist_joy",
+        executable="teleop_node",
+        parameters=[joy_ps5_params],
+        remappings=[("/cmd_vel", "/skid_steer_controller/cmd_vel_unstamped")],
+        condition=IfCondition(LaunchConfiguration("teleop")),
+    )
+
+    # Foxglove
+    foxglove_bridge = IncludeLaunchDescription(
+        AnyLaunchDescriptionSource(os.path.join(foxglove_bridge_dir, "launch", "foxglove_bridge_launch.xml"))
+    )
+
+    # Nav stack
+    nav_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(os.path.join(cika_navigation_dir, "launch", "cika_nav.launch.py")),
+        launch_arguments={
+            "use_sim_time": "false",
+            "mode": LaunchConfiguration("mode"),
+            "nav2_params": nav2_hw_path,
+            "rtabmap_db": rtabmap_db_path,
+        }.items(),
+        condition=IfCondition(LaunchConfiguration("nav")),
+    )
+    delayed_nav = TimerAction(period=20.0, actions=[nav_launch])
+
+    # Sequencing
+    delayed_jsb = TimerAction(period=10.0, actions=[joint_state_broadcaster_spawner])
+
+    delayed_skid_steer = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=joint_state_broadcaster_spawner,
+            on_exit=[TimerAction(period=2.0, actions=[skid_steer_controller_spawner])],
+        )
+    )
 
     return LaunchDescription([
         teleop_arg,
+        nav_arg,
         mode_arg,
         use_perception_arg,
-        nav_arg,
-        
+
         robot_state_publisher_node,
-        delayed_lidar,           # ← Early
-        delayed_motor,           # ← Motor attempts
+        delayed_lidar,
+        delayed_motor,           # ← Important
         ros2_control_node,
         laser_filter_node,
         madgwick_node,
         ekf_node,
         inference_node,
-        
-        delayed_jsb,             # your existing
-        delayed_skid_steer,      # your existing
+
+        delayed_jsb,
+        delayed_skid_steer,
         joy_node,
         teleop_node,
         foxglove_bridge,
