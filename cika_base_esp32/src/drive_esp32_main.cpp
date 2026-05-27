@@ -141,7 +141,7 @@ bool readMag(float &mx, float &my, float &mz)
 // ── Setup ─────────────────────────────────────────────────────────────────────
 void setup()
 {
-    Serial.begin(115200);
+    Serial.begin(460800);
 
     // Motor EN pins
     pinMode(LEFT_REN, OUTPUT);

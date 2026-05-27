@@ -149,8 +149,10 @@ namespace cika_hardware
 
         struct termios options;
         tcgetattr(serial_fd_, &options);
-        cfsetispeed(&options, B115200);
-        cfsetospeed(&options, B115200);
+        // cfsetispeed(&options, B115200);
+        // cfsetospeed(&options, B115200);
+        cfsetispeed(&options, B460800);
+        cfsetospeed(&options, B460800);
         options.c_cflag |= (CLOCAL | CREAD);
         options.c_cflag &= ~PARENB;
         options.c_cflag &= ~CSTOPB;
