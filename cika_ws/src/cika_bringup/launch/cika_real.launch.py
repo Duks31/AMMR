@@ -113,13 +113,16 @@ def generate_launch_description():
     )
 
     delayed_motor_start = TimerAction(
-    period=12.0,   # Give lidar more time
+    period=22.0,
     actions=[
+        ExecuteProcess(
+            cmd=['ros2', 'service', 'call', '/stop_motor', 'std_srvs/srv/Empty'],
+            output='screen',
+        ),
         ExecuteProcess(
             cmd=['ros2', 'service', 'call', '/start_motor', 'std_srvs/srv/Empty'],
             output='screen',
-            shell=True
-            )
+        ),
         ]
     )
 
