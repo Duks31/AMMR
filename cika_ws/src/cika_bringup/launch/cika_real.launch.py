@@ -7,7 +7,7 @@ from launch.actions import (
     TimerAction,
     RegisterEventHandler,
     IncludeLaunchDescription,
-    GroupAction,
+    ExecuteProcess,
 )
 from launch.event_handlers import OnProcessExit
 from launch.substitutions import Command, LaunchConfiguration
@@ -98,18 +98,28 @@ def generate_launch_description():
             package="sllidar_ros2",
             executable="sllidar_node",
             name="sllidar_node",
+            output="screen",
             parameters=[{
                 "serial_port": "/dev/rplidar",
                 "serial_baudrate": 460800,
                 "frame_id": "lidar_1",
                 "angle_compensate": True,
                 "scan_mode": "Standard",
+                "scan_frequency": 10.0,
             }],
             remappings=[("scan", "/scan_raw")],
-            output="screen",
             )
         ]
     )
+
+    # Auto-start RPLIDAR motor
+    start_motor = ExecuteProcess(
+        cmd=['ros2', 'service', 'call', '/start_motor', 'std_srvs/srv/Empty'],
+        output='screen'
+    )
+
+    # Delay it a bit after lidar starts
+    delayed_motor = TimerAction(period=6.0, actions=[start_motor])
 
     laser_filter_node = Node(
         package="laser_filters",
@@ -243,6 +253,7 @@ def generate_launch_description():
         robot_state_publisher_node,
         ros2_control_node,
         delayed_lidar,
+        delayed_motor,
         laser_filter_node,
         inference_node,
         madgwick_node,

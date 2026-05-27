@@ -139,7 +139,7 @@ def generate_launch_description():
         ("depth/image",      "/oak/stereo/image_raw"),
         ("rgb/camera_info",  "/oak/rgb/camera_info"),
         ("depth/camera_info","/oak/stereo/camera_info"),
-        ("scan",             "/scan_raw"),      # bypassing the filter for testing 
+        ("scan",             "/scan"),                   
         ("odom",             "/odometry/filtered"),
         ("vo",               "/vo"),
     ]
