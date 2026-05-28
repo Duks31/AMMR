@@ -35,7 +35,10 @@ namespace cika_hardware
     inet_pton(AF_INET, esp32_ip, &addr.sin_addr);
 
     // blocking connect with short timeout
-    struct timeval tv{ .tv_sec = 2, .tv_usec = 0 };
+    // struct timeval tv{ .tv_sec = 2, .tv_usec = 0 };
+    struct timeval tv;
+    tv.tv_sec  = 2;
+    tv.tv_usec = 0;
     setsockopt(socket_fd_, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
 
     if (connect(socket_fd_, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
