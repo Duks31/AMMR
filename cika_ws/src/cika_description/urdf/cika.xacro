@@ -549,8 +549,6 @@
             </xacro:if>
             <xacro:unless value="$(arg use_sim)">
                 <plugin>cika_hardware_arm/CikaHardware</plugin>
-                <param name="serial_port">/dev/ttyUSB0</param>
-                <param name="baud_rate">115200</param>
             </xacro:unless>
         </hardware>
 
