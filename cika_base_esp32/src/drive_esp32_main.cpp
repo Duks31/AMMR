@@ -53,7 +53,9 @@ unsigned long last_imu_time = 0;
 
 WiFiServer server(TCP_PORT);
 WiFiClient client;
-String tcp_rx_buf;
+// String tcp_rx_buf;
+char tcp_rx_buf[128]; // Fast static buffer
+int rx_index = 0;
 
 MPU6050 mpu;
 
@@ -108,23 +110,19 @@ bool readMag(float &mx, float &my, float &mz)
 }
 
 // ── Parse and execute one command line ───────────────────────────────────────
-void handle_command(const String &line)
 {
-    if (line == "<RESET>") {
+    if (strncmp(line, "<RESET>", 7) == 0) {
         noInterrupts();
         ticks_lf = ticks_lb = ticks_rf = ticks_rb = 0;
         interrupts();
-    } else if (line.startsWith("<") && line.endsWith(">")) {
-        String inner = line.substring(1, line.length() - 1);
-        float cmds[4];
-        for (int i = 0; i < 3; i++) {
-            int comma = inner.indexOf(',');
-            cmds[i] = inner.substring(0, comma).toFloat();
-            inner   = inner.substring(comma + 1);
+    } 
+    else if (line[0] == '<') {
+        float lf, lb, rf, rb;
+        // sscanf is significantly faster than String.toFloat()
+        if (sscanf(line, "<%f,%f,%f,%f>", &lf, &lb, &rf, &rb) == 4) {
+            drive(vel_to_pwm(lf), lf >= 0.0f,
+                  vel_to_pwm(rf), rf >= 0.0f);
         }
-        cmds[3] = inner.toFloat();
-        drive(vel_to_pwm(cmds[0]), cmds[0] >= 0.0f,
-              vel_to_pwm(cmds[2]), cmds[2] >= 0.0f);
     }
 }
 
@@ -189,20 +187,24 @@ void loop()
         client = server.accept();
         if (client) {
             Serial.println("Client connected");
-            tcp_rx_buf = "";
+            rx_index = 0; // Reset buffer
         }
     }
 
-    // Read incoming commands
+    // Read incoming commands efficiently
     if (client && client.connected() && client.available()) {
         while (client.available()) {
             char c = client.read();
             if (c == '\n') {
-                tcp_rx_buf.trim();
-                if (tcp_rx_buf.length() > 0) handle_command(tcp_rx_buf);
-                tcp_rx_buf = "";
-            } else {
-                tcp_rx_buf += c;
+                tcp_rx_buf[rx_index] = '\0'; // Null-terminate the string
+                if (rx_index > 0) handle_command(tcp_rx_buf);
+                rx_index = 0; // Reset for the next packet
+            } 
+            else if (rx_index < sizeof(tcp_rx_buf) - 1) {
+                // Ignore carriage returns, only add valid chars
+                if (c != '\r') {
+                    tcp_rx_buf[rx_index++] = c;
+                }
             }
         }
     }
