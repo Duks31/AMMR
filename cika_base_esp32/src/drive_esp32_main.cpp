@@ -110,7 +110,10 @@ bool readMag(float &mx, float &my, float &mz)
 }
 
 // ── Parse and execute one command line ───────────────────────────────────────
+void handle_command(const char* line)
 {
+    Serial.println(line);   
+
     if (strncmp(line, "<RESET>", 7) == 0) {
         noInterrupts();
         ticks_lf = ticks_lb = ticks_rf = ticks_rb = 0;

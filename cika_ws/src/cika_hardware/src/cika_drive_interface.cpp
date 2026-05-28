@@ -10,8 +10,48 @@
 #include "pluginlib/class_list_macros.hpp"
 #include "geometry_msgs/msg/transform_stamped.hpp"
 
+
 namespace cika_hardware
 {
+    bool CikaDriveInterface::try_reconnect()
+{
+    if (socket_fd_ != -1) {
+        close(socket_fd_);
+        socket_fd_ = -1;
+    }
+
+    const char* esp32_ip  = "10.245.199.91";
+    const int   esp32_port = 8888;
+
+    socket_fd_ = socket(AF_INET, SOCK_STREAM, 0);
+    if (socket_fd_ < 0) return false;
+
+    int flag = 1;
+    setsockopt(socket_fd_, IPPROTO_TCP, TCP_NODELAY, &flag, sizeof(flag));
+
+    struct sockaddr_in addr{};
+    addr.sin_family = AF_INET;
+    addr.sin_port   = htons(esp32_port);
+    inet_pton(AF_INET, esp32_ip, &addr.sin_addr);
+
+    // blocking connect with short timeout
+    struct timeval tv{ .tv_sec = 2, .tv_usec = 0 };
+    setsockopt(socket_fd_, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+
+    if (connect(socket_fd_, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
+        close(socket_fd_);
+        socket_fd_ = -1;
+        return false;
+    }
+
+    // restore non-blocking for reads
+    int flags = fcntl(socket_fd_, F_GETFL, 0);
+    fcntl(socket_fd_, F_SETFL, flags | O_NONBLOCK);
+
+    serial_buffer_.clear();
+    RCLCPP_INFO(rclcpp::get_logger("CikaDriveInterface"), "Reconnected to ESP32.");
+    return true;
+}
     // ── on_init ──────────────────────────────────────────────────────────────────
     hardware_interface::CallbackReturn CikaDriveInterface::on_init(
         const hardware_interface::HardwareInfo &info)
@@ -98,6 +138,8 @@ namespace cika_hardware
         const char* esp32_ip = "10.245.199.91"; // UPDATE after flashing ESP32
         const int   esp32_port = 8888;
 
+        last_reconnect_attempt_ = node_->get_clock()->now() - rclcpp::Duration(2, 0);
+
         socket_fd_ = socket(AF_INET, SOCK_STREAM, 0);
         if (socket_fd_ < 0) {
             RCLCPP_ERROR(rclcpp::get_logger("CikaDriveInterface"), "Failed to create socket");
@@ -151,11 +193,38 @@ namespace cika_hardware
     hardware_interface::return_type CikaDriveInterface::read(
         const rclcpp::Time &, const rclcpp::Duration &)
     {
-        if (socket_fd_ == -1)
-            return hardware_interface::return_type::ERROR;
+        if (socket_fd_ == -1) {
+            auto now = node_->get_clock()->now();
+            if ((now - last_reconnect_attempt_).seconds() > 1.0) {
+            last_reconnect_attempt_ = now;
+            if (!try_reconnect()) {
+                RCLCPP_WARN_THROTTLE(rclcpp::get_logger("CikaDriveInterface"),
+                    *node_->get_clock(), 5000, "ESP32 unreachable, retrying...");
+                }
+            }
+            return hardware_interface::return_type::OK;
+        }
 
         char buf[512];
         ssize_t n = recv(socket_fd_, buf, sizeof(buf) - 1, 0);
+
+        if (n == 0) {
+            // peer closed connection cleanly
+            RCLCPP_WARN(rclcpp::get_logger("CikaDriveInterface"), "ESP32 disconnected.");
+            close(socket_fd_);
+            socket_fd_ = -1;
+            return hardware_interface::return_type::OK;
+        }
+
+        if (n < 0 && errno != EAGAIN && errno != EWOULDBLOCK) {
+            // real socket error
+            RCLCPP_WARN(rclcpp::get_logger("CikaDriveInterface"),
+                        "recv error %d, reconnecting.", errno);
+            close(socket_fd_);
+            socket_fd_ = -1;
+            return hardware_interface::return_type::OK;
+        }
+
         if (n > 0) {
             buf[n] = '\0';
             serial_buffer_ += buf;

@@ -73,6 +73,9 @@ private:
     double wheel_radius_{0.0885};
 
     rclcpp::Time last_enc_time_;
+
+    bool try_reconnect();
+    rclcpp::Time last_reconnect_attempt_;
 };
 
 } // namespace cika_hardware
