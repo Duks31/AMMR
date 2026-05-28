@@ -5,16 +5,20 @@ from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
 from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
-from launch.launch_description_sources import PythonLaunchDescriptionSource, AnyLaunchDescriptionSource
+from launch.launch_description_sources import (
+    PythonLaunchDescriptionSource,
+    AnyLaunchDescriptionSource,
+)
 from launch_ros.actions import Node
 
+
 def generate_launch_description():
-    cika_bringup_dir    = get_package_share_directory("cika_bringup")
+    cika_bringup_dir = get_package_share_directory("cika_bringup")
     cika_navigation_dir = get_package_share_directory("cika_navigation")
     foxglove_bridge_dir = get_package_share_directory("foxglove_bridge")
 
     ekf_real_path = os.path.join(cika_bringup_dir, "config", "ekf_real.yaml")
-    
+
     # ── Arguments ─────────────────────────────────────────────────────────────
     use_perception_arg = DeclareLaunchArgument(
         name="use_perception",
@@ -29,7 +33,7 @@ def generate_launch_description():
         executable="scan_to_scan_filter_chain",
         parameters=[os.path.join(cika_bringup_dir, "config", "laser_filter.yaml")],
         remappings=[
-            ("scan",          "/scan_raw"),
+            ("scan", "/scan_raw"),
             ("scan_filtered", "/scan"),
         ],
     )
@@ -56,10 +60,12 @@ def generate_launch_description():
         )
     )
 
-    return LaunchDescription([
-        laser_filter_node,
-        inference_node,
-        use_perception_arg,
-        ekf_node,
-        foxglove_bridge
-    ])
+    return LaunchDescription(
+        [
+            use_perception_arg,
+            laser_filter_node,
+            inference_node,
+            ekf_node,
+            foxglove_bridge,
+        ]
+    )
