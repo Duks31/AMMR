@@ -73,7 +73,7 @@ namespace cika_hardware_arm
     hardware_interface::CallbackReturn CikaHardware::on_activate(
         const rclcpp_lifecycle::State & /*previous_state*/)
     {
-        std::string port_name = "/dev/ttyUSB0";
+        std::string port_name = "/dev/ttyARMESP32";
 
         SerialPort = open(port_name.c_str(), O_RDWR);
         if (SerialPort < 0)
