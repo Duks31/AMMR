@@ -242,8 +242,12 @@ namespace cika_hardware_arm
     {
         if (SerialPort < 0)
         {
-            RCLCPP_ERROR(rclcpp::get_logger("CikaHardware"), "Serial port not open!");
-            return hardware_interface::return_type::ERROR;
+            // BYPASSING CODE
+            return hardware_interface::return_type::OK;
+
+            // FORMER CODE
+            // RCLCPP_ERROR(rclcpp::get_logger("CikaHardware"), "Serial port not open!");
+            // return hardware_interface::return_type::ERROR;
         }
 
         std::string cmd = "";
