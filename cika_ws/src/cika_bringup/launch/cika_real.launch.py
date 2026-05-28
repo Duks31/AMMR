@@ -267,6 +267,6 @@ def generate_launch_description():
         delayed_skid_steer,
         joy_node,
         teleop_node,
-        foxglove_bridge,
+        # foxglove_bridge,
         delayed_nav,
     ])
