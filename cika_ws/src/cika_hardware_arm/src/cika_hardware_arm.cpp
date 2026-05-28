@@ -76,11 +76,20 @@ namespace cika_hardware_arm
         std::string port_name = "/dev/ttyARMESP32";
 
         SerialPort = open(port_name.c_str(), O_RDWR);
+
+        // BYPASSING CODE
         if (SerialPort < 0)
         {
-            RCLCPP_ERROR(rclcpp::get_logger("CikaHardware"), "Error opening serial port %s: %s", port_name.c_str(), strerror(errno));
-            return hardware_interface::CallbackReturn::ERROR;
+            RCLCPP_WARN(rclcpp::get_logger("CikaHardware"), "Arm serial port %s not found — arm disabled.", port_name.c_str());
+            return hardware_interface::CallbackReturn::SUCCESS;
         }
+
+        // FORMER CODE (USB Serial)
+        // if (SerialPort < 0)
+        // {
+        //     RCLCPP_ERROR(rclcpp::get_logger("CikaHardware"), "Error opening serial port %s: %s", port_name.c_str(), strerror(errno));
+        //     return hardware_interface::CallbackReturn::ERROR;
+        // }
 
         if (tcgetattr(SerialPort, &tty) != 0)
         {
@@ -127,9 +136,18 @@ namespace cika_hardware_arm
             return hardware_interface::CallbackReturn::ERROR;
         }
 
-        RCLCPP_INFO(rclcpp::get_logger("CikaHardware"), "Serial port %s opened. Waiting 3s for ESP32 to boot...", port_name.c_str());
-        std::this_thread::sleep_for(std::chrono::milliseconds(3000));
-        RCLCPP_INFO(rclcpp::get_logger("CikaHardware"), "Successfully activated!");
+        // BYPASSING CODE
+        if (SerialPort >= 0) {
+            RCLCPP_INFO(rclcpp::get_logger("CikaHardware"), "Serial port %s opened. Waiting 3s for ESP32 to boot...", port_name.c_str());
+            std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+            RCLCPP_INFO(rclcpp::get_logger("CikaHardware"), "Successfully activated!");
+        }
+        return hardware_interface::CallbackReturn::SUCCESS;
+
+        // FORMER CODE 
+        // RCLCPP_INFO(rclcpp::get_logger("CikaHardware"), "Serial port %s opened. Waiting 3s for ESP32 to boot...", port_name.c_str());
+        // std::this_thread::sleep_for(std::chrono::milliseconds(3000));
+        // RCLCPP_INFO(rclcpp::get_logger("CikaHardware"), "Successfully activated!");
         
         return hardware_interface::CallbackReturn::SUCCESS;
     }
