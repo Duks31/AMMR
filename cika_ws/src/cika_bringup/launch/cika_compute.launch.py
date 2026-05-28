@@ -87,6 +87,7 @@ def generate_launch_description():
         [
             use_perception_arg,
             laser_filter_node,
+            robot_state_publisher_node,
             inference_node,
             ekf_node,
             foxglove_bridge,
