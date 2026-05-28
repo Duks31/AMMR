@@ -1,6 +1,16 @@
 scan_to_scan_filter_chain:
   ros__parameters:
     filter1:
+      name: range_filter
+      type: laser_filters/LaserScanRangeFilter
+      params:
+        use_message_range_limits: false
+        lower_threshold: 0.15      # RPLIDAR C1 min reliable range
+        upper_threshold: 10.0      # stay conservative indoors
+        lower_replacement_value: .inf
+        upper_replacement_value: .inf
+        
+    filter2:
       name: my_polygon_filter
       type: laser_filters/LaserScanPolygonFilter
       params:
