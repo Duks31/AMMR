@@ -102,18 +102,19 @@ ws://<_ip_address_>:8765
 
 ## Physical Robot 
 
-#### Teleop only (default)
+``` bash
+# Teleop only (default)
 ros2 launch cika_bringup cika_real.launch.py nav:=false
 
-#### Compute launch
+# Compute launch
 ros2 launch cika_bringup cika_compute.launch.py 
 
-#### SLAM — build a map
+# SLAM — build a map
 ros2 launch cika_navigation cika_nav.launch.py mode:=slam use_sim_time:=false
 
-#### Navigation — autonomous with saved map
+# Navigation — autonomous with saved map
 ros2 launch cika_navigation cika_nav.launch.py mode:=navigation use_sim_time:=false
-
+```
 
 # Cika Hardware Arm — How to Run
 
