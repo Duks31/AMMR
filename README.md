@@ -1,26 +1,7 @@
-# CIKA - Autonomous Mobile Manipulation Robot for Waste Collection and Sorting
+# CIKA - Autonomous Mobile Manipulation Robot (AMMR) for Waste Collection and Sorting
 
 ![cika](/static/cika.jpeg)
 
-## Prerequisites
-- Linux OR Windows 10/11 with WSL2 (Ubuntu 22.04 LTS recommended)
-- Docker Desktop with WSL2 backend enabled
-- Git
-
-## Getting Started
-
-### 1. Clone the repo
-`git clone https://github.com/yourrepo/AMMR.git`
-
-### 2. Build dev environment
-`cd AMMR/docker`
-`docker compose -f docker-compose.dev.yaml build`
-
-### 3. Start containers
-`docker compose -f docker-compose.dev.yaml up -d`
-
-### 4. Enter a container
-`docker compose -f docker-compose.dev.yaml exec {service name} bash`
 
 ## Project Structure 
 ```
@@ -122,14 +103,16 @@ ws://<_ip_address_>:8765
 ## Physical Robot 
 
 #### Teleop only (default)
-ros2 launch cika_bringup cika_real.launch.py
+ros2 launch cika_bringup cika_real.launch.py nav:=false
+
+#### Compute launch
+ros2 launch cika_bringup cika_compute.launch.py 
 
 #### SLAM — build a map
-ros2 launch cika_bringup cika_real.launch.py nav:=true mode:=slam
+ros2 launch cika_navigation cika_nav.launch.py mode:=slam use_sim_time:=false
 
 #### Navigation — autonomous with saved map
-ros2 launch cika_bringup cika_real.launch.py nav:=true mode:=navigation
-ws://localhost:8765
+ros2 launch cika_navigation cika_nav.launch.py mode:=navigation use_sim_time:=false
 
 
 # Cika Hardware Arm — How to Run
