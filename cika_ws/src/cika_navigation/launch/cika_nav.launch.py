@@ -190,6 +190,9 @@ def generate_launch_description():
             "use_sim_time": use_sim_time,
             "params_file":  nav2_params,
         }.items(),
+        remappings = [
+            ('/cmd_vel', '/skid_steer_controller/cmd_vel_unstamped')
+        ]
         condition=IfCondition(PythonExpression(["'", mode, "' == 'navigation'"])),
     )
 
