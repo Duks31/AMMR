@@ -192,7 +192,7 @@ def generate_launch_description():
         }.items(),
         remappings = [
             ('/cmd_vel', '/skid_steer_controller/cmd_vel_unstamped')
-        ]
+        ],
         condition=IfCondition(PythonExpression(["'", mode, "' == 'navigation'"])),
     )
 
