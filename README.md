@@ -1,5 +1,7 @@
 # CIKA - Autonomous Mobile Manipulation Robot for Waste Collection and Sorting
 
+![cika](/static/cika.jpeg)
+
 ## Prerequisites
 - Linux OR Windows 10/11 with WSL2 (Ubuntu 22.04 LTS recommended)
 - Docker Desktop with WSL2 backend enabled
