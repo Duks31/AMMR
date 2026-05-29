@@ -6,11 +6,12 @@ from launch import LaunchDescription
 from launch.actions import (
     DeclareLaunchArgument,
     IncludeLaunchDescription,
+    GroupAction,
 )
 from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch_ros.actions import Node, SetParameter
+from launch_ros.actions import Node, SetParameter, SetRemap
 
 
 def generate_launch_description():
@@ -182,18 +183,20 @@ def generate_launch_description():
     )
 
     # ── Nav2 (navigation mode only) ───────────────────────────────────────────
-    nav2_launch = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource(
-            os.path.join(nav2_bringup, "launch", "navigation_launch.py")
-        ),
-        launch_arguments={
-            "use_sim_time": use_sim_time,
-            "params_file":  nav2_params,
-        }.items(),
-        remappings = [
-            ('/cmd_vel', '/skid_steer_controller/cmd_vel_unstamped')
-        ],
+    nav2_launch = GroupAction(
         condition=IfCondition(PythonExpression(["'", mode, "' == 'navigation'"])),
+        actions=[
+            SetRemap(src='/cmd_vel', dst='/skid_steer_controller/cmd_vel_unstamped'),
+            IncludeLaunchDescription(
+                PythonLaunchDescriptionSource(
+                    os.path.join(nav2_bringup, "launch", "navigation_launch.py")
+                ),
+                launch_arguments={
+                    "use_sim_time": use_sim_time,
+                    "params_file":  nav2_params,
+                }.items()
+            )
+        ]
     )
 
     return LaunchDescription([
