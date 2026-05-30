@@ -16,3 +16,4 @@ cika_ws/build/
 cika_ws/install/
 cika_ws/log/
 cika_setup.sh
+.cache/
