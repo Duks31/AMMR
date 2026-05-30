@@ -43,12 +43,6 @@ def generate_launch_description():
     )
 
     # ── Arguments ─────────────────────────────────────────────────────────────
-    use_perception_arg = DeclareLaunchArgument(
-        name="use_perception",
-        default_value="true",
-        choices=["true", "false"],
-        description="Launch YOLOv8 inference node",
-    )
 
     # ── Heavy Compute Nodes ───────────────────────────────────────────────────
     laser_filter_node = Node(
@@ -69,13 +63,6 @@ def generate_launch_description():
         parameters=[ekf_real_path, {"use_sim_time": False}],
     )
 
-    inference_node = Node(
-        package="cika_perception",
-        executable="inference_node.py",
-        name="inference_node",
-        output="screen",
-        condition=IfCondition(LaunchConfiguration("use_perception")),
-    )
 
     vo_node = Node(
         package='rtabmap_odom',
@@ -115,10 +102,8 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
-            use_perception_arg,
             laser_filter_node,
             robot_state_publisher_node,
-            inference_node,
             vo_node,    
             ekf_node,
             foxglove_bridge,

@@ -54,9 +54,9 @@ def generate_launch_description():
 
     use_perception_arg = DeclareLaunchArgument(
         name="use_perception",
-        default_value="false",
+        default_value="true",
         choices=["true", "false"],
-        description="Launch inference node (requires OAK-D)",
+        description="Launch YOLOv8 inference node",
     )
 
     # ── Robot description ─────────────────────────────────────────────────────
@@ -124,6 +124,14 @@ def generate_launch_description():
             output='screen',
         ),
         ]
+    )
+
+    inference_node = Node(
+        package="cika_perception",
+        executable="inference_node.py",
+        name="inference_node",
+        output="screen",
+        condition=IfCondition(LaunchConfiguration("use_perception")),
     )
 
     laser_filter_node = Node(
@@ -260,7 +268,7 @@ def generate_launch_description():
         delayed_lidar,
         delayed_motor_start,
         # laser_filter_node, 
-        # inference_node,
+        inference_node,
         madgwick_node,
         # ekf_node,
         delayed_jsb,
