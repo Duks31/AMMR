@@ -174,14 +174,6 @@ def generate_launch_description():
             ("scan_filtered", "/scan"),
         ],
     )
-
-    inference_node = Node(
-        package="cika_perception",
-        executable="inference_node.py",
-        name="inference_node",
-        output="screen",
-        condition=IfCondition(LaunchConfiguration("use_perception")),
-    )
     
     madgwick_node = Node(
         package="imu_filter_madgwick",
@@ -300,6 +292,7 @@ def generate_launch_description():
         delayed_motor_start,
         # laser_filter_node, 
         inference_node,
+        vo_node,
         madgwick_node,
         # ekf_node,
         delayed_jsb,
