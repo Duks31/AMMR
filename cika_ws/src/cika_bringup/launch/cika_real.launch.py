@@ -262,7 +262,7 @@ def generate_launch_description():
         teleop_arg,
         # nav_arg, # Running using the main package
         mode_arg,
-        # use_perception_arg,
+        use_perception_arg,
         # robot_state_publisher_node,
         ros2_control_node,
         delayed_lidar,
