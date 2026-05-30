@@ -87,7 +87,7 @@
         </collision>
     </link>
 
-    <link name="OAKDcamera_1_optical">
+    <link name="oak_rgb_camera_optical_frame">
         <visual>
             <origin xyz="0 0 0" rpy="0 0 0" />
             <geometry>
@@ -404,7 +404,7 @@
 
     <joint name="oakd_optical_joint" type="fixed">
         <parent link="OAKDcamera_1" />
-        <child link="OAKDcamera_1_optical" />
+        <child link="oak_rgb_camera_optical_frame" />
         <origin xyz="0 0 0" rpy="-1.5708 0 -1.5708" />
     </joint>
 

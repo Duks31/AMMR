@@ -8,10 +8,10 @@ import os
 import numpy as np
 import rclpy
 import cv2
+from sensor_msgs.msg import CompressedImage, Image, CameraInfo
 from rclpy.node import Node
 import depthai as dai
 from geometry_msgs.msg import Point
-from sensor_msgs.msg import CompressedImage
 from std_srvs.srv import SetBool
 from ament_index_python.packages import get_package_share_directory
 
@@ -103,6 +103,10 @@ class InferenceNode(Node):
             CompressedImage, "/cika/perception/image_raw/compressed", qos
         )
 
+        self.rgb_raw_pub   = self.create_publisher(Image, '/oak/rgb/image_raw', qos)
+        self.depth_raw_pub = self.create_publisher(Image, '/oak/stereo/image_raw', qos)
+        self.cam_info_pub  = self.create_publisher(CameraInfo, '/oak/rgb/camera_info', qos)
+
         self._pipeline = None
         self._nn_queue = None
         self._img_queue = None
@@ -113,8 +117,17 @@ class InferenceNode(Node):
 
         self._start_pipeline()
 
+        calib = self._pipeline.getDefaultDevice().readCalibration()
+        M = calib.getCameraIntrinsics(dai.CameraBoardSocket.CAM_A, INPUT_W, INPUT_H)
+        self._fx = M[0][0]
+        self._fy = M[1][1]
+        self._cx = M[0][2]
+        self._cy = M[1][2]
+        self._cam_matrix = M
+
         self.create_timer(0.1, self._poll)
         self.create_timer(0.1, self._publish_image)
+        self.create_timer(0.1, self._publish_raw_topics)
         self.create_service(
             SetBool, "/cika/perception/set_inference_active", self._enable_cb
         )
@@ -168,6 +181,7 @@ class InferenceNode(Node):
         self._nn_queue = nn.out.createOutputQueue(maxSize=4, blocking=False)
         self._img_queue = cam_video_out.createOutputQueue(maxSize=1, blocking=False)
         self._depth_queue = stereo.depth.createOutputQueue(maxSize=4, blocking=False)
+        self._raw_depth_queue = stereo.depth.createOutputQueue(maxSize=1, blocking=False)
 
         pipeline.start()
         self._pipeline = pipeline
@@ -205,12 +219,17 @@ class InferenceNode(Node):
 
         # Calculate X and Y using standard Pinhole Camera Math
         # OAK-D Lite Focal Length at 640px is ~432.4
-        focal_length = 432.4
-        cx = (x1 + x2) / 2.0
-        cy = (y1 + y2) / 2.0
+        # focal_length = 432.4
+        # cx = (x1 + x2) / 2.0
+        # cy = (y1 + y2) / 2.0
 
-        x_m = (cx - (INPUT_W / 2.0)) * z_m / focal_length
-        y_m = (cy - (INPUT_H / 2.0)) * z_m / focal_length
+        # x_m = (cx - (INPUT_W / 2.0)) * z_m / focal_length
+        # y_m = (cy - (INPUT_H / 2.0)) * z_m / focal_length
+
+        px = (x1 + x2) / 2.0
+        py = (y1 + y2) / 2.0
+        x_m = (px - self._cx) * z_m / self._fx
+        y_m = (py - self._cy) * z_m / self._fy
 
         return Point(x=x_m, y=y_m, z=z_m)
 
@@ -305,6 +324,60 @@ class InferenceNode(Node):
         img_msg.format = "jpeg"
         img_msg.data = buf.tobytes()
         self.image_pub.publish(img_msg)
+
+    def _publish_raw_topics(self):
+        stamp = self.get_clock().now().to_msg()
+        frame_id = "oak_rgb_camera_optical_frame"
+
+        # ── RGB raw ───────────────────────────────────────────────────────────
+        img_packets = self._img_queue.tryGetAll() if self._img_queue else []
+        if img_packets:
+            frame = np.ascontiguousarray(img_packets[-1].getCvFrame())
+            msg = Image()
+            msg.header.stamp = stamp
+            msg.header.frame_id = frame_id
+            msg.height, msg.width = frame.shape[:2]
+            msg.encoding = "bgr8"
+            msg.step = msg.width * 3
+            msg.data = frame.tobytes()
+            self.rgb_raw_pub.publish(msg)
+
+        # ── Depth raw ─────────────────────────────────────────────────────────
+        depth_packets = self._raw_depth_queue.tryGetAll() if self._raw_depth_queue else []
+        if depth_packets:
+            depth_frame = depth_packets[-1].getFrame()   # uint16, mm
+            msg = Image()
+            msg.header.stamp = stamp
+            msg.header.frame_id = frame_id
+            msg.height, msg.width = depth_frame.shape[:2]
+            msg.encoding = "16UC1"
+            msg.step = msg.width * 2
+            msg.data = depth_frame.astype(np.uint16).tobytes()
+            self.depth_raw_pub.publish(msg)
+
+        # ── CameraInfo (from EEPROM) ──────────────────────────────────────────
+        ci = CameraInfo()
+        ci.header.stamp = stamp
+        ci.header.frame_id = frame_id
+        ci.width  = INPUT_W
+        ci.height = INPUT_H
+
+        # calib = self._pipeline.getDefaultDevice().readCalibration()
+        # M = calib.getCameraIntrinsics(dai.CameraBoardSocket.CAM_A, INPUT_W, INPUT_H)
+        M = self._cam_matrix
+
+        ci.k = [M[0][0], M[0][1], M[0][2],
+                M[1][0], M[1][1], M[1][2],
+                M[2][0], M[2][1], M[2][2]]
+        ci.d = [0.0, 0.0, 0.0, 0.0, 0.0]
+        ci.r = [1.0, 0.0, 0.0,
+                0.0, 1.0, 0.0,
+                0.0, 0.0, 1.0]
+        ci.p = [M[0][0], M[0][1], M[0][2], 0.0,
+                M[1][0], M[1][1], M[1][2], 0.0,
+                M[2][0], M[2][1], M[2][2], 0.0]
+        ci.distortion_model = "plumb_bob"
+        self.cam_info_pub.publish(ci)
 
     def destroy_node(self):
         if self._pipeline is not None:

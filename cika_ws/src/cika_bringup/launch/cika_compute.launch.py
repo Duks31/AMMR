@@ -77,6 +77,36 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration("use_perception")),
     )
 
+    vo_node = Node(
+        package='rtabmap_odom',
+        executable='rgbd_odometry',
+        name='rgbd_odometry',
+        output='screen',
+        parameters=[{
+            'use_sim_time':             False,
+            'frame_id':                 'base_footprint',
+            'odom_frame_id':            'vo_odom',
+            'publish_tf':               False,
+            'approx_sync':              True,
+            'approx_sync_max_interval': 0.1,
+            'queue_size':               10,
+            'Odom/Strategy':            '0',
+            'Vis/EstimationType':       '1',
+            'Odom/ResetCountdown':      '0',
+            'Vis/FeatureType':          '6',
+            'Vis/MaxFeatures':          '200',
+            'Vis/MinInliers':           '10',
+            'Odom/GuessMotion':         'true',
+            'Odom/FilteringStrategy':   '1',
+        }],
+        remappings=[
+            ('rgb/image',       '/oak/rgb/image_raw'),
+            ('rgb/camera_info', '/oak/rgb/camera_info'),
+            ('depth/image',     '/oak/stereo/image_raw'),
+            ('odom',            '/vo'),
+        ],
+    )
+
     foxglove_bridge = IncludeLaunchDescription(
         AnyLaunchDescriptionSource(
             os.path.join(foxglove_bridge_dir, "launch", "foxglove_bridge_launch.xml")
@@ -89,6 +119,7 @@ def generate_launch_description():
             laser_filter_node,
             robot_state_publisher_node,
             inference_node,
+            vo_node,    
             ekf_node,
             foxglove_bridge,
         ]

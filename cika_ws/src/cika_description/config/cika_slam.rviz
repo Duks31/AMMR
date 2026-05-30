@@ -63,7 +63,7 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
-        OAKDcamera_1_optical:
+        oak_rgb_camera_optical_frame:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -155,8 +155,7 @@ Visualization Manager:
       Show Arrows: true
       Show Axes: true
       Show Names: true
-      Tree:
-        {}
+      Tree: {}
       Update Interval: 0
       Value: false
     - Alpha: 0.699999988079071
