@@ -104,7 +104,7 @@ def generate_launch_description():
         [
             laser_filter_node,
             robot_state_publisher_node,
-            vo_node,    
+            # vo_node,    
             ekf_node,
             foxglove_bridge,
         ]
