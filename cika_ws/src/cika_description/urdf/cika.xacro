@@ -28,7 +28,7 @@
                 <mesh filename="package://cika_description/meshes/base_link.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
-            <material name="silver" />
+            <material name="military_green" />
         </visual>
         <collision>
             <origin xyz="0 0 0" rpy="0 0 0" />
@@ -52,7 +52,7 @@
                 <mesh filename="package://cika_description/meshes/lidar_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
-            <material name="silver" />
+            <material name="ash" />
         </visual>
         <collision>
             <origin xyz="0.038004 -0.394984 -0.193653" rpy="0 0 0" />
@@ -76,7 +76,7 @@
                 <mesh filename="package://cika_description/meshes/OAKDcamera_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
-            <material name="silver" />
+            <material name="ash" />
         </visual>
         <collision>
             <origin xyz="0.517714 -0.279984 -0.656903" rpy="0 0 0" />
@@ -112,7 +112,7 @@
                 <mesh filename="package://cika_description/meshes/right_front_wheel_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
-            <material name="silver" />
+            <material name="black" />
         </visual>
         <collision>
             <origin xyz="0.099911 -0.098464 -0.095987" rpy="0 0 0" />
@@ -136,7 +136,7 @@
                 <mesh filename="package://cika_description/meshes/right_back_wheel_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
-            <material name="silver" />
+            <material name="black" />
         </visual>
         <collision>
             <origin xyz="0.47736 -0.098484 -0.095987" rpy="0 0 0" />
@@ -160,7 +160,7 @@
                 <mesh filename="package://cika_description/meshes/left_front_wheel_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
-            <material name="silver" />
+            <material name="black" />
         </visual>
         <collision>
             <origin xyz="0.100089 -0.461484 -0.095987" rpy="0 0 0" />
@@ -184,7 +184,7 @@
                 <mesh filename="package://cika_description/meshes/left_back_wheel_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
-            <material name="silver" />
+            <material name="black" />
         </visual>
         <collision>
             <origin xyz="0.47736 -0.461484 -0.095987" rpy="0 0 0" />
@@ -209,7 +209,7 @@
                 <mesh filename="package://cika_description/meshes/arm_bottom_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
-            <material name="silver" />
+            <material name="dark_grey" />
         </visual>
         <collision>
             <origin xyz="0.069976 -0.279891 -0.149403" rpy="0 0 0" />
@@ -234,7 +234,7 @@
                 <mesh filename="package://cika_description/meshes/turntable_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
-            <material name="silver" />
+            <material name="dark_grey" />
         </visual>
         <collision>
             <origin xyz="0.124976 -0.279891 -0.228958" rpy="0 0 0" />
@@ -257,7 +257,7 @@
                 <mesh filename="package://cika_description/meshes/lower_arm_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
-            <material name="silver" />
+            <material name="light_grey" />
         </visual>
         <collision>
             <origin xyz="0.124726 -0.248091 -0.290458" rpy="0 0 0" />
@@ -282,7 +282,7 @@
                 <mesh filename="package://cika_description/meshes/center_arm_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
-            <material name="silver" />
+            <material name="dark_grey" />
         </visual>
         <collision>
             <origin xyz="0.309726 -0.299041 -0.294458" rpy="0 0 0" />
@@ -306,7 +306,7 @@
                 <mesh filename="package://cika_description/meshes/upper_arm_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
-            <material name="silver" />
+            <material name="light_grey" />
         </visual>
         <collision>
             <origin xyz="0.399736 -0.310541 -0.369985" rpy="0 0 0" />
@@ -331,7 +331,7 @@
                 <mesh filename="package://cika_description/meshes/gripper_mount_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
-            <material name="silver" />
+            <material name="dark_grey" />
         </visual>
         <collision>
             <origin xyz="0.320912 -0.280641 -0.38692" rpy="0 0 0" />
@@ -355,7 +355,7 @@
                 <mesh filename="package://cika_description/meshes/right_gripper_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
-            <material name="silver" />
+            <material name="light_grey" />
         </visual>
         <collision>
             <origin xyz="0.242659 -0.27999 -0.407511" rpy="0 0 0" />
@@ -379,7 +379,7 @@
                 <mesh filename="package://cika_description/meshes/left_gripper_1.stl"
                     scale="0.001 0.001 0.001" />
             </geometry>
-            <material name="silver" />
+            <material name="dark_grey" />
         </visual>
         <collision>
             <origin xyz="0.241586 -0.28216 -0.395248" rpy="0 0 0" />
