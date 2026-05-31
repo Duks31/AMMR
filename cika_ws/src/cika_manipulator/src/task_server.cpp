@@ -103,7 +103,7 @@ private:
       arm_target_pose_ = "drop_2";
       gripper_target_pose_ = "open"; 
     } 
-    else if (goal->task_number == 3) {
+    else if (goal-> task_number == 3) {
       is_pose_target = true;
       gripper_target_pose_ = "closed"; 
     } 

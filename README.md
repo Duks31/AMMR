@@ -137,7 +137,7 @@ source install/setup.bash
 
 ## 4. Launch
 ```bash
-ros2 launch cika_bringup real_arm_test.launch.py
+ros2 launch cika_bringup cikae_real_arm.launch.py
 ```
 ```bash
 ros2 launch cika_manipulator moveit.launch.py

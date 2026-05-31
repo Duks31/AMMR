@@ -1,28 +1,34 @@
 # ─────────────────────────────────────────────────────────────────────────────
-# cika_task_manager config
+# task_manager.yaml | Not meeded for now, everything is hardcoded in task_manager_node.py
 # ─────────────────────────────────────────────────────────────────────────────
 
 task_manager_node:
   ros__parameters:
-    use_sim_time: true
+    use_sim_time: false               # hardware run — not simulation
 
-    # ── Detection thresholds ──────────────────────────────────────────────────
-    detector_conf_threshold:   0.55   # min YOLO confidence to consider a detection
-    classifier_conf_threshold: 0.65   # min classifier confidence to confirm label
+    # ── Detection threshold ───────────────────────────────────────────────────
+    conf_threshold: 0.55              # single YOLO confidence gate (no separate classifier)
 
     # ── Navigation ────────────────────────────────────────────────────────────
-    approach_distance: 0.4            # metres — stop this far from detected object
-    nav2_retry_limit:  1              # retry once before skipping to IDLE
+    approach_distance: 0.2            # metres — stop this far short of detected object
+    nav2_retry_limit:  1              # retry once before returning to IDLE
 
     # ── Verification ─────────────────────────────────────────────────────────
-    verify_frames_required: 5         # consecutive confident frames before pick
-                                      # at ~1.7Hz detection rate ≈ 3 seconds
+    verify_frames_required: 5         # consecutive confident frames before triggering pick
+                                      # at ~10 Hz detection rate ≈ 0.5 s
 
     # ── Pick stub ─────────────────────────────────────────────────────────────
     pick_stub_duration: 3.0           # seconds — simulated pick time until
                                       # cika_manipulator action server is ready
 
-    # ── Topics and frames ─────────────────────────────────────────────────────
-    detections_topic: /cika/waste_detections_classified
-    robot_base_frame: base_link
-    global_frame: map
+    # ── Topics ────────────────────────────────────────────────────────────────
+    detections_topic: /cika/perception/waste_detections
+
+    # ── Frames ────────────────────────────────────────────────────────────────
+    camera_frame:        oak_rgb_camera_optical_frame
+    camera_target_frame: base_link        # camera URDF joint is relative to base_link
+    nav_base_frame:      base_footprint   # must match Nav2 robot_base_frame
+    global_frame:        map
+
+    # ── Arm ───────────────────────────────────────────────────────────────────
+    task_number: 1                    # passed as-is to PickAndDispose goal
