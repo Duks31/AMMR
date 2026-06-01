@@ -80,7 +80,7 @@ private:
       gripper_move_group_ = std::make_shared<moveit::planning_interface::MoveGroupInterface>(shared_from_this(), "gripper");
       gripper_move_group_->setMaxVelocityScalingFactor(0.1);
       gripper_move_group_->setMaxAccelerationScalingFactor(0.1);
-      arm_move_group_->setPoseReferenceFrame("base_footprint");
+      arm_move_group_->setPoseReferenceFrame("base_link");
 
       RCLCPP_INFO(get_logger(), "Planning frame set to: %s", 
         arm_move_group_->getPlanningFrame().c_str());  // ADD THIS
