@@ -54,7 +54,7 @@ def generate_launch_description():
 
     use_perception_arg = DeclareLaunchArgument(
         name="use_perception",
-        default_value="false",
+        default_value="true",
         choices=["true", "false"],
         description="Launch YOLOv8 inference node",
     )
