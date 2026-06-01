@@ -13,10 +13,10 @@ find_package(geometry_msgs REQUIRED)
 find_package(rosidl_default_generators REQUIRED)
 
 # ── Action interface ──────────────────────────────────────────────────────────
-rosidl_generate_interfaces(${PROJECT_NAME}
+# rosidl_generate_interfaces(${PROJECT_NAME}
 #   "action/PickAndDispose.action"
-  DEPENDENCIES geometry_msgs
-)
+#   DEPENDENCIES geometry_msgs
+# )
 
 # ── Python package ────────────────────────────────────────────────────────────
 ament_python_install_package(cika_task_manager_core)
