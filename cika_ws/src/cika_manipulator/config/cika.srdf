@@ -42,18 +42,18 @@
         <joint name="left_gripper_1_joint" value="0"/>
     </group_state>
     <group_state name="drop_1" group="arm">
-        <joint name="center_arm_1_joint" value="-0.5207"/>
-        <joint name="gripper_mount_1_joint" value="0"/>
-        <joint name="lower_arm_1_joint" value="1.9092"/>
-        <joint name="turntable_1_joint" value="2.6555"/>
-        <joint name="upper_arm_1_joint" value="-2.5514"/>
+        <joint name="center_arm_1_joint" value="-0.279"/>
+        <joint name="gripper_mount_1_joint" value="2.094"/>
+        <joint name="lower_arm_1_joint" value="1.745"/>
+        <joint name="turntable_1_joint" value="2.443"/>
+        <joint name="upper_arm_1_joint" value="-2.88"/>
     </group_state>
     <group_state name="drop_2" group="arm">
-        <joint name="center_arm_1_joint" value="-0.5207"/>
-        <joint name="gripper_mount_1_joint" value="0"/>
-        <joint name="lower_arm_1_joint" value="1.9092"/>
+        <joint name="center_arm_1_joint" value="-0.279"/>
+        <joint name="gripper_mount_1_joint" value="2.094"/>
+        <joint name="lower_arm_1_joint" value="1.745"/>
         <joint name="turntable_1_joint" value="3.7837"/>
-        <joint name="upper_arm_1_joint" value="-2.6382"/>
+        <joint name="upper_arm_1_joint" value="-2.88"/>
     </group_state>
     <!--END EFFECTOR: Purpose: Represent information about an end effector.-->
     <end_effector name="gripper" parent_link="gripper_mount_1" group="gripper" parent_group="arm"/>
