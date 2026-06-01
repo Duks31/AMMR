@@ -390,6 +390,14 @@
         </collision>
     </link>
 
+    <link name="imu_link" />
+    
+    <joint name="imu_joint" type="fixed">
+        <parent link="base_link" />
+        <child link="imu_link" />
+        <origin xyz="-0.28 0.15 0.14" rpy="0.0 0.0 0.0" />
+    </joint>
+
     <joint name="lidar_1_joint" type="fixed">
         <origin xyz="-0.038004 0.394984 0.193653" rpy="0 0 3.14159" />
         <parent link="base_link" />
