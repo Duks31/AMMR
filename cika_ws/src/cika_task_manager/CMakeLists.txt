@@ -14,7 +14,7 @@ find_package(rosidl_default_generators REQUIRED)
 
 # ── Action interface ──────────────────────────────────────────────────────────
 rosidl_generate_interfaces(${PROJECT_NAME}
-  "action/PickAndDispose.action"
+#   "action/PickAndDispose.action"
   DEPENDENCIES geometry_msgs
 )
 
