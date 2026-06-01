@@ -10,7 +10,7 @@ find_package(ament_cmake_python REQUIRED)
 # find_package(rclpy REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
-find_package(rosidl_default_generators REQUIRED)
+# find_package(rosidl_default_generators REQUIRED)
 
 # ── Action interface ──────────────────────────────────────────────────────────
 # rosidl_generate_interfaces(${PROJECT_NAME}
@@ -29,7 +29,7 @@ install(PROGRAMS
 install(DIRECTORY
   config
   launch
-  action
+#   action
   DESTINATION share/${PROJECT_NAME}
 )
 
