@@ -73,7 +73,7 @@ namespace cika_hardware_arm
     hardware_interface::CallbackReturn CikaHardware::on_activate(
         const rclcpp_lifecycle::State & /*previous_state*/)
     {
-        std::string port_name = "/dev/ttyARMESP32";
+        std::string port_name = "/dev/ttyUSB0";
 
         SerialPort = open(port_name.c_str(), O_RDWR);
 
@@ -258,9 +258,10 @@ namespace cika_hardware_arm
 
             
 
-            // 2. Exception handling for the upper arm servo (-180 to 0 rad range)
+            // 2. Exception handling for the upper arm servo and center arm servo (-180 to 0 rad range)
             // upside down mount, flip direction
             if (i == 3) degrees_float = -degrees_float;
+            if (i == 2) degrees_float = -degrees_float;
 
             // 3. Round to nearest integer
             int degrees = static_cast<int>(std::round(degrees_float));

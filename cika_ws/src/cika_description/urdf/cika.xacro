@@ -442,11 +442,12 @@
         <child link="arm_bottom_1" />
     </joint>
 
-    <joint name="turntable_1_joint" type="continuous">
+    <joint name="turntable_1_joint" type="revolute">
         <origin xyz="-0.055 0.0 0.079555" rpy="0 0 0" />
         <parent link="arm_bottom_1" />
         <child link="turntable_1" />
         <axis xyz="-0.0 0.0 1.0" />
+        <limit upper="6.28319" lower="0.0" effort="100" velocity="100" />
     </joint>
 
     <joint name="lower_arm_1_joint" type="revolute">
@@ -486,7 +487,7 @@
         <parent link="gripper_mount_1" />
         <child link="right_gripper_1" />
         <axis xyz="-0.085832 -0.173648 0.98106" />
-        <limit upper="0.0" lower="-0.610865" effort="100" velocity="100" />
+        <limit upper="0.0" lower="-3.142" effort="100" velocity="100" />
         <mimic joint="left_gripper_1_joint" multiplier="-1.0" />
     </joint>
 
@@ -495,7 +496,7 @@
         <parent link="gripper_mount_1" />
         <child link="left_gripper_1" />
         <axis xyz="-0.085832 -0.173648 0.98106" />
-        <limit upper="0.610865" lower="0.0" effort="100" velocity="100" />
+        <limit upper="3.142" lower="0.0" effort="100" velocity="100" />
     </joint>
 
     <ros2_control name="CikaSystem" type="system">
