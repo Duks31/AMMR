@@ -36,7 +36,7 @@
         <joint name="upper_arm_1_joint" value="-0.3259"/>
     </group_state>
     <group_state name="open" group="gripper">
-        <joint name="left_gripper_1_joint" value="0.5108"/>
+        <joint name="left_gripper_1_joint" value="3.142"/>
     </group_state>
     <group_state name="closed" group="gripper">
         <joint name="left_gripper_1_joint" value="0"/>
