@@ -9,7 +9,7 @@
 using namespace std::placeholders;
 
 namespace cika_manipulator
-{ // ADDED: Missing opening brace for namespace
+{
 
 class TaskServer : public rclcpp::Node
 {
@@ -80,6 +80,11 @@ private:
       gripper_move_group_ = std::make_shared<moveit::planning_interface::MoveGroupInterface>(shared_from_this(), "gripper");
       gripper_move_group_->setMaxVelocityScalingFactor(0.1);
       gripper_move_group_->setMaxAccelerationScalingFactor(0.1);
+      arm_move_group_->setPoseReferenceFrame("base_link");
+
+      RCLCPP_INFO(get_logger(), "Planning frame set to: %s", 
+        arm_move_group_->getPlanningFrame().c_str());  // ADD THIS
+    
       is_first_run = true;
     }
 
@@ -164,7 +169,7 @@ int main(int argc, char ** argv)
   rclcpp::init(argc, argv);
   
   rclcpp::NodeOptions options;
-  options.parameter_overrides({{"use_sim_time", true}});
+  options.parameter_overrides({{"use_sim_time", false}});
   
   auto node = std::make_shared<cika_manipulator::TaskServer>(options);
   

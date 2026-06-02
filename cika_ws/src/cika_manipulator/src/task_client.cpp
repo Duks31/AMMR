@@ -30,7 +30,8 @@
 //     // --- THE PLAYLIST ---
 //     std::vector<TaskCommand> sequence = {
 //         {1, 0.0, 0.0, 0.0},  // Step 1: Pre-pick stance
-//         {3, 0.2, 0.0, 0.05}, // Step 2: Dynamic Pick
+//         {4, 0.0, 0.0, 0.0},  // Step 3: Rest state
+//         {3, 0.135, 0.282, 0.225}, // Step 2: Dynamic Pick
 //         {4, 0.0, 0.0, 0.0},  // Step 3: Rest state
 //         {1, 0.0, 0.0, 0.0},  // Step 4: Drop 1
 //         {4, 0.0, 0.0, 0.0}   // Step 5: Rest
