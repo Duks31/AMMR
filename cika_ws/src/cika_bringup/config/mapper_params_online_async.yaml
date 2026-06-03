@@ -20,16 +20,17 @@ slam_toolbox:
 
     # ── Performance and Update Rates ──────────────────────────────────────────
     debug_logging: false
-    throttle_scans: 1
+    throttle_scans: 2
     transform_publish_period: 0.02  # Publishes map -> odom TF at 50Hz to match your EKF
     map_update_interval: 1.0        # 1-second map updates (laptop CPU can easily handle this)
     resolution: 0.05                # 5cm grid cells
 
     # ── RPLiDAR-Specific Tuning ───────────────────────────────────────────────
     max_laser_range: 12.0           # Matches the max reliable range from your previous RTAB-Map config
-    minimum_time_interval: 0.1      # Expects a scan roughly every 0.1s (10Hz)
-    transform_timeout: 0.2
-    tf_buffer_duration: 5.0 
+    minimum_laser_range: 0.15
+    minimum_time_interval: 0.2      # Expects a scan roughly every 0.2s
+    transform_timeout: 0.5
+    tf_buffer_duration: 10.0 
     stack_size_to_use: 40000000     # 40MB memory allocation for Ceres
 
     # ── Scan Matching and Loop Closure ────────────────────────────────────────
