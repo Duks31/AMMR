@@ -96,7 +96,7 @@ def generate_launch_description():
         "qos_scan": 1,  # ← RELIABLE (matches your publisher)
         "qos_odom": 1,  # ← RELIABLE
         "use_sim_time": use_sim_time,
-        # "Mem/SaveDepth16Format": "false",
+        "Mem/SaveDepth16Format": "false",
         # "Mem/DepthCompressionFormat": ".png",
         "Reg/Strategy": "1",
         "Reg/Force3DoF": "true",

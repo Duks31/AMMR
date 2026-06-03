@@ -8,7 +8,7 @@ set -euo pipefail
 
 # ── Pinned versions ────────────────────────────────────────
 ROS_DISTRO="humble"
-DEPTHAI_VERSION="2.24.0"
+DEPTHAI_VERSION="3.6.1"
 NUMPY_VERSION="1.26.4"       # numpy 2.x breaks several ROS2 nodes
 OPENCV_VERSION="4.9.0.80"
 # ──────────────────────────────────────────────────────────
@@ -119,6 +119,7 @@ sudo apt-get install -y -q \
   ros-${ROS_DISTRO}-joint-state-broadcaster \
   `# ── Manipulation (MoveIt 2) ─────────────` \
   ros-${ROS_DISTRO}-moveit \
+  ros-${ROS_DISTRO}-moveit-ros-perception \
   `# ── Camera / vision (OAK-D Lite) ────────` \
   ros-${ROS_DISTRO}-image-transport \
   ros-${ROS_DISTRO}-compressed-image-transport \
@@ -158,7 +159,7 @@ fi
 step "Installing DepthAI ${DEPTHAI_VERSION} + Python ML deps"
 sudo apt-get install -y -q libusb-1.0-0-dev
 
-pip3 install --break-system-packages \
+pip3 install \
   "depthai==${DEPTHAI_VERSION}" \
   "numpy==${NUMPY_VERSION}" \
   "opencv-python-headless==${OPENCV_VERSION}"
