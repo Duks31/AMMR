@@ -1,0 +1,65 @@
+ekf_filter_node:
+  ros__parameters:
+    use_sim_time: false
+    frequency: 10.0          # match ESP IMU rate
+    sensor_timeout: 0.5
+    two_d_mode: true
+    publish_tf: true
+
+    imu0_queue_size: 10   # buffer ~1s of IMU msgs
+    odom0_queue_size: 5
+    odom1_queue_size: 5
+
+    map_frame: map
+    odom_frame: odom
+    base_link_frame: base_footprint # changed from base link to base_footprint to match the new URDF
+    world_frame: odom
+
+    process_noise_covariance: [0.05,    0.0,     0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                0.0,    0.05,   0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                0.0,    0.0,    0.06, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                0.0,    0.0,    0.0,    0.03, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                0.0,    0.0,    0.0,    0.0,    0.03, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                0.0,    0.0,    0.0,    0.0,    0.0,    0.06, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.025,0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.025,0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.04, 0.0,    0.0,    0.0,    0.0,    0.0,    0.0,
+                                0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.01, 0.0,    0.0,    0.0,    0.0,    0.0,
+                                0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.01, 0.0,    0.0,    0.0,    0.0,
+                                0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.02, 0.0,    0.0,    0.0,
+                                0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.01, 0.0,    0.0,
+                                0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.01, 0.0,
+                                0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.0,    0.015]
+
+    # 1. Wheel odometry from ros2_control — velocity only
+    odom0: /skid_steer_controller/odom
+    odom0_config: [false, false, false,
+                   false, false, false,
+                   true,  false, true,   # vx
+                   false, false, true,    # vyaw
+                   false, false, false]
+    odom0_relative: false
+
+    # 2. IMU from Madgwick — orientation + angular velocity + linear accel
+    imu0: /imu/filtered
+    imu0_config: [false, false, false,
+                  false, false, true,     # yaw
+                  false, false, false,
+                  false, false, true,     # vyaw
+                  false,  false, false]    # ax
+    imu0_relative: false
+    imu0_remove_gravitational_acceleration: true
+
+    # # 3. Visual Odometry
+    # odom1: /vo
+    # # We fuse velocities (vx, vy, vyaw) instead of absolute X/Y. 
+    # # This gives the EKF the "flow" of movement without fighting the wheels for the (0,0) origin.
+    # odom1_config: [false, false, false, # x, y, z
+    #                false, false, false, # roll, pitch, yaw
+    #                true,  true,  false, # vx, vy, vz
+    #                false, false, true,  # vroll, vpitch, vyaw
+    #                false, false, false]
+    
+    # odom1_relative: false      # Not needed when fusing velocities
+    # odom1_differential: true  # Not needed when fusing velocities
+    # odom_1_queue_size: 10

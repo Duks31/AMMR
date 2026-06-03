@@ -73,35 +73,35 @@ def generate_launch_description():
 
     # ── Core nodes ────────────────────────────────────────────────────────────
 
-    # vo_node = Node(
-    #     package='rtabmap_odom',
-    #     executable='rgbd_odometry',
-    #     name='rgbd_odometry',
-    #     output='screen',
-    #     parameters=[{
-    #         'use_sim_time':             False,
-    #         'frame_id':                 'base_footprint',
-    #         'odom_frame_id':            'vo_odom',
-    #         'publish_tf':               False,
-    #         'approx_sync':              True,
-    #         'approx_sync_max_interval': 0.1,
-    #         'sync_queue_size':          10,
-    #         'Odom/Strategy':            '0',
-    #         'Vis/EstimationType':       '1',
-    #         'Odom/ResetCountdown':      '0',
-    #         'Vis/FeatureType':          '6',
-    #         'Vis/MaxFeatures':          '200',
-    #         'Vis/MinInliers':           '10',
-    #         'Odom/GuessMotion':         'true',
-    #         'Odom/FilteringStrategy':   '1',
-    #     }],
-    #     remappings=[
-    #         ('rgb/image',       '/oak/rgb/image_raw'),
-    #         ('rgb/camera_info', '/oak/rgb/camera_info'),
-    #         ('depth/image',     '/oak/stereo/image_raw'),
-    #         ('odom',            '/vo'),
-    #         ],
-    # )
+    vo_node = Node(
+        package='rtabmap_odom',
+        executable='rgbd_odometry',
+        name='rgbd_odometry',
+        output='screen',
+        parameters=[{
+            'use_sim_time':             False,
+            'frame_id':                 'base_footprint',
+            'odom_frame_id':            'vo_odom',
+            'publish_tf':               False,
+            'approx_sync':              True,
+            'approx_sync_max_interval': 0.1,
+            'sync_queue_size':          10,
+            'Odom/Strategy':            '0',
+            'Vis/EstimationType':       '1',
+            'Odom/ResetCountdown':      '0',
+            'Vis/FeatureType':          '6',
+            'Vis/MaxFeatures':          '200',
+            'Vis/MinInliers':           '10',
+            'Odom/GuessMotion':         'true',
+            'Odom/FilteringStrategy':   '1',
+        }],
+        remappings=[
+            ('rgb/image',       '/oak/rgb/image_raw'),
+            ('rgb/camera_info', '/oak/rgb/camera_info'),
+            ('depth/image',     '/oak/stereo/image_raw'),
+            ('odom',            '/vo'),
+            ],
+    )
 
     robot_state_publisher_node = Node(
         package="robot_state_publisher",
@@ -285,22 +285,17 @@ def generate_launch_description():
 
     return LaunchDescription([
         teleop_arg,
-        # nav_arg, # Running using the main package
         mode_arg,
         use_perception_arg,
-        # robot_state_publisher_node,
         ros2_control_node,
         delayed_lidar,
         delayed_motor_start,
-        # laser_filter_node, 
+        ekf_node,
         inference_node,
-        # vo_node,
         madgwick_node,
-        # ekf_node,
+        ekf_node,
         delayed_jsb,
         delayed_skid_steer,
         joy_node,
         teleop_node,
-        # foxglove_bridge,
-        # delayed_nav, # running using the main package
     ])
