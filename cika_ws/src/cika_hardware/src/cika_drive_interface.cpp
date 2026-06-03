@@ -134,6 +134,7 @@ namespace cika_hardware
         {
             RCLCPP_ERROR(rclcpp::get_logger("CikaDriveInterface"),
                          "Failed to open /dev/esp32");
+            return hardware_interface::CallbackReturn::ERROR;  // ← add this
         }
         // UNCOMMET AFTER FLASHING ESP32 WITH NEW FIRMWARE: DATE 26/5/2026
         else
