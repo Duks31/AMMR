@@ -293,7 +293,6 @@ def generate_launch_description():
         ekf_node,
         inference_node,
         madgwick_node,
-        ekf_node,
         delayed_jsb,
         delayed_skid_steer,
         joy_node,
