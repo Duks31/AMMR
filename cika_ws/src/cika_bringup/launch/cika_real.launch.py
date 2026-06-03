@@ -291,7 +291,7 @@ def generate_launch_description():
         delayed_lidar,
         delayed_motor_start,
         ekf_node,
-        inference_node,
+        # inference_node,
         madgwick_node,
         delayed_jsb,
         delayed_skid_steer,
