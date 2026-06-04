@@ -1,4 +1,4 @@
-# Saving the map: ros2 run nav2_map_server map_saver_cli -f ~/cika_maps/cika_map
+# Saving the map: ros2 run nav2_map_server map_saver_cli -f /home/ncep/cika_maps/cika_map
 
 slam_toolbox:
   ros__parameters:
