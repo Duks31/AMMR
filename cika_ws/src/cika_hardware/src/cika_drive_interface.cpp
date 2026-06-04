@@ -54,7 +54,7 @@ namespace cika_hardware
         // Publish static transform: base_link → imu_link
         geometry_msgs::msg::TransformStamped t;
         t.header.stamp = node_->get_clock()->now();
-        t.header.frame_id = "base_link";
+        t.header.frame_id = "base_footprint";
         t.child_frame_id = "imu_link";
         t.transform.translation.x = 0.0;
         t.transform.translation.y = 0.0;
