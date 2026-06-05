@@ -28,7 +28,6 @@ def generate_launch_description():
 
     controllers_yaml = os.path.join(cika_description_dir, "config", "controllers_real.yaml")
     joy_ps5_params   = os.path.join(cika_bringup_dir,     "config", "joy_ps5_real.yaml")
-    ekf_real_path    = os.path.join(cika_bringup_dir,     "config", "ekf_real.yaml")
     nav2_hw_path     = os.path.join(cika_bringup_dir,     "config", "nav2_params_real.yaml")
     rtabmap_db_path  = os.path.expanduser("~/cika_maps/cika_map.db")
 
@@ -194,13 +193,6 @@ def generate_launch_description():
         output="screen",
     )
 
-    ekf_node = Node(
-        package="robot_localization",
-        executable="ekf_node",
-        name="ekf_filter_node",
-        output="screen",
-        parameters=[ekf_real_path, {"use_sim_time": False}],
-    )
 
     # ── Controller spawning (sequenced) ───────────────────────────────────────
     joint_state_broadcaster_spawner = Node(

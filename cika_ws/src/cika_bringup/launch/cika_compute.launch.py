@@ -21,6 +21,9 @@ def generate_launch_description():
     cika_navigation_dir = get_package_share_directory("cika_navigation")
     foxglove_bridge_dir = get_package_share_directory("foxglove_bridge")
     cika_description_dir = get_package_share_directory("cika_description")
+
+    ekf_real_path    = os.path.join(cika_bringup_dir,     "config", "ekf_real.yaml")
+
     
     robot_description_content = ParameterValue(
         Command([
@@ -54,6 +57,14 @@ def generate_launch_description():
         ],
     )
 
+    ekf_node = Node(
+        package="robot_localization",
+        executable="ekf_node",
+        name="ekf_filter_node",
+        output="screen",
+        parameters=[ekf_real_path, {"use_sim_time": False}],
+    )
+
     foxglove_bridge = IncludeLaunchDescription(
         AnyLaunchDescriptionSource(
             os.path.join(foxglove_bridge_dir, "launch", "foxglove_bridge_launch.xml")
@@ -62,6 +73,7 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
+            ekf_node,
             laser_filter_node,
             robot_state_publisher_node,
             foxglove_bridge,

@@ -91,7 +91,7 @@ controller_server:
       max_lookahead_dist: 0.9
       lookahead_time: 1.5
       rotate_to_heading_angular_vel: 0.5
-      transform_tolerance: 0.1
+      transform_tolerance: 0.5
       use_velocity_scaled_lookahead_dist: false
       min_approach_linear_velocity: 0.05
       approach_velocity_scaling_dist: 0.6
@@ -116,6 +116,7 @@ local_costmap:
       update_frequency: 5.0
       publish_frequency: 2.0
       global_frame: odom
+      transform_tolerance: 0.5
       robot_base_frame: base_footprint
       rolling_window: true
       width: 4              # 4m local window — enough for warehouse navigation
@@ -230,7 +231,7 @@ behavior_server:
       plugin: "nav2_behaviors/AssistedTeleop"
     global_frame: odom
     robot_base_frame: base_footprint
-    transform_tolerance: 0.1
+    transform_tolerance: 0.5
     simulate_ahead_time: 2.0
     max_rotational_vel: 0.5
     min_rotational_vel: 0.2
@@ -284,7 +285,7 @@ amcl:
     save_pose_rate: 0.5
     sigma_hit: 0.2
     tf_broadcast: true
-    transform_tolerance: 0.2
+    transform_tolerance: 0.5
     update_min_a: 0.2
     update_min_d: 0.2
     z_hit: 0.5
