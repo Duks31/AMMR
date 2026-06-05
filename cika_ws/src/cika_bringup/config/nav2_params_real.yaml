@@ -12,7 +12,7 @@ bt_navigator:
     navigate_through_poses:
       plugin: "nav2_bt_navigator/NavigateThroughPosesNavigator"
     plugin_lib_names:
-      - nav2_compute_path_to_pose_  action_bt_node
+      - nav2_compute_path_to_pose_action_bt_node
       - nav2_compute_path_through_poses_action_bt_node
       - nav2_smooth_path_action_bt_node
       - nav2_follow_path_action_bt_node
@@ -281,7 +281,7 @@ amcl:
     recovery_alpha_fast: 0.1
     recovery_alpha_slow: 0.001
     resample_interval: 1
-    robot_model_type: "differential" # AMCL doesn't have 'skid_steer', differential + high alpha works best
+    robot_model_type: "nav2_amcl::DifferentialMotionModel"
     save_pose_rate: 0.5
     sigma_hit: 0.2
     tf_broadcast: true
