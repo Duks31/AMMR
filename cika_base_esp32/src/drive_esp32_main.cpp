@@ -227,7 +227,7 @@ void loop()
         }
     }
 
-    if (now - last_enc_time >= 100)
+    if (now - last_enc_time >= 20)
     {
         last_enc_time = now;
         noInterrupts();
