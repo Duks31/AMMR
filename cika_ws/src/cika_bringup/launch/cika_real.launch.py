@@ -282,7 +282,6 @@ def generate_launch_description():
         ros2_control_node,
         delayed_lidar,
         delayed_motor_start,
-        ekf_node,
         # inference_node,
         madgwick_node,
         delayed_jsb,
