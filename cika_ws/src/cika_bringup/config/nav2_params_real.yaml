@@ -125,7 +125,7 @@ local_costmap:
 
       # Cika footprint with arm stowed — rectangular approximation
       # 0.6m long x 0.4m wide, centered on base_footprint
-      footprint: "[[0.28, 0.41], [0.28, -0.15], [-0.28, -0.15], [-0.28, 0.41]]"
+      footprint: "[[0.24, 0.36], [0.24, -0.10], [-0.24, -0.10], [-0.24, 0.36]]"
       footprint_padding: 0.02
       plugins: ["inflation_layer", "obstacle_layer"]
 
