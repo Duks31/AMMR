@@ -258,7 +258,7 @@ namespace cika_hardware
                         imu_msg.linear_acceleration.z = az;
                         imu_msg.angular_velocity.x = gx;
                         imu_msg.angular_velocity.y = gy;
-                        imu_msg.angular_velocity.z = -gz;
+                        imu_msg.angular_velocity.z = gz;
                         imu_msg.orientation_covariance[0] = -1.0;
                         imu_msg.linear_acceleration_covariance[0] = 0.01;
                         imu_msg.linear_acceleration_covariance[4] = 0.01;
