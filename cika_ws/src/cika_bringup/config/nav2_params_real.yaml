@@ -74,8 +74,8 @@ controller_server:
 
     progress_checker:
       plugin: "nav2_controller::SimpleProgressChecker"
-      required_movement_radius: 0.5
-      movement_time_allowance: 10.0
+      required_movement_radius: 0.1
+      movement_time_allowance: 20.0
 
     general_goal_checker:
       stateful: true
@@ -86,26 +86,26 @@ controller_server:
     FollowPath:
       plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
       desired_linear_vel: 0.1            # Conservative max speed
-      lookahead_dist: 0.6
-      min_lookahead_dist: 0.2
-      max_lookahead_dist: 0.6
+      lookahead_dist: 0.8
+      min_lookahead_dist: 0.3
+      max_lookahead_dist: 0.8
       lookahead_time: 1.5
-      rotate_to_heading_angular_vel: 0.26
+      rotate_to_heading_angular_vel: 0.2
       transform_tolerance: 0.5
       use_velocity_scaled_lookahead_dist: true
       min_approach_linear_velocity: 0.05
       approach_velocity_scaling_dist: 0.6
       use_collision_detection: true
-      max_allowed_time_to_collision_up_to_carrot: 1.0
+      max_allowed_time_to_collision_up_to_carrot: 2.0
       use_regulated_linear_velocity_scaling: true
       use_fixed_curvature_lookahead: false
       curvature_lookahead_dist: 0.25
-      use_cost_regulated_linear_velocity_scaling: false
-      regulated_linear_scaling_min_radius: 0.9
-      regulated_linear_scaling_min_speed: 0.25
+      use_cost_regulated_linear_velocity_scaling: true
+      regulated_linear_scaling_min_radius: 0.6
+      regulated_linear_scaling_min_speed: 0.05
       use_rotate_to_heading: true        # Skid-steer: rotate in place before driving
       allow_reversing: false
-      rotate_to_heading_min_angle: 0.26 
+      rotate_to_heading_min_angle: 0.785
       max_angular_accel: 1.0
       max_robot_pose_search_dist: 10.0
 
@@ -125,9 +125,8 @@ local_costmap:
 
       # Cika footprint with arm stowed — rectangular approximation
       # 0.6m long x 0.4m wide, centered on base_footprint
-      footprint: "[[0.30, 0.20], [0.30, -0.20], [-0.30, -0.20], [-0.30, 0.20]]"
+      footprint: "[[0.28, 0.41], [0.28, -0.15], [-0.28, -0.15], [-0.28, 0.41]]"
       footprint_padding: 0.02
-
       plugins: ["inflation_layer", "obstacle_layer"]
 
       obstacle_layer:
@@ -146,7 +145,7 @@ local_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        inflation_radius: 0.40 # ~robot_radius + safety buffer for 25kg bot
+        inflation_radius: 0.30
 
       always_send_full_costmap: true
 
@@ -187,7 +186,7 @@ global_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0
-        inflation_radius: 0.55
+        inflation_radius: 0.30
 
       always_send_full_costmap: true
 

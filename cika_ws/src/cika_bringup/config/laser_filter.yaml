@@ -14,7 +14,6 @@ scan_to_scan_filter_chain:
       name: my_polygon_filter
       type: laser_filters/LaserScanPolygonFilter
       params:
-        # We use base_link so it's easy to measure from the center of the robot
         polygon_frame: base_footprint
         
         # Draw a box covering the back half of the robot where the tower is.
@@ -26,9 +25,7 @@ scan_to_scan_filter_chain:
         # Format: [[Front-Left], [Back-Left], [Back-Right], [Front-Right]]
         # polygon: "[[0.05, 0.40], [-0.55, 0.40], [-0.55, -0.10], [0.05, -0.10]]"
         # polygon: "[[-0.2387, 0.5505], [-0.8387, 0.5505], [-0.8387, 0.0505], [-0.2387, 0.0505]]"
-        polygon: "[[-0.20, 0.30], [-0.50, 0.30], [-0.50, -0.30], [-0.20, -0.30]]"   # Smaller & safer
-        
+
+        polygon: "[[0.25, 0.38], [-0.25, 0.38], [-0.25, -0.12], [0.25, -0.12]]"
         polygon_padding: 0.02
-        
-        # false = "Delete points INSIDE this polygon"
         invert: false
