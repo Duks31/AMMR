@@ -1,3 +1,5 @@
+#cika_compute.launch.py
+
 import os
 from ament_index_python.packages import get_package_share_directory
 
@@ -18,10 +20,10 @@ def generate_launch_description():
     cika_bringup_dir = get_package_share_directory("cika_bringup")
     cika_navigation_dir = get_package_share_directory("cika_navigation")
     foxglove_bridge_dir = get_package_share_directory("foxglove_bridge")
-
-    ekf_real_path = os.path.join(cika_bringup_dir, "config", "ekf_real.yaml")
-
     cika_description_dir = get_package_share_directory("cika_description")
+
+    ekf_real_path    = os.path.join(cika_bringup_dir,     "config", "ekf_real.yaml")
+
     
     robot_description_content = ParameterValue(
         Command([
@@ -71,9 +73,9 @@ def generate_launch_description():
 
     return LaunchDescription(
         [
+            ekf_node,
             laser_filter_node,
             robot_state_publisher_node,
-            ekf_node,
             foxglove_bridge,
         ]
     )

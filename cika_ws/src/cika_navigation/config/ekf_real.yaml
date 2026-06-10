@@ -1,14 +1,14 @@
 ekf_filter_node:
   ros__parameters:
     use_sim_time: false
-    frequency: 30.0          # match ESP IMU rate
-    sensor_timeout: 0.5
+    frequency: 10.0          # match ESP IMU rate
+    sensor_timeout: 1.0
     two_d_mode: true
     publish_tf: true
 
     imu0_queue_size: 10   # buffer ~1s of IMU msgs
     odom0_queue_size: 5
-    odom1_queue_size: 10
+    odom1_queue_size: 5
 
     map_frame: map
     odom_frame: odom
@@ -36,17 +36,17 @@ ekf_filter_node:
     odom0_config: [false, false, false,
                    false, false, false,
                    true,  false, false,   # vx
-                   false, false, true,  
+                   false, false, true,    # vyaw
                    false, false, false]
     odom0_relative: false
 
     # 2. IMU from Madgwick — orientation + angular velocity + linear accel
     imu0: /imu/filtered
     imu0_config: [false, false, false,
-                  false, false, false,
+                  false, false, false,     
                   false, false, false,
                   false, false, true,     # vyaw
-                  false,  false, false]   
+                  false,  false, false]    # ax
     imu0_relative: false
     imu0_remove_gravitational_acceleration: true
 

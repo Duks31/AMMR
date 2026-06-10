@@ -1,3 +1,5 @@
+# cika_real.launch.py
+
 import os
 from ament_index_python.packages import get_package_share_directory
 
@@ -26,14 +28,13 @@ def generate_launch_description():
 
     controllers_yaml = os.path.join(cika_description_dir, "config", "controllers_real.yaml")
     joy_ps5_params   = os.path.join(cika_bringup_dir,     "config", "joy_ps5_real.yaml")
-    ekf_real_path    = os.path.join(cika_bringup_dir,     "config", "ekf_real.yaml")
     nav2_hw_path     = os.path.join(cika_bringup_dir,     "config", "nav2_params_real.yaml")
     rtabmap_db_path  = os.path.expanduser("~/cika_maps/cika_map.db")
 
     # ── Arguments ─────────────────────────────────────────────────────────────
     teleop_arg = DeclareLaunchArgument(
         name="teleop",
-        default_value="true",
+        default_value="false",
         choices=["true", "false"],
         description="Start PS5 joystick teleop",
     )
@@ -54,7 +55,7 @@ def generate_launch_description():
 
     use_perception_arg = DeclareLaunchArgument(
         name="use_perception",
-        default_value="false",
+        default_value="true",
         choices=["true", "false"],
         description="Launch YOLOv8 inference node",
     )
@@ -192,13 +193,6 @@ def generate_launch_description():
         output="screen",
     )
 
-    ekf_node = Node(
-        package="robot_localization",
-        executable="ekf_node",
-        name="ekf_filter_node",
-        output="screen",
-        parameters=[ekf_real_path, {"use_sim_time": False}],
-    )
 
     # ── Controller spawning (sequenced) ───────────────────────────────────────
     joint_state_broadcaster_spawner = Node(
@@ -283,22 +277,15 @@ def generate_launch_description():
 
     return LaunchDescription([
         teleop_arg,
-        # nav_arg, # Running using the main package
         mode_arg,
         use_perception_arg,
-        # robot_state_publisher_node,
         ros2_control_node,
         delayed_lidar,
         delayed_motor_start,
-        # laser_filter_node, 
-        inference_node,
-        vo_node,
+        # inference_node,
         madgwick_node,
-        # ekf_node,
         delayed_jsb,
         delayed_skid_steer,
         joy_node,
         teleop_node,
-        # foxglove_bridge,
-        # delayed_nav, # running using the main package
     ])

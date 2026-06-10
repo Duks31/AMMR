@@ -54,7 +54,7 @@ namespace cika_hardware
         // Publish static transform: base_link → imu_link
         geometry_msgs::msg::TransformStamped t;
         t.header.stamp = node_->get_clock()->now();
-        t.header.frame_id = "base_link";
+        t.header.frame_id = "base_footprint";
         t.child_frame_id = "imu_link";
         t.transform.translation.x = 0.0;
         t.transform.translation.y = 0.0;
@@ -134,6 +134,7 @@ namespace cika_hardware
         {
             RCLCPP_ERROR(rclcpp::get_logger("CikaDriveInterface"),
                          "Failed to open /dev/esp32");
+            return hardware_interface::CallbackReturn::ERROR;  // ← add this
         }
         // UNCOMMET AFTER FLASHING ESP32 WITH NEW FIRMWARE: DATE 26/5/2026
         else
@@ -257,7 +258,7 @@ namespace cika_hardware
                         imu_msg.linear_acceleration.z = az;
                         imu_msg.angular_velocity.x = gx;
                         imu_msg.angular_velocity.y = gy;
-                        imu_msg.angular_velocity.z = -gz;
+                        imu_msg.angular_velocity.z = gz;
                         imu_msg.orientation_covariance[0] = -1.0;
                         imu_msg.linear_acceleration_covariance[0] = 0.01;
                         imu_msg.linear_acceleration_covariance[4] = 0.01;

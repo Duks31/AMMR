@@ -227,7 +227,7 @@ void loop()
         }
     }
 
-    if (now - last_enc_time >= 100)
+    if (now - last_enc_time >= 20)
     {
         last_enc_time = now;
         noInterrupts();
@@ -240,7 +240,7 @@ void loop()
     }
 
     unsigned long now2 = millis();
-    if (now2 - last_imu_time >= 200)
+    if (now2 - last_imu_time >= 50)
     {
         last_imu_time = now2;
 
@@ -510,7 +510,7 @@ void loop()
 //     }
 
 //     // IMU telemetry at 5 Hz
-//     if (now - last_imu_time >= 100) {
+//     if (now - last_imu_time >= 50) {
 //         last_imu_time = now;
 
 //         int16_t ax_r, ay_r, az_r, gx_r, gy_r, gz_r;

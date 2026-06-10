@@ -5,8 +5,8 @@ scan_to_scan_filter_chain:
       type: laser_filters/LaserScanRangeFilter
       params:
         use_message_range_limits: false
-        lower_threshold: 0.15      # RPLIDAR C1 min reliable range
-        upper_threshold: 10.0      # stay conservative indoors
+        lower_threshold: 0.15
+        upper_threshold: 10.0
         lower_replacement_value: .inf
         upper_replacement_value: .inf
         
@@ -14,21 +14,10 @@ scan_to_scan_filter_chain:
       name: my_polygon_filter
       type: laser_filters/LaserScanPolygonFilter
       params:
-        # We use base_link so it's easy to measure from the center of the robot
         polygon_frame: base_footprint
-        
-        # Draw a box covering the back half of the robot where the tower is.
-        # Format: [[X1, Y1], [X2, Y2], [X3, Y3], [X4, Y4]] in meters.
-        # This covers 0cm to 60cm behind the center, and 30cm left/right.
-        # polygon: "[[-0.05, 0.35], [-0.55, 0.35], [-0.55, -0.35], [-0.05, -0.35]]"
-
-        # Mapped perfectly to your URDF's front-right origin
-        # Format: [[Front-Left], [Back-Left], [Back-Right], [Front-Right]]
-        # polygon: "[[0.05, 0.40], [-0.55, 0.40], [-0.55, -0.10], [0.05, -0.10]]"
-        # polygon: "[[-0.2387, 0.5505], [-0.8387, 0.5505], [-0.8387, 0.0505], [-0.2387, 0.0505]]"
-        polygon: "[[-0.20, 0.30], [-0.50, 0.30], [-0.50, -0.30], [-0.20, -0.30]]"   # Smaller & safer
-        
+        # Lidar at (-0.327, 0.545), facing -x (rotated 180°).
+        # Self-hits at 0.25m forward land at x≈-0.58, y≈0.54.
+        # Box covers the robot body in the lidar's forward arc.
+        polygon: "[[-0.25, 0.70], [-0.65, 0.70], [-0.65, 0.35], [-0.25, 0.35]]"
         polygon_padding: 0.02
-        
-        # false = "Delete points INSIDE this polygon"
         invert: false
