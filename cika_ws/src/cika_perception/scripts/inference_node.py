@@ -2,6 +2,9 @@
 """
 ROS2 node for running inference on OAK-D Lite with DepthAI v3 API.
 Host-Side Decoding + Host-Side NumPy Spatial Calculation (Crash-Free)
+
+ros2 service call /cika/perception/set_inference_active std_srvs/srv/SetBool "{data: true}"
+ros2 service call /cika/perception/set_inference_active std_srvs/srv/SetBool "{data: false}"
 """
 
 import os
@@ -21,7 +24,7 @@ from rclpy.qos import QoSProfile, ReliabilityPolicy, HistoryPolicy
 package_share_directory = get_package_share_directory("cika_perception")
 
 # ── Model paths ───────────────────────────────────────────────────────────────
-BLOB_PATH = os.path.join(package_share_directory, "models", "taco_2class_300epoch.blob")
+BLOB_PATH = os.path.join(package_share_directory, "models", "taco_v2.blob")
 
 # ── Detection config ──────────────────────────────────────────────────────────
 INPUT_W = 640
