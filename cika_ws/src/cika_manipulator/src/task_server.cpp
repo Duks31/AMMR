@@ -115,6 +115,9 @@ private:
     else if (goal->task_number == 4) {
       arm_target_pose_ = "rest";
       gripper_target_pose_ = "closed"; 
+    }
+    else if (goal->task_number == 5) {
+      arm_target_pose_ = "pick"; 
     } 
     else {
       RCLCPP_ERROR(get_logger(), "Invalid Task Number provided!");
