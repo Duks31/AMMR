@@ -48,7 +48,7 @@ class CikaDemoNode(Node):
 
     def __init__(self):
         super().__init__('cika_demo_node')
-        self.pub = self.create_publisher(Twist, '/cmd_vel', 10)
+        self.pub = self.create_publisher(Twist, '/skid_steer_controller/cmd_vel_unstamped', 10)
         self.get_logger().info('Cika demo node ready.')
 
     # ── low-level movement primitives ────────
