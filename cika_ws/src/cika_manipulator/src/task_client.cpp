@@ -195,11 +195,12 @@ private:
 
         // Build the dynamic playlist
         std::vector<TaskCommand> sequence = {
-            {4, 0.0, 0.0, 0.0},                 // Step 1: Rest (Standby)
-            {3, target_x, target_y, target_z},  // Step 2: Dynamic Pick (Using coordinates)
-            {0, 0.0, 0.0, 0.0},                 // Step 3: Home State
-            {drop_task, 0.0, 0.0, 0.0},         // Step 4: Drop 1 or Drop 2 (Based on Label)
-            {4, 0.0, 0.0, 0.0}                  // Step 5: Rest
+            {4, 0.0, 0.0, 0.0},
+            {0, 0.0, 0.0, 0.0},
+            {3, target_x, target_y, target_z},                  
+            {5, 0.0, 0.0, 0.0},                 
+            {drop_task, 0.0, 0.0, 0.0},         
+            {4, 0.0, 0.0, 0.0}                  
         };
 
         RCLCPP_INFO(this->get_logger(), "=== STARTING AMMR SEQUENCE ===");
