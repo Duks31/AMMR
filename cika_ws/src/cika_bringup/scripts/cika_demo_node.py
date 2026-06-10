@@ -22,8 +22,8 @@ import sys
 # ─────────────────────────────────────────────
 #  TUNE THESE VALUES ON THE DEMO FLOOR
 # ─────────────────────────────────────────────
-DRIVE_SPEED       = 0.20   # [TUNE] m/s forward speed
-TURN_SPEED        = 0.40   # [TUNE] rad/s rotation speed
+DRIVE_SPEED       = 0.10   # [TUNE] m/s forward speed
+TURN_SPEED        = 0.50   # [TUNE] rad/s rotation speed
 
 # Object 1 (plastic) — distance from start to first object
 DRIVE_TO_OBJ1_SEC = 3.5    # [TUNE] seconds to reach object 1
