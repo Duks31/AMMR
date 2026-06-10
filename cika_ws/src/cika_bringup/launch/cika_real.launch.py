@@ -34,7 +34,7 @@ def generate_launch_description():
     # ── Arguments ─────────────────────────────────────────────────────────────
     teleop_arg = DeclareLaunchArgument(
         name="teleop",
-        default_value="true",
+        default_value="false",
         choices=["true", "false"],
         description="Start PS5 joystick teleop",
     )
