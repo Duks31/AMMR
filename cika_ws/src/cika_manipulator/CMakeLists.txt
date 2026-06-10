@@ -49,6 +49,7 @@ target_link_libraries(task_client "${cpp_typesupport_target}")
 install(TARGETS
   task_server
   task_client
+  paper_client
   DESTINATION lib/${PROJECT_NAME}
 )
 

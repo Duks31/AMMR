@@ -73,7 +73,8 @@ namespace cika_hardware_arm
     hardware_interface::CallbackReturn CikaHardware::on_activate(
         const rclcpp_lifecycle::State & /*previous_state*/)
     {
-        std::string port_name = "/dev/ttyUSB0";
+        // std::string port_name = "/dev/ttyUSB0";
+        std::string port_name = "/dev/esp32_arm";
 
         SerialPort = open(port_name.c_str(), O_RDWR);
 
@@ -296,3 +297,275 @@ namespace cika_hardware_arm
 
 #include "pluginlib/class_list_macros.hpp"
 PLUGINLIB_EXPORT_CLASS(cika_hardware_arm::CikaHardware, hardware_interface::SystemInterface)
+
+
+// // TCP/Socket Includes (replaces serial includes)
+// #include <sys/socket.h>
+// #include <arpa/inet.h>
+// #include <fcntl.h>
+// #include <errno.h>
+// #include <unistd.h>
+// #include <chrono>
+// #include <thread>
+// #include <cstring>
+// #include <cmath>
+// #include <algorithm>
+// #include <netdb.h> // Required for gethostbyname
+// #include "cika_hardware_arm/cika_hardware_arm.hpp"
+// #include "hardware_interface/types/hardware_interface_type_values.hpp"
+// #include "rclcpp/rclcpp.hpp"
+
+// namespace cika_hardware_arm
+// {
+//     // ─────────────────────────────────────────────
+//     // on_init
+//     // ─────────────────────────────────────────────
+//     hardware_interface::CallbackReturn CikaHardware::on_init(
+//         const hardware_interface::HardwareInfo & info)
+//     {
+//         if (hardware_interface::SystemInterface::on_init(info) !=
+//             hardware_interface::CallbackReturn::SUCCESS)
+//         {
+//             return hardware_interface::CallbackReturn::ERROR;
+//         }
+
+//         hw_states_position_.assign(info_.joints.size(), 0.0);
+//         hw_states_velocity_.assign(info_.joints.size(), 0.0);
+//         hw_commands_.assign(info_.joints.size(), 0.0);
+
+//         for (const hardware_interface::ComponentInfo & joint : info_.joints)
+//         {
+//             if (joint.command_interfaces.size() != 1 ||
+//                 joint.command_interfaces[0].name != hardware_interface::HW_IF_POSITION)
+//             {
+//                 RCLCPP_FATAL(rclcpp::get_logger("CikaHardware"),
+//                     "Joint '%s' missing position command interface.", joint.name.c_str());
+//                 return hardware_interface::CallbackReturn::ERROR;
+//             }
+
+//             if (joint.state_interfaces.size() != 2 ||
+//                 joint.state_interfaces[0].name != hardware_interface::HW_IF_POSITION ||
+//                 joint.state_interfaces[1].name != hardware_interface::HW_IF_VELOCITY)
+//             {
+//                 RCLCPP_FATAL(rclcpp::get_logger("CikaHardware"),
+//                     "Joint '%s' missing position/velocity state interfaces.", joint.name.c_str());
+//                 return hardware_interface::CallbackReturn::ERROR;
+//             }
+//         }
+
+//         return hardware_interface::CallbackReturn::SUCCESS;
+//     }
+
+//     // ─────────────────────────────────────────────
+//     // on_configure
+//     // ─────────────────────────────────────────────
+//     hardware_interface::CallbackReturn CikaHardware::on_configure(
+//         const rclcpp_lifecycle::State & /*previous_state*/)
+//     {
+//         for (uint i = 0; i < hw_states_position_.size(); i++)
+//         {
+//             hw_states_position_[i] = 0.0;
+//             hw_states_velocity_[i] = 0.0;
+//             hw_commands_[i] = 0.0;
+//         }
+
+//         RCLCPP_INFO(rclcpp::get_logger("CikaHardware"), "Successfully configured!");
+//         return hardware_interface::CallbackReturn::SUCCESS;
+//     }
+
+//     // ─────────────────────────────────────────────
+//     // on_activate  —  opens TCP socket to ESP32 via mDNS
+//     // ─────────────────────────────────────────────
+//     hardware_interface::CallbackReturn CikaHardware::on_activate(
+//         const rclcpp_lifecycle::State & /*previous_state*/)
+//     {
+//         const char* ESP32_HOSTNAME = "cika-arm.local";  // mDNS hostname
+//         const int   ESP32_PORT     = 8888;
+
+//         // 1. Create TCP socket
+//         SerialPort = socket(AF_INET, SOCK_STREAM, 0);
+//         if (SerialPort < 0)
+//         {
+//             RCLCPP_ERROR(rclcpp::get_logger("CikaHardware"),
+//                 "Failed to create TCP socket: %s", strerror(errno));
+//             return hardware_interface::CallbackReturn::ERROR;
+//         }
+
+//         // 2. Optional: set send timeout so write() never hangs forever
+//         struct timeval tv;
+//         tv.tv_sec  = 2;
+//         tv.tv_usec = 0;
+//         setsockopt(SerialPort, SOL_SOCKET, SO_SNDTIMEO, &tv, sizeof(tv));
+
+//         // 3. Resolve hostname via mDNS
+//         struct hostent *host = gethostbyname(ESP32_HOSTNAME);
+//         if (host == nullptr)
+//         {
+//             RCLCPP_WARN(rclcpp::get_logger("CikaHardware"),
+//                 "Cannot resolve hostname %s — arm disabled.", ESP32_HOSTNAME);
+//             close(SerialPort);
+//             SerialPort = -1;
+//             // graceful bypass: controller still loads, just no motion
+//             return hardware_interface::CallbackReturn::SUCCESS;
+//         }
+
+//         // 4. Configure Address struct with the resolved IP
+//         sockaddr_in addr{};
+//         addr.sin_family = AF_INET;
+//         addr.sin_port   = htons(ESP32_PORT);
+//         memcpy(&addr.sin_addr.s_addr, host->h_addr_list[0], host->h_length);
+
+//         // 5. Connect to ESP32
+//         if (connect(SerialPort, (sockaddr*)&addr, sizeof(addr)) < 0)
+//         {
+//             RCLCPP_WARN(rclcpp::get_logger("CikaHardware"),
+//                 "Cannot connect to ESP32 at %s:%d — arm disabled. (%s)",
+//                 ESP32_HOSTNAME, ESP32_PORT, strerror(errno));
+//             close(SerialPort);
+//             SerialPort = -1;
+//             return hardware_interface::CallbackReturn::SUCCESS;
+//         }
+
+//         RCLCPP_INFO(rclcpp::get_logger("CikaHardware"),
+//             "Connected to ESP32 at %s:%d", ESP32_HOSTNAME, ESP32_PORT);
+
+//         return hardware_interface::CallbackReturn::SUCCESS;
+//     }
+
+//     // ─────────────────────────────────────────────
+//     // on_deactivate
+//     // ─────────────────────────────────────────────
+//     hardware_interface::CallbackReturn CikaHardware::on_deactivate(
+//         const rclcpp_lifecycle::State & /*previous_state*/)
+//     {
+//         if (SerialPort >= 0)
+//         {
+//             close(SerialPort);
+//             SerialPort = -1;
+//             RCLCPP_INFO(rclcpp::get_logger("CikaHardware"), "TCP socket closed.");
+//         }
+//         return hardware_interface::CallbackReturn::SUCCESS;
+//     }
+
+//     // ─────────────────────────────────────────────
+//     // export_interfaces
+//     // ─────────────────────────────────────────────
+//     std::vector<hardware_interface::StateInterface> CikaHardware::export_state_interfaces()
+//     {
+//         std::vector<hardware_interface::StateInterface> state_interfaces;
+//         for (uint i = 0; i < info_.joints.size(); i++)
+//         {
+//             state_interfaces.emplace_back(hardware_interface::StateInterface(
+//                 info_.joints[i].name, hardware_interface::HW_IF_POSITION, &hw_states_position_[i]));
+//             state_interfaces.emplace_back(hardware_interface::StateInterface(
+//                 info_.joints[i].name, hardware_interface::HW_IF_VELOCITY, &hw_states_velocity_[i]));
+//         }
+//         return state_interfaces;
+//     }
+
+//     std::vector<hardware_interface::CommandInterface> CikaHardware::export_command_interfaces()
+//     {
+//         std::vector<hardware_interface::CommandInterface> command_interfaces;
+//         for (uint i = 0; i < info_.joints.size(); i++)
+//         {
+//             command_interfaces.emplace_back(hardware_interface::CommandInterface(
+//                 info_.joints[i].name, hardware_interface::HW_IF_POSITION, &hw_commands_[i]));
+//         }
+//         return command_interfaces;
+//     }
+
+//     // ─────────────────────────────────────────────
+//     // Socket Helpers
+//     // ─────────────────────────────────────────────
+//     int CikaHardware::writeToSerial(unsigned char* buf, int nBytes)
+//     {
+//         return ::write(SerialPort, buf, nBytes);
+//     }
+
+//     int CikaHardware::ReadSerial(unsigned char* buf, int nBytes)
+//     {
+//         auto t_start = std::chrono::high_resolution_clock::now();
+//         int n = 0;
+//         while (n < nBytes)
+//         {
+//             int ret = ::read(SerialPort, &(buf[n]), 1);
+//             if (ret < 0) return ret;
+//             n += ret;
+
+//             auto t_end = std::chrono::high_resolution_clock::now();
+//             double elapsed_ms = std::chrono::duration<double, std::milli>(t_end - t_start).count();
+//             if (elapsed_ms > 10000) break;
+//         }
+//         return n;
+//     }
+
+//     // ─────────────────────────────────────────────
+//     // read
+//     // ─────────────────────────────────────────────
+//     hardware_interface::return_type CikaHardware::read(
+//         const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
+//     {
+//         for (uint i = 0; i < hw_states_position_.size(); i++)
+//         {
+//             hw_states_position_[i] = hw_commands_[i];
+//             hw_states_velocity_[i] = 0.0;
+//         }
+//         return hardware_interface::return_type::OK;
+//     }
+
+//     // ─────────────────────────────────────────────
+//     // write
+//     // ─────────────────────────────────────────────
+//     hardware_interface::return_type CikaHardware::write(
+//         const rclcpp::Time & /*time*/, const rclcpp::Duration & /*period*/)
+//     {
+//         if (SerialPort < 0)
+//         {
+//             // Arm not connected — graceful bypass
+//             return hardware_interface::return_type::OK;
+//         }
+
+//         std::string cmd = "";
+//         for (uint i = 0; i < hw_commands_.size(); i++)
+//         {
+//             // 1. Convert radians to degrees
+//             double degrees_float = (hw_commands_[i] * 180.0 / M_PI);
+
+//             // 2. Flip direction for upside-down mounted servos
+//             if (i == 3) degrees_float = -degrees_float;
+//             if (i == 2) degrees_float = -degrees_float;
+
+//             // 3. Round to nearest integer
+//             int degrees = static_cast<int>(std::round(degrees_float));
+
+//             // 4. Clamp to safe servo range (0 to 180), skip joint 0 (stepper)
+//             if (i != 0)
+//             {
+//                 degrees = std::max(0, std::min(180, degrees));
+//             }
+
+//             // 5. Append to command string
+//             cmd += "S" + std::to_string(i) + ":" + std::to_string(degrees);
+//             if (i < hw_commands_.size() - 1) cmd += ",";
+//         }
+//         cmd += "\n";
+
+//         // 6. Send over TCP socket (same call as serial — ::write on a socket fd)
+//         unsigned char buf[256];
+//         memcpy(buf, cmd.c_str(), cmd.size());
+//         int written = writeToSerial(buf, cmd.size());
+
+//         if (written < 0)
+//         {
+//             RCLCPP_ERROR(rclcpp::get_logger("CikaHardware"),
+//                 "Failed to write to TCP socket: %s", strerror(errno));
+//             return hardware_interface::return_type::ERROR;
+//         }
+
+//         return hardware_interface::return_type::OK;
+//     }
+
+// } // namespace cika_hardware_arm
+
+// #include "pluginlib/class_list_macros.hpp"
+// PLUGINLIB_EXPORT_CLASS(cika_hardware_arm::CikaHardware, hardware_interface::SystemInterface)

@@ -33,7 +33,7 @@ int main(int argc, char **argv)
         {0, 0.0, 0.0, 0.0},  // Step 3: Home
         {3, 0.135, 0.282, 0.225}, // Step 2: Dynamic Pick (Example coordinates for a detected object)
         {5, 0.0, 0.0, 0.0},  // Step 3: Pre Drop
-        {1, 0.0, 0.0, 0.0},  // Step 4: Drop 1 (Plastic)
+        {2, 0.0, 0.0, 0.0},  // Step 4: Drop 2 (Paper)
         {0, 0.0, 0.0, 0.0}   // Step 5: Rest
     };
 
