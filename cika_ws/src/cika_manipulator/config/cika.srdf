@@ -44,14 +44,14 @@
     <group_state name="drop_1" group="arm">
         <joint name="center_arm_1_joint" value="-0.279"/>
         <joint name="gripper_mount_1_joint" value="2.094"/>
-        <joint name="lower_arm_1_joint" value="2.2563"/>
+        <joint name="lower_arm_1_joint" value="2.000"/>
         <joint name="turntable_1_joint" value="2.443"/>
         <joint name="upper_arm_1_joint" value="-2.88"/>
     </group_state>
     <group_state name="drop_2" group="arm">
         <joint name="center_arm_1_joint" value="-0.279"/>
         <joint name="gripper_mount_1_joint" value="2.094"/>
-        <joint name="lower_arm_1_joint" value="2.2563"/>
+        <joint name="lower_arm_1_joint" value="2.000"/>
         <joint name="turntable_1_joint" value="3.7837"/>
         <joint name="upper_arm_1_joint" value="-2.88"/>
     </group_state>
