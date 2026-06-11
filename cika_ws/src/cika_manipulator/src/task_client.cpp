@@ -31,7 +31,7 @@ int main(int argc, char **argv)
     std::vector<TaskCommand> sequence = {
         {4, 0.0, 0.0, 0.0},  // Step 1: Rest
         {0, 0.0, 0.0, 0.0},  // Step 3: Home
-        {3, 0.146, 0.282, 0.125}, // Step 2: Dynamic Pick (Example coordinates for a detected object)
+        {3, 0.146, 0.282, 0.150}, // Step 2: Dynamic Pick (Example coordinates for a detected object)
         {5, 0.0, 0.0, 0.0},  // Step 3: Pre Drop
         {1, 0.0, 0.0, 0.0},  // Step 4: Drop 1 (Plastic)
         {0, 0.0, 0.0, 0.0}   // Step 5: Rest
