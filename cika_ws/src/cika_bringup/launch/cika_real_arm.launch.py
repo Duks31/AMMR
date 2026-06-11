@@ -109,9 +109,9 @@ def generate_launch_description():
     )
 
     return LaunchDescription([
-        robot_state_publisher_node,
-        ros2_control_node,
-        delayed_jsb,
+        # robot_state_publisher_node,
+        # ros2_control_node,
+        # delayed_jsb,
         delayed_arm,
         delayed_gripper,
     ])
