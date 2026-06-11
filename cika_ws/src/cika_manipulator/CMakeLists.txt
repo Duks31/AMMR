@@ -40,10 +40,18 @@ ament_target_dependencies(task_client
   cika_perception
 )
 
+add_executable(paper_client src/paper_client.cpp)
+ament_target_dependencies(paper_client 
+  rclcpp 
+  rclcpp_action 
+  cika_perception
+)
+
 # 5. LINK THE INTERFACES (Now that task_server and task_client exist)
 rosidl_get_typesupport_target(cpp_typesupport_target "${PROJECT_NAME}" "rosidl_typesupport_cpp")
 target_link_libraries(task_server "${cpp_typesupport_target}")
 target_link_libraries(task_client "${cpp_typesupport_target}")
+target_link_libraries(paper_client "${cpp_typesupport_target}")
 
 # 6. Install rules
 install(TARGETS
