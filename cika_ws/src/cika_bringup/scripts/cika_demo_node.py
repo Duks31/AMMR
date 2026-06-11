@@ -19,21 +19,8 @@ import threading
 #  TUNE THESE VALUES ON THE DEMO FLOOR
 # ─────────────────────────────────────────────
 DRIVE_SPEED       = 0.10   # m/s forward speed
-TURN_SPEED        = 0.50   # rad/s rotation speed
-
-# Object 1 (Recyclable / Plastic)
 DRIVE_TO_OBJ1_SEC = 3.5    
-TURN_TO_PLASTIC_BIN_SEC = 1.8   # right turn
-DRIVE_TO_PLASTIC_BIN_SEC = 2.0  
-
-# Return to path
-TURN_BACK_FROM_PLASTIC_SEC = 1.8  # turn back left
 DRIVE_TO_OBJ2_SEC = 2.5           
-
-# Object 2 (Non-recyclable / Paper)
-TURN_TO_PAPER_BIN_SEC = 1.8       # left turn
-DRIVE_TO_PAPER_BIN_SEC = 2.0      
-
 SCAN_DELAY_SEC = 2.5  
 # ─────────────────────────────────────────────
 
@@ -94,17 +81,15 @@ class CikaDemoNode(Node):
         print(f'\n  → {msg}')
 
     # ── main demo sequence ────────────────────
-
     def run_demo(self):
-        time.sleep(1.0)  
+        time.sleep(1.0)
         print('\n' + '═'*55)
         print('  CIKA DEMO — waste sorting sequence')
         print('  Press Ctrl+C at any time to abort')
         print('═'*55 + '\n')
         input('  Press ENTER to start the demo...\n')
 
-        # ── OBJECT 1: RECYCLABLE (PLASTIC) ────
-
+        # ── OBJECT 1: PLASTIC ─────────────────
         self.announce('Driving toward object 1...')
         self.drive(DRIVE_SPEED, DRIVE_TO_OBJ1_SEC)
         self.stop(0.8)
@@ -112,25 +97,9 @@ class CikaDemoNode(Node):
         self.announce(f'Scanning... ({SCAN_DELAY_SEC}s)')
         time.sleep(SCAN_DELAY_SEC)
         self.announce('Object detected: RECYCLABLE (Plastic)')
+        self.wait_for_enter('Run MoveIt PICK + DROP into plastic bin')
 
-        self.wait_for_enter('Run manual MoveIt PICK for Recyclable object')
-
-        self.announce('Turning toward Recyclable bin...')
-        self.turn(-TURN_SPEED, TURN_TO_PLASTIC_BIN_SEC)   # right turn
-        self.stop(0.3)
-        self.drive(DRIVE_SPEED, DRIVE_TO_PLASTIC_BIN_SEC)
-        self.stop(0.8)
-
-        self.wait_for_enter('Run manual MoveIt DROP into Recyclable bin')
-
-        # ── RETURN TO PATH ────────────────────
-
-        self.announce('Returning to path...')
-        self.turn(TURN_SPEED, TURN_BACK_FROM_PLASTIC_SEC)  # turn back left
-        self.stop(0.3)
-
-        # ── OBJECT 2: NON-RECYCLABLE (PAPER) ──
-
+        # ── OBJECT 2: PAPER ───────────────────
         self.announce('Driving toward object 2...')
         self.drive(DRIVE_SPEED, DRIVE_TO_OBJ2_SEC)
         self.stop(0.8)
@@ -138,24 +107,12 @@ class CikaDemoNode(Node):
         self.announce(f'Scanning... ({SCAN_DELAY_SEC}s)')
         time.sleep(SCAN_DELAY_SEC)
         self.announce('Object detected: NON-RECYCLABLE (Paper)')
-
-        self.wait_for_enter('Run manual MoveIt PICK for Non-recyclable object')
-
-        self.announce('Turning toward Non-recyclable bin...')
-        self.turn(TURN_SPEED, TURN_TO_PAPER_BIN_SEC)   # left turn
-        self.stop(0.3)
-        self.drive(DRIVE_SPEED, DRIVE_TO_PAPER_BIN_SEC)
-        self.stop(0.8)
-
-        self.wait_for_enter('Run manual MoveIt DROP into Non-recyclable bin')
-
-        # ── DONE ──────────────────────────────
+        self.wait_for_enter('Run MoveIt PICK + DROP into paper bin')
 
         self.stop(0.5)
         print('\n' + '═'*55)
         print('  ✓  Demo complete!')
         print('═'*55 + '\n')
-
 
 def main(args=None):
     rclpy.init(args=args)
