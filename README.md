@@ -73,13 +73,7 @@ The task manager bridges perception, navigation, and manipulation through a five
 - **SELECTING** — picks the highest-scoring detection with a valid 3D position and triggers navigation
 - **NAVIGATING** — sends a `NavigateToPose` goal to Nav2, stopping `approach_distance` (0.4 m) short of the object; retries once on failure before returning to IDLE
 - **VERIFYING** — confirms the target is still visible over 5 consecutive detection frames (~3 seconds) before committing to a pick
-- **PICKING** — sends a `PickAndDispose` action goal to `cika_manipulator`; falls back to a timed stub until the manipulator package is ready
-
-Current task state is published on `/cika/task_state` at 1 Hz, useful for RViz overlays and debugging.
-
-> **Note:** the arm pick is currently **stubbed** — `cika_manipulator` is not yet integrated.
-> The stub simulates a 3-second pick and returns to IDLE automatically.
-> Swap the stub by building `cika_manipulator` with a `pick_and_dispose` action server.
+- **PICKING** — sends a `PickAndDispose` action goal to `cika_manipulator`
 
 ## Visualization (Foxglove Studio)
 

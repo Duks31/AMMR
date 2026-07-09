@@ -6,7 +6,7 @@ Host-Side Decoding + Host-Side NumPy Spatial Calculation (Crash-Free)
 ros2 service call /cika/perception/set_inference_active std_srvs/srv/SetBool "{data: true}"
 ros2 service call /cika/perception/set_inference_active std_srvs/srv/SetBool "{data: false}"
 """
-
+    
 import os
 import numpy as np
 import rclpy
