@@ -131,10 +131,14 @@ source install/setup.bash
 
 ## 4. Launch
 ```bash
-ros2 launch cika_bringup cikae_real_arm.launch.py
+ros2 launch cika_bringup cika_real_arm.launch.py
 ```
 ```bash
-ros2 launch cika_manipulator moveit.launch.py
+pip install sudo apt install xvfb
+xvfb-run -a ros2 launch cika_manipulator moveit.launch.pi.py
+
+```bash
+ros2 run cika_manipulator paper_client 
 ```
 
 ## 5. Verify

@@ -19,8 +19,8 @@ import threading
 #  TUNE THESE VALUES ON THE DEMO FLOOR
 # ─────────────────────────────────────────────
 DRIVE_SPEED       = 0.10   # m/s forward speed
-DRIVE_TO_OBJ1_SEC = 19.6       
-DRIVE_TO_OBJ2_SEC = 2.5           
+DRIVE_TO_OBJ1_SEC = 30       
+DRIVE_TO_OBJ2_SEC = 15             
 SCAN_DELAY_SEC = 2.5  
 # ─────────────────────────────────────────────
 
