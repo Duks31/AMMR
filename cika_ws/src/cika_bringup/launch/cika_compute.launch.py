@@ -1,4 +1,5 @@
-#cika_compute.launch.py
+#cika_compute.launch.py 
+#this is a launch file that runs on a system together with cika_real.launch.py. It contains the heavy compute nodes that are not run on the robot itself (Current State RPI 4b).
 
 import os
 from ament_index_python.packages import get_package_share_directory

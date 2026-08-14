@@ -17,7 +17,7 @@ def generate_launch_description():
         default_value="slam",
         choices=["slam", "navigation"],
         description="slam = build map, navigation = localize + Nav2",
-    )
+    )   
 
     gui_arg = DeclareLaunchArgument(
         name="gui",

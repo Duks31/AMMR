@@ -226,14 +226,15 @@ def generate_launch_description():
         )
     )
 
-    delay_controllers_after_joint_state = RegisterEventHandler(
+    # This creates the "waiting room"
+    delayed_controllers = RegisterEventHandler(
         event_handler=OnProcessExit(
-            target_action=joint_state_broadcaster_spawner,
+            target_action=joint_state_broadcaster_spawner, 
             on_exit=[
-                TimerAction(period=8.0, actions=[arm_controller_spawner]),
-                TimerAction(period=20.0, actions=[skid_steer_controller_spawner]),
-                TimerAction(period=20.0, actions=[gripper_controller_spawner]),
-            ],
+                skid_steer_controller_spawner, 
+                arm_controller_spawner, 
+                gripper_controller_spawner
+            ]
         )
     )
 
@@ -253,6 +254,6 @@ def generate_launch_description():
             joy_ps5_node,
             joy_ps5_teleop_node,
             delay_joint_state_broadcaster_after_spawn,
-            delay_controllers_after_joint_state,
+            delayed_controllers,
         ]
     )
