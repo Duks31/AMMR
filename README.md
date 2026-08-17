@@ -19,7 +19,7 @@ Control is split hierarchically: a Raspberry Pi runs ROS2 (Nav2, RTAB-Map, MoveI
 
 A five-state task manager (`IDLE → SELECTING → NAVIGATING → VERIFYING → PICKING`) ties perception, navigation, and manipulation together: it scores detections by combined detector + classifier confidence, sends the robot to the target, re-confirms it's still there over several frames before committing, then hands off to the arm.
 
-![cika](/static/cika_high_level_block_diagram.png)
+![cika](/static/ammr.png)
 
 ![cika](/static/cika_mobile_base_and_arm.png)
 
