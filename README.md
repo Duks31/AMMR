@@ -1,167 +1,61 @@
-# CIKA - Autonomous Mobile Manipulation Robot (AMMR) for Waste Collection and Sorting
+# Cika: An Autonomous Mobile Manipulator for Waste Collection and Sorting
 
 ![cika](/static/cika.jpeg)
 
+## The problem
 
-## Project Structure 
-```
-amr_ws/src/
-├── cika_description/        # URDF, meshes, ros2_control config
-├── cika_bringup/            # Top-level launch files
-├── cika_navigation/         # Nav2, SLAM, RTAB-Map
-└── cika_manipulation/       # MoveIt2, arm planning, gripper
-└── cika_perception/         # Object detection, point cloud processing
-└── cika_task_manager/       # High-level task execution, state machine, connections to perception and navigation 
-```
+Waste gets mixed at the point of disposal, plastic and paper end up in the same bin, which kills recycling before it starts. Fixing that manually means more staff hours and more exposure to unsorted waste. Stationary smart bins don't help because they can't go collect litter that never made it into a bin, and most mobile waste robots on record either navigate or sort, not both, and almost none run on renewable power.
 
-## Mapping and Navigation
+Cika is a 4WD skid-steer mobile robot with a 6-DOF arm that finds waste, classifies it as paper or plastic, picks it up, and sorts it.
 
-```bash
-# SLAM mode — builds and saves the map database
-ros2 launch cika_bringup cika_full_sim.launch.py mode:=slam gui:=false
+## System overview
 
-# Navigation mode — loads saved map and runs Nav2
-ros2 launch cika_bringup cika_full_sim.launch.py mode:=navigation gui:=false
-```
+2 subsystems, one control loop:
 
-After a mapping run, the database is saved automatically to
-`cika_navigation/maps/cika_map.db`. To switch to navigation mode,
-simply relaunch with `mode:=navigation` — no manual copying needed.
+- **Mobile base**: skid-steer drivetrain, RPLIDAR C1 for 360° scanning, OAK-D Lite for RGB-D and onboard neural inference
+- **Manipulator**:  6-DOF serial arm (MG966R servos + a NEMA-17 stepper for base yaw), driven by a PCA9685 PWM controller
 
-> **Warning:** launching `mode:=slam` deletes the existing database on start.
-> Back up `cika_warehouse.db` before remapping if you want to keep a good map.
-```bash
-cp src/cika_navigation/maps/cika_warehouse.db \
-   src/cika_navigation/maps/cika_warehouse_backup.db
-```
+Control is split hierarchically: a Raspberry Pi runs ROS2 (Nav2, RTAB-Map, MoveIt2, perception), and talks over serial UART to two ESP32s, one for the drivetrain, one for the arm,  which handle the low-level PWM.
 
-## Perception
+A five-state task manager (`IDLE → SELECTING → NAVIGATING → VERIFYING → PICKING`) ties perception, navigation, and manipulation together: it scores detections by combined detector + classifier confidence, sends the robot to the target, re-confirms it's still there over several frames before committing, then hands off to the arm.
 
-```bash
-# Simulation — YOLOv8 detector + EfficientNet-B0 classifier, simulated OAK-D Lite
-ros2 launch cika_perception perception.launch.py backend:=sim use_sim_time:=true
+![cika](/static/cika_high_level_block_diagram.png)
 
-# Hardware — same pipeline, tuned for Raspberry Pi 4B + physical OAK-D Lite
-ros2 launch cika_perception perception.launch.py backend:=hardware use_sim_time:=false
-```
+![cika](/static/cika_mobile_base_and_arm.png)
 
-The perception pipeline runs two nodes in sequence:
+## Engineering decisions that mattered
 
-- **detector_node** — runs YOLOv8 on the RGB stream, back-projects detections to 3D using the depth image and camera intrinsics, and publishes on `/cika/waste_detections`
-- **classifier_node** — crops each detection bounding box from the RGB frame, runs EfficientNet-B0 to verify the `recyclable` / `non_recyclable` label, and republishes enriched detections on `/cika/waste_detections_classified`
+**RTAB-Map over SLAM Toolbox.**: I ran both. SLAM Toolbox was the obvious first choice, but RTAB-Map's graph-based approach with appearance-based loop closure held up better on the fused odometry (wheel encoders + IMU + OAK-D Lite visual odometry) once the environment stopped being a clean lab floor. That's the version that shipped.
 
-A debug image with bounding boxes and labels is published on `/cika/perception/debug_image` whenever a subscriber is present.
+**27+ sim iterations before the first working build.**: The design phase bounced between Gazebo and Fusion360 then model in Fusion, test the kinematics and drive behavior in Gazebo, find what breaks, go back. That loop is why the final chassis and arm geometry actually match what the drivetrain and manipulator can do, instead of looking right in CAD and failing on hardware.
 
-> **Note:** `backend:=sim` and `backend:=hardware` load different parameter configs
-> (`perception_sim.yaml` / `perception_hardware.yaml`) — inference rate is 5 Hz in
-> sim and 2 Hz on hardware to stay within RPi 4B CPU limits.
+**Porting the OAK-D Lite pipeline from depthai v2 to v3.**: Not a design choice so much as a forced one, v2 had USB power issues and device crashes that weren't going away. Then I changed to v3 port which meant re-debugging the perception pipeline from scratch, including API breakages that weren't documented anywhere I could find.
 
+**Serial UART instead of micro-ROS for the ESP32s.** micro-ROS was the original plan for the drivetrain and arm controllers. It didn't hold up reliably enough on the Pi ↔ ESP32 link, so I moved both to a plain serial bridge instead, simpler, and it's what's running on the final hardware.
 
-## Task Manager
+**IMU sign convention (REP-103).** A small thing that cost real debugging time: getting the IMU's axis conventions to actually match ROS's REP-103 standard before the EKF fusion would converge properly.
 
-```bash
-# Launch task manager (simulation)
-ros2 launch cika_task_manager cika_task_manager.launch.py use_sim_time:=true
+## What the numbers actually say
 
-# Launch task manager (hardware)
-ros2 launch cika_task_manager cika_task_manager.launch.py use_sim_time:=false
-```
+I'm including the full metrics table rather than just the highlights, because the gaps are more informative than the wins.
 
-The task manager bridges perception, navigation, and manipulation through a five-state machine:
+| Metric | Expected | Actual | Deviation |
+|---|---|---|---|
+| Binary classification accuracy | 100% | 87.4% | 12.6% |
+| Object detection accuracy | 75% | 75–81% | within range |
+| Navigation success rate | 100% | 58.3% | 41.7% |
+| Localization accuracy | 0.05 m | 0.15 m | 66.7% |
+| Picking accuracy | 100% | 80% | 20% |
+| Wireless power transfer efficiency | 71.4% | 64.3% | 9.9% |
+| Positional repeatability | ±0.05 m | ±0.112 m | 55.4% |
 
-- **IDLE** — listens to `/cika/waste_detections_classified` and scores candidates by combined detector + classifier confidence
-- **SELECTING** — picks the highest-scoring detection with a valid 3D position and triggers navigation
-- **NAVIGATING** — sends a `NavigateToPose` goal to Nav2, stopping `approach_distance` (0.4 m) short of the object; retries once on failure before returning to IDLE
-- **VERIFYING** — confirms the target is still visible over 5 consecutive detection frames (~3 seconds) before committing to a pick
-- **PICKING** — sends a `PickAndDispose` action goal to `cika_manipulator`
+The classification and detection numbers (87.4% / 75–81%) are solid for a 2-class YOLOv8 model trained on a TACO subset from a Raspberry Pi-class edge device. The object-detection mAP@0.5 (38.9%) is weaker than the raw accuracy numbers suggest, the confusion matrix shows the model is conservative, preferring to call things "background" over risking a false positive, which is a reasonable failure mode for a robot arm about to grab something.
 
-## Visualization (Foxglove Studio)
+The navigation numbers are the honest weak point: 58.3% goal success rate against a mean heading error of 16.7° and localization error of 0.15 m. That traces to skid-steer drivetrain slip and asymmetry feeding odometry drift, not a software failure. The Nav2 + RTAB-Map stack did what it was supposed to do with the odometry it was given; the odometry itself wasn't good enough. That's a mechanical problem (wheel bearings, motor bracket tolerances) as much as a perception one.
 
-Foxglove Studio is installed system-wide via apt and launched standalone — no ROS2 launch file is needed.
+![cika](/static/cika_training_curves.png)
+![cika](/static/cika_occupancy_grid.png)
+![cika](/static/cika_normalized_confusion_matrix.png)
+## Stack
 
-```bash
-# Launch Foxglove Studio
-foxglove-studio
-```
-
-Once open, connect to your running ROS2 stack via the **Foxglove WebSocket** bridge:
-
-```bash
-# Start the bridge (run this alongside your other nodes)
-ros2 launch foxglove_bridge foxglove_bridge_launch.xml
-```
-
-Then in Foxglove Studio, select **Open Connection → Foxglove WebSocket** and enter:
-ws://<_ip_address_>:8765
-
-## Physical Robot 
-
-``` bash
-# Teleop only (default)
-ros2 launch cika_bringup cika_real.launch.py nav:=false
-
-# Compute launch
-ros2 launch cika_bringup cika_compute.launch.py 
-
-# SLAM — build a map
-ros2 launch cika_navigation cika_nav.launch.py mode:=slam use_sim_time:=false
-
-# Navigation — autonomous with saved map
-ros2 launch cika_navigation cika_nav.launch.py mode:=navigation use_sim_time:=false
-```
-
-# Cika Hardware Arm — How to Run
-
-## 1. Upload Firmware to ESP32
-- Open `cika_arm_esp32.ino` in Arduino IDE
-- Board: `ESP32 Dev Module` | Port: `/dev/ttyUSB1`
-- Click Upload, then press EN/RESET on ESP32
-
-## 2. Give Port Permission
-```bash
-sudo chmod a+rw /dev/ttyUSB1
-```
-
-## 3. Build
-```bash
-cd ~/AMMR/cika_ws
-colcon build --packages-select cika_hardware_arm
-source install/setup.bash
-```
-
-## 4. Launch
-```bash
-ros2 launch cika_bringup cika_real_arm.launch.py
-```
-```bash
-pip install sudo apt install xvfb
-xvfb-run -a ros2 launch cika_manipulator moveit.launch.pi.py
-
-```bash
-ros2 run cika_manipulator paper_client 
-```
-
-## 5. Verify
-```bash
-ros2 control list_controllers
-```
-Expected:
-```
-joint_state_broadcaster   active
-arm_controller            active
-```
-
-## 6. Monitor ESP32 (optional)
-```bash
-screen /dev/ttyUSB1 115200
-# Close with: Ctrl+A then K → y
-```
-
----
-
-## If Something Goes Wrong
-| Problem | Fix |
-|---|---|
-| Port busy | Close Arduino Serial Monitor or screen |
-| Controllers fail | Unplug and replug ESP32, relaunch |
-| Wrong port | Change `ttyUSB1` to `ttyUSB0` in `cika_hardware_arm.cpp` and rebuild |
+ROS2 Humble · Nav2 · RTAB-Map · MoveIt2 · YOLOv8 · OAK-D Lite (depthai v3) · RPLIDAR C1 · Extended Kalman Filter sensor fusion · Raspberry Pi 4B · ESP32 · Docker · ONNX / OpenVINO
