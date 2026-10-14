@@ -58,4 +58,4 @@ The navigation numbers are the honest weak point: 58.3% goal success rate agains
 ![cika](/static/cika_normalized_confusion_matrix.png)
 ## Stack
 
-ROS2 Humble · Nav2 · RTAB-Map · MoveIt2 · YOLOv8 · OAK-D Lite (depthai v3) · RPLIDAR C1 · Extended Kalman Filter sensor fusion · Raspberry Pi 4B · ESP32 · Docker · ONNX / OpenVINO
+ROS2 Humble · Nav2 · RTAB-Map · MoveIt2 · YOLOv8 · OAK-D Lite (depthai v3) · RPLIDAR C1 · Extended Kalman Filter sensor fusion · Raspberry Pi 4B · ESP32 · ONNX / OpenVINO
