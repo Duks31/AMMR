@@ -17,7 +17,7 @@ Cika is a 4WD skid-steer mobile robot with a 6-DOF arm that finds waste, classif
 
 Control is split hierarchically: a Raspberry Pi runs ROS2 (Nav2, RTAB-Map, MoveIt2, perception), and talks over serial UART to two ESP32s, one for the drivetrain, one for the arm,  which handle the low-level PWM.
 
-A five-state task manager (`IDLE → SELECTING → NAVIGATING → VERIFYING → PICKING`) ties perception, navigation, and manipulation together: it scores detections by combined detector + classifier confidence, sends the robot to the target, re-confirms it's still there over several frames before committing, then hands off to the arm.
+A five-state task manager (`IDLE → SELECTING → NAVIGATING → VERIFYING → PICKING`) ties perception, navigation, and manipulation together: it scores detections by combined detector confidence, sends the robot to the target, re-confirms it's still there over several frames before committing, then hands off to the arm.
 
 ![cika](/static/ammr.png)
 
@@ -41,17 +41,14 @@ I'm including the full metrics table rather than just the highlights, because th
 
 | Metric | Expected | Actual | Deviation |
 |---|---|---|---|
-| Plastic vs paper classification accuracy (YOLOv8) | 100% | 87.4% | 12.6% |
-| Object detection accuracy | 75% | 75–81% | within range |
 | Navigation success rate | 100% | 58.3% | 41.7% |
-| Localization accuracy | 0.05 m | 0.15 m | 66.7% |
-| Picking accuracy | 100% | 80% | 20% |
 | Wireless power transfer efficiency | 71.4% | 64.3% | 9.9% |
-| Positional repeatability | ±0.05 m | ±0.112 m | 55.4% |
+| Localization accuracy | 0.05 m | 0.15 m | +0.10 m |
+| Positional repeatability | ±0.05 m | ±0.112 m | +0.062 m |
 
-The classification and detection numbers (87.4% / 75–81%) are solid for a 2-class YOLOv8 model trained on a TACO subset from a Raspberry Pi-class edge device. The object-detection mAP@0.5 (38.9%) is weaker than the raw accuracy numbers suggest, the confusion matrix shows the model is conservative, preferring to call things "background" over risking a false positive, which is a reasonable failure mode for a robot arm about to grab something.
+The object-detection mAP@0.5 is 38.9%. The confusion matrix below shows per-class results: the model misses a large share of objects, paper in particular, so detection quality limits how many items the arm gets to attempt.
 
-The navigation numbers are the honest weak point: 58.3% goal success rate against a mean heading error of 16.7° and localization error of 0.15 m. That traces to skid-steer drivetrain slip and asymmetry feeding odometry drift, not a software failure. The Nav2 + RTAB-Map stack did what it was supposed to do with the odometry it was given; the odometry itself wasn't good enough. That's a mechanical problem (wheel bearings, motor bracket tolerances) as much as a perception one.
+The navigation numbers are the honest weak point: 58.3% goal success rate against a mean heading error of 16.7° and localization error of 0.15 m. That traces mainly to skid-steer drivetrain slip and asymmetry feeding odometry drift. The Nav2 + RTAB-Map stack worked with the odometry it was given, but the odometry itself wasn't good enough. The root causes are mechanical (wheel bearings, motor bracket tolerances) as much as they are a localisation problem.
 
 ![cika](/static/cika_training_curves.png)
 ![cika](/static/cika_occupancy_grid.png)
