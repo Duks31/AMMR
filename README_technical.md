@@ -1,3 +1,5 @@
+<!-- TODO: To be updated -->
+
 # CIKA - Autonomous Mobile Manipulation Robot (AMMR) for Waste Collection and Sorting
 
 ## Project Structure 
