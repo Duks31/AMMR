@@ -41,7 +41,7 @@ I'm including the full metrics table rather than just the highlights, because th
 
 | Metric | Expected | Actual | Deviation |
 |---|---|---|---|
-| Binary classification accuracy | 100% | 87.4% | 12.6% |
+| Plastic vs paper classification accuracy (YOLOv8) | 100% | 87.4% | 12.6% |
 | Object detection accuracy | 75% | 75–81% | within range |
 | Navigation success rate | 100% | 58.3% | 41.7% |
 | Localization accuracy | 0.05 m | 0.15 m | 66.7% |

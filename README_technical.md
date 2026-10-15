@@ -33,21 +33,28 @@ simply relaunch with `mode:=navigation` — no manual copying needed.
 cp src/cika_navigation/maps/cika_warehouse.db \
    src/cika_navigation/maps/cika_warehouse_backup.db
 ```
-
 ## Perception
 
 ```bash
-# Simulation — YOLOv8 detector + EfficientNet-B0 classifier, simulated OAK-D Lite
+# Simulation: YOLOv8 detector, simulated OAK-D Lite
 ros2 launch cika_perception perception.launch.py backend:=sim use_sim_time:=true
 
-# Hardware — same pipeline, tuned for Raspberry Pi 4B + physical OAK-D Lite
+# Hardware: YOLOv8 inference on the physical OAK-D Lite
 ros2 launch cika_perception perception.launch.py backend:=hardware use_sim_time:=false
 ```
 
-The perception pipeline runs two nodes in sequence:
+Perception runs in a single Python node, `inference_node` (DepthAI v3):
 
-- **detector_node** — runs YOLOv8 on the RGB stream, back-projects detections to 3D using the depth image and camera intrinsics, and publishes on `/cika/waste_detections`
-- **classifier_node** — crops each detection bounding box from the RGB frame, runs EfficientNet-B0 to verify the `recyclable` / `non_recyclable` label, and republishes enriched detections on `/cika/waste_detections_classified`
+- **Detection:** a fine-tuned YOLOv8 model (`taco_v2.blob`, two classes: plastic and paper) runs on the OAK-D Lite's on-board VPU. The node decodes the raw output on the host with a 0.5 confidence threshold and 0.5 IoU non-maximum suppression.
+- **3D position:** stereo depth is aligned to the RGB camera. For each detection, the node takes the median of the valid depth values (0.1 to 8 m) inside the bounding box and back-projects the box centre using the camera intrinsics read from the device calibration. Positions are expressed in `oak_rgb_camera_optical_frame`.
+- **Topics:** detections are published on `/cika/perception/waste_detections` (`WasteDetectionArray`), the annotated image on `/cika/perception/image_raw/compressed`, and raw RGB, depth and camera info under `/oak/`.
+- **Control:** inference is off at startup. Toggle it with a service call:
+
+```bash
+ros2 service call /cika/perception/set_inference_active std_srvs/srv/SetBool "{data: true}"
+```
+
+> **Note:** on the Raspberry Pi the camera streams at 10 fps and the node polls at 10 Hz.
 
 A debug image with bounding boxes and labels is published on `/cika/perception/debug_image` whenever a subscriber is present.
 
